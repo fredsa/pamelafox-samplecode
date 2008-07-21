@@ -1,0 +1,250 @@
+<HTML>
+<HEAD>
+<TITLE>
+    Similar Product visualization with AWS
+</TITLE>
+
+<script language="javascript" type="text/javascript">
+   var request = false;
+   try {
+     request = new XMLHttpRequest();
+   } catch (trymicrosoft) {
+     try {
+       request = new ActiveXObject("Msxml2.XMLHTTP");
+     } catch (othermicrosoft) {
+       try {
+         request = new ActiveXObject("Microsoft.XMLHTTP");
+       } catch (failed) {
+         request = false;
+       }  
+     }
+   }
+
+   if (!request)
+     alert("Error initializing XMLHttpRequest!");
+
+      function getCustomerInfo() {
+     var phone = document.getElementById("phone").value;
+     var keyword = phone.replace(" ","%20");
+     var searchindex = document.getElementById("searchindex").value;
+     var url = "getsalesrank.php?keyword=" + escape(keyword)+ "&searchindex=" + escape(searchindex);
+     request.open("GET", url, true);
+     document.getElementById("statustext").innerHTML = "<img src=\"indicator_medium.gif\"><i>Searching for matching Amazon titles...</i>";
+     request.onreadystatechange = updatePage;
+     request.send(null);
+   }
+	
+   function doframe(evt) { 
+      		var keyCode = evt ? (evt.which ? evt.which : 
+evt.keyCode) : event.keyCode;
+      		if (keyCode == 13) {
+		getCustomerInfo();
+     	 	 return false;
+      		}
+    	}
+
+    function getList() {
+ 	var url = "filesboth.php";
+     request.open("GET", url, true);
+     request.onreadystatechange = updateList;
+     request.send(null);
+   }
+
+   function updateList() {
+	if (request.readyState == 4){
+	//alert("wah!");
+       if (request.status == 200){
+         //alert("Server is done!");
+	document.getElementById("filelist").innerHTML = request.responseText;
+	} else if (request.status == 404) {
+         alert("Request URL does not exist");
+       } else
+         alert("Error: status code is " + request.status);
+	}
+   }
+
+   function updatePage() {
+	if(request==null){ alert("Please press search button");}
+     if (request.readyState == 4){
+	//alert("wah!");
+       if (request.status == 200){
+         //alert("Server is done!");
+	var responses = request.responseText.split("||");
+	 var htmlResponse="";
+	 
+	if(responses.length < 2) { 
+document.getElementById("statustext").innerHTML = "<i>No results found for last search.</i>";
+} else {
+document.getElementById("statustext").innerHTML = "<i>Results listed below.</i>";
+htmlResponse += "<h1>" + responses[0].replace("%20"," ") + ": </h1>";
+}
+	for(i in responses){
+			if(i>0){
+			
+			document.getElementById("VisSimWeb").disabled=false;
+			response = responses[i].split("**");
+			htmlResponse += "<input type=\"radio\" name=\"results\" id=\"results\" value=\"" + response[2] + "\"> " + response[0] + "<br>";
+	}
+	}
+	document.getElementById("address").innerHTML += htmlResponse;
+       } else if (request.status == 404)
+         alert("Request URL does not exist");
+       else
+         alert("Error: status code is " + request.status);
+	}
+   }
+   function visualizeSimilarityWeb(){
+	 var selected=getCheckedValue(document.forms['myform'].elements['results'])
+
+	//alert(selected);
+	if(selected==""){
+		document.getElementById("statustext2").innerHTML = "<i>You must select a product to calculate the similarity web for.</i>";
+	} else {
+	var url = "calcsimilar.php?aS=" + escape(selected) + "&l=2";
+	request.open("GET", url, true);
+	document.getElementById("statustext2").innerHTML = "<img src=\"indicator_medium.gif\" valign=\"middle\" align=\"left\"><i>Calculating similarity web...<br/>(Check out the webs below while you're waiting!)</i>";
+	request.onreadystatechange = openSimWeb;
+	request.send(null);
+	}
+	}
+
+   function openSimWeb() {
+	var selected=getCheckedValue(document.forms['myform'].elements['results'])
+	if(request.readyState == 4){
+	//alert("wah!");
+	if(request.status==200){
+	  //alert("Server is done!");
+		//alert(request.responseText.substring(0,6));
+		var err = request.responseText.indexOf("Error");
+		//alert(err);
+		if(err==1){
+			document.getElementById("statustext2").innerHTML = "<i>Search for a more popular product - that one didn't have any similar products.</i>";
+		} else {
+	  document.getElementById("statustext2").innerHTML = "<a href=\"arbore.php?XMLFileName=" + escape(selected) + ".xml\" target=\"new\">Click here to open web in new window.</a>";
+//window.open('http://imagine-it.org/amazong/arbore.html','Similarity Web Visualizer','width=1000,height=650,scrollbars=yes,resizable=yes');
+		} 
+	} else if (request.status == 404)
+         alert("Request URL does not exist");
+       else
+         alert("Error: status code is " + request.status);
+	}
+   }
+
+// return the value of the radio button that is checked
+// return an empty string if none are checked, or
+// there are no radio buttons
+function getCheckedValue(radioObj) {
+	if(!radioObj)
+		return "";
+	var radioLength = radioObj.length;
+	if(radioLength == undefined)
+		if(radioObj.checked)
+			return radioObj.value;
+		else
+			return "";
+	for(var i = 0; i < radioLength; i++) {
+		if(radioObj[i].checked) {
+			return radioObj[i].value;
+		}
+	}
+	return "";
+}
+
+function radioValue(radioButton)
+{
+    for (x = 0; x <= radioButton.length; x++)
+    {
+        if (radioButton[x].checked == true) return radioButton[x].value; 
+    } 
+         // if it didn't find anything, return the .value  (behaviour of single radio btn)
+        return radioButton.value;
+}
+        
+getList();
+
+</script>
+<link rel="stylesheet" href="styles.css" type="text/css" media="screen" />
+
+</HEAD>
+
+  <body>
+   <div id="main">
+   <h2>Similar Product Visualization with AWS</h2>
+  &nbsp;&nbsp;The purpose of this web app is to view the similarity web for a given Amazon product, using 
+the same data that Amazon.com uses for the "Customers who bought this item also bought..." area. <i>Rarely 
+bought items may not have any similarity data.</i><br/>
+  &nbsp;&nbsp;If you buy products by clicking on them in the web, I will earn a small commission, which will 
+go to my Starving Student fund. :) Please enjoy, and if you have any technical issues or questions, email me 
+(pfox at usc.edu) 
+<br/> 
+  <form id="myform" name="myform">
+   <p>Keyword:
+    <input type="text" size="14" name="phone" id="phone" 
+onkeypress="doframe(event);"/> 
+<input type="text" readonly size="1" style="width:0px; visibility: hidden";/>
+	Search in:
+	<select NAME="searchindex" id="searchindex">
+	<option VALUE="Blended">All</option>
+	<option VALUE="Apparel">Apparel</option>
+	<option VALUE="Automotive">Automotive</option>
+	<option VALUE="Baby">Baby</option>
+	<option VALUE="Beauty">Beauty</option>
+	<option VALUE="Books" SELECTED>Books</option>
+	<option VALUE="Classical">Classical</option>
+	<option VALUE="DigitalMusic">DigitalMusic</option>
+	<option VALUE="DVD">DVD</option>
+	<option VALUE="Electronics">Electronics</option>
+	<option VALUE="GourmetFood">Gourmet Food</option>
+	<option VALUE="HealthPersonalCare">Health & Personal Care</option>
+	<option VALUE="Jewelry">Jewelry</option>
+	<option VALUE="Kitchen">Kitchen</option>
+	<option VALUE="Magazines">Magazines</option>
+	<option VALUE="Miscellaneous">Miscellaneous</option>
+	<option VALUE="Music">Music</option>
+	<option VALUE="MusicalInstruments">Musical Instruments</option>
+	<option VALUE="MusicTracks">Music Tracks</option>
+	<option VALUE="OfficeProducts">Office Products</option>
+	<option VALUE="OutdoorLiving">Outdoor Living</option>
+	<option VALUE="PCHardware">PC Hardware</option>
+	<option VALUE="PetSupplies">Pet Supplies</option>
+	<option VALUE="Photo">Photo</option>
+	<option VALUE="Software">Software</option>
+	<option VALUE="SportingGoods">Sporting Goods</option>
+	<option VALUE="Tools">Tools</option>
+	<option VALUE="Toys">Toys</option>
+	<option VALUE="VHS">VHS</option>
+	<option VALUE="Video">Video</option>
+	<option VALUE="VideoGames">Video Games</option>
+	<option VALUE="Wireless">Wireless</option>
+	<option VALUE="WirelessAccessories">Wireless Accessories</option>
+	</select>
+<input type="button" value="Search" id="search" 
+onClick="getCustomerInfo();"/>
+	<div id="statustext"></div>
+   <br/>
+   <div id="address"></div>
+   <br/>
+   <input type="button" disabled="true" value="Calculate Similarity Web" id="VisSimWeb" onClick="visualizeSimilarityWeb();"/>
+	<br/><br/>
+	<div id="statustext2"> </div>
+  </form>
+	<div id="filelist"> </div>
+       
+   <br/>
+    <br/> 
+   <br/>
+    <br/> 
+   <br/>
+    <br/> 
+   <br/>
+    <br/> 
+   <br/>
+    <br/> 
+	</div>
+<script type="text/javascript">
+_uacct = "UA-964209-1";
+urchinTracker();
+</script>
+	
+ </body>
+</html>
