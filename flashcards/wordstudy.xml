@@ -1,0 +1,531 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Module> 
+<ModulePrefs title="Interactive Flash Cards"
+             description="Creates interactive flash cards based on words in a Google Spreadsheet. You can guess using word jumbles, type-ins, or multiple choice, and you can choose to have the hints come from Google images, Google translation, Wikipedia, or your own spreadsheet."
+             author="Pamela Fox"
+             author_affiliation="Google Inc."
+             author_email="pamela.fox+coolgadget@gmail.com"
+             screenshot="http://pamela.fox.googlepages.com/screenshot_flashcards.jpg"
+             thumbnail="http://pamela.fox.googlepages.com/thumbnail_flashcards.jpg" 
+              width="400" height="400"> 
+<Require feature="idi"/>
+<Require feature="locked-domain" />
+<Require feature="grid"/>
+</ModulePrefs>
+<UserPref name="_table_query_url" display_name="Data source url" 
+          required="true"/>
+<UserPref name="_table_query_refresh_interval" 
+          display_name="Data refresh interval (minutes)" 
+          default_value="0" datatype="enum" required="false">
+<EnumValue value="0" display_value="Do not refresh"/>
+<EnumValue value="60" display_value="1"/>
+<EnumValue value="300" display_value="5"/>
+<EnumValue value="1800" display_value="30"/>
+</UserPref>
+<UserPref name="guess_style"
+          display_name="Guess Style"
+          default_value="jumble" datatype="enum" required="false">
+<EnumValue value="jumble" display_value="Word Jumble"/>
+<EnumValue value="multiple_choice" display_value="Multiple Choice"/>
+<EnumValue value="type_in" display_value="Type-In"/>
+</UserPref>
+<UserPref name="hint_source"
+          display_name="Hint Source" 
+          default_value="image" datatype="enum" required="false">
+<EnumValue value="none" display_value="No Hint"/>
+<EnumValue value="secondcolumn" display_value="Second Column"/>
+<EnumValue value="definition" display_value="Definition"/>
+<EnumValue value="image" display_value="Image Search"/>
+<EnumValue value="translation" display_value="Translation"/>
+</UserPref>
+<UserPref name="translation_source"
+          display_name="If translating, translate from:"
+          default_value="en" datatype="enum" required="false">
+<EnumValue value="ar" display_value="arabic"/>
+<EnumValue value="bg" display_value="bulgarian"/>
+<EnumValue value="zh" display_value="chinese"/>
+<EnumValue value="zh-CN" display_value="chinese_simplified"/>
+<EnumValue value="zh-TW" display_value="chinese_traditional"/>
+<EnumValue value="hr" display_value="croatian"/>
+<EnumValue value="cs" display_value="czech"/>
+<EnumValue value="da" display_value="danish"/>
+<EnumValue value="nl" display_value="dutch"/>
+<EnumValue value="en" display_value="english"/>
+<EnumValue value="fi" display_value="finnish"/>
+<EnumValue value="fr" display_value="french"/>
+<EnumValue value="de" display_value="german"/>
+<EnumValue value="el" display_value="greek"/>
+<EnumValue value="hi" display_value="hindi"/>
+<EnumValue value="it" display_value="italian"/>
+<EnumValue value="ja" display_value="japanese"/>
+<EnumValue value="ko" display_value="korean"/>
+<EnumValue value="no" display_value="norwegian"/>
+<EnumValue value="pl" display_value="polish"/>
+<EnumValue value="pt-PT" display_value="portuguese"/>
+<EnumValue value="ro" display_value="romanian"/>
+<EnumValue value="ru" display_value="russian"/>
+<EnumValue value="es" display_value="spanish"/>
+<EnumValue value="sv" display_value="swedish"/>
+</UserPref>
+<UserPref name="translation_target"
+          display_name="And translate to:"
+          default_value="de" datatype="enum" required="false">
+<EnumValue value="ar" display_value="arabic"/>
+<EnumValue value="bg" display_value="bulgarian"/>
+<EnumValue value="zh" display_value="chinese"/>
+<EnumValue value="zh-CN" display_value="chinese_simplified"/>
+<EnumValue value="zh-TW" display_value="chinese_traditional"/>
+<EnumValue value="hr" display_value="croatian"/>
+<EnumValue value="cs" display_value="czech"/>
+<EnumValue value="da" display_value="danish"/>
+<EnumValue value="nl" display_value="dutch"/>
+<EnumValue value="en" display_value="english"/>
+<EnumValue value="fi" display_value="finnish"/>
+<EnumValue value="fr" display_value="french"/>
+<EnumValue value="de" display_value="german"/>
+<EnumValue value="el" display_value="greek"/>
+<EnumValue value="hi" display_value="hindi"/>
+<EnumValue value="it" display_value="italian"/>
+<EnumValue value="ja" display_value="japanese"/>
+<EnumValue value="ko" display_value="korean"/>
+<EnumValue value="no" display_value="norwegian"/>
+<EnumValue value="pl" display_value="polish"/>
+<EnumValue value="pt-PT" display_value="portuguese"/>
+<EnumValue value="ro" display_value="romanian"/>
+<EnumValue value="ru" display_value="russian"/>
+<EnumValue value="es" display_value="spanish"/>
+<EnumValue value="sv" display_value="swedish"/>
+</UserPref>
+<UserPref name="randomize_words"
+          display_name="Randomize words?"
+          default_value="false" datatype="bool" required="false"/>
+<Content type="html"><![CDATA[
+<style type="text/css">
+body {
+  border: 2px solid black;
+  margin: 20%;
+  margin-top: 10%;
+  background-color: #eee;
+}
+#flashcard {
+  background-color: white;
+  text-align: center;
+  font-size: 24pt;
+}
+.header {
+  background-color: #d9e8f0; 
+  width: 100%;
+  border: dashed 1px;
+}
+.area {
+  padding: 10px;
+}
+.footer {
+  padding: 5px;
+}
+#message {
+  background-color: #fff;
+  width: 100%;
+  font-size: 12px;
+}
+#hint {
+  font-size: 16px;
+}
+#instructions {
+  font-size: 12px;
+  text-align: left;
+}
+#attribution {
+  font-size: 11px;
+  font-style: italic;
+  text-align: left;
+}
+</style>
+
+<div id="flashcard">
+<div class="header">hint:</div>
+<div id="hint" class="area">
+</div>
+<div class="header">guess:</div>
+<div id="guess" class="area">
+</div>
+<div id="message">&nbsp;</div>
+<div class="footer">
+<div style="float:right;">
+<input type="button" onclick="showNextWord()" value="Next"/>
+</div>
+<div>
+<div id="instructions">
+Loading...
+</div>
+<div id="attribution">
+</div>
+</div>
+</div>
+
+</div>
+<script src="http://www.google.com/jsapi" type="text/javascript"></script>
+<script language="JavaScript">
+/**
+ * Load the APIs and run sendQuery when the load is complete
+ */
+var gadgetHelper = null;
+var prefs = null;
+var words = [];
+var wordHints = {};
+var currentWord = 0;
+
+_IG_RegisterOnloadHandler(loadVisualizationAPI);
+      
+function loadVisualizationAPI() { 
+  google.load("visualization", "1");
+  google.load("search", "1");
+  google.load("language", "1");
+  google.setOnLoadCallback(sendQuery);
+}
+
+/**
+ * Create a query (shaped by the Gadget's user preferences), then 
+ * send it to the spreadsheet data source. Also give the name of a 
+ * function ("handleQueryResponse") to run once the spreadsheet data 
+ * is retrieved:
+ */
+function sendQuery() {
+  prefs = new _IG_Prefs(); // User preferences 
+  gadgetHelper = new google.visualization.GadgetHelper(); 
+  var query = gadgetHelper.createQueryFromPrefs(prefs);
+  query.send(handleQueryResponse);
+} 
+
+/**
+ * The core logic. Process the spreadsheet data however you want. 
+ * In this case, we create HTML to be presented back to the user. 
+ * We'll use inline comments to provide a step-by-step description 
+ * of what we're doing:
+ */
+function handleQueryResponse(response) {
+/*
+  if (!gadgetHelper.validateResponse(response)) {
+    return;     // Default error handling was done, just leave. 
+  }
+*/
+  data = response.getDataTable();
+  
+  loadWords();
+  showNextWord();
+}
+
+
+function loadWords() {
+  for (var row = 0; row < data.getNumberOfRows(); row++) {
+    var rowObj = [];
+    var formattedValue = data.getFormattedValue(row, 0);
+    formattedValue = _hesc(formattedValue);
+    formattedValue = formattedValue.replace(/[^a-z,]/gi,"");
+    words.push(formattedValue); 
+    if (data.getNumberOfColumns() == 2) {
+      wordHints[formattedValue] = data.getFormattedValue(row, 1);
+    } else {
+      wordHints[formattedValue] = "No second column found."
+    }
+  }
+  if (prefs.getBool("randomize_words") == true) {
+    words = words.randomize();
+  }
+}
+
+function showNextWord() {
+  if (currentWord == words.length) {
+    alert("Done!");
+    return;
+  }
+  clearCorrectIndicator();
+  
+  var guess_style = prefs.getString("guess_style");
+  if (guess_style == "jumble") {
+    _gel("instructions").innerHTML = "Instructions: Drag the letters around until you've spelled the correct word. A green cell indicates a correct letter.";
+    createGrid(words[currentWord]);
+  } else if (guess_style == "multiple_choice") {
+    _gel("instructions").innerHTML = "Instructions: Select the correct answer among the three choices.";
+    createMultipleChoice(words[currentWord]);
+  } else if (guess_style == "type_in") {
+    _gel("instructions").innerHTML = "Instructions: Type the correct answer (exactly!). Press enter to quickly go to next flash card.";
+    createTypeIn(words[currentWord]);
+  }
+  addHintForWord(words[currentWord]);
+  currentWord++;
+} 
+     
+function createGrid(word) {
+    var jumbledWord = word.randomize();
+    while (jumbledWord == word) {
+      jumbledWord = word.randomize();
+    }
+ 
+    // Create backend object, initialize with data
+    var backend = new Object();
+    backend.data = [];
+    for (var i = 0; i < jumbledWord.length; i++) {
+      backend.data.push(jumbledWord.charAt(i));
+    }
+    
+    backend._IGG_isDragSource = function(index) {
+      return true;
+    }
+    
+    backend._IGG_isDragTarget = function(index, sourceIndex) {
+      return true;
+    }
+    backend._IGG_getSurrogateView = function(index) {    
+       var value = this.data[index];
+       return '<span style="font-size:24pt"><b>' + value + '</b></span>';
+    }    
+    
+    backend._IGG_getNormalView = function(index) {
+      var value = this.data[index];
+      if (value == word.charAt(index)) {
+        var color = "#00FF00";
+      } else { 
+        var color = "#ffffff";
+      }
+      if( _gel(grid.getCellTDID(index))) {
+        _gel(grid.getCellTDID(index)).style.backgroundColor = color;
+      }
+      return value; 
+    }
+  
+
+    // If the user didn't drag to a legal target, don't change the data, but refresh the source
+    // cell. Otherwise, adjust the numbers, and refresh the changed cells.
+    backend._IGG_handleDrag = function(source, target) {
+      if (target == -1) {
+      this._IGG_refreshCell(source);
+      } else {
+        var temp = this.data[target];
+        this.data[target] = this.data[source];
+        this.data[source] = temp;
+        // Callback on the backend object to force refresh
+        this._IGG_refreshCell(source);
+        this._IGG_refreshCell(target);
+        var guess = this.data.join("");
+        if (guess == word) {
+          addCorrectIndicator();
+        } else {
+          addKeepTryingIndicator();
+        }
+      }
+    }
+
+    var grid = new _IG_Grid(backend, ("grid_" + word), 1, word.length);
+    grid.getTable().border = 2;
+    grid.getTable().cellPadding = 5;
+    grid.getTable().style.fontSize = "24pt";
+    grid.getTable().style.margin = "auto";
+      
+    _gel("guess").innerHTML = "";
+    _gel("guess").appendChild(grid.getTable());
+  
+    grid.initDragging();
+    grid.refreshAll();
+    
+}
+
+function createTypeIn(word) {
+  var input = document.createElement("input");
+  input.type = "text";
+  input.value = "";
+  input.onkeyup = function(e) {
+    if (input.value == word) {
+      addCorrectIndicator();
+    } else {
+      addKeepTryingIndicator();
+    }
+    checkEnter(e);
+  }; 
+  _gel("guess").innerHTML = "";
+  _gel("guess").appendChild(input);
+  input.focus();
+}
+
+function checkEnter(e){ //e is event object passed from function invocation
+  var characterCode; //literal character code will be stored in this variable
+  if(e && e.which){ //if which property of event object is supported (NN4)
+    e = e;
+    characterCode = e.which; //character code is contained in NN4's which property
+  } else{
+    e = event;
+    characterCode = e.keyCode; //character code is contained in IE's keyCode property
+  }
+
+  if(characterCode == 13){ //if generated character code is equal to ascii 13 (if enter key)
+    showNextWord();
+    return false;
+  } else {
+    return true;
+  }
+}
+
+function createMultipleChoice(word) {
+  var otherWords = [];
+  for (var i = 0; i < words.length; i++) {
+    if (words[i] != word) {
+      otherWords.push(words[i]);
+    }
+  }
+  otherWords = otherWords.randomize();
+
+  var choices = [otherWords[0], otherWords[1], word];
+  choices = choices.randomize();
+  _gel("guess").innerHTML = "";
+  var table = document.createElement("table");
+  table.style.margin = "auto";
+  table.style.fontSize = "16px";
+  var tbody = document.createElement("tbody");
+  table.appendChild(tbody);
+  tbody.appendChild(createSingleChoice(word, choices[0]));  
+  tbody.appendChild(createSingleChoice(word, choices[1]));  
+  tbody.appendChild(createSingleChoice(word, choices[2]));  
+  _gel("guess").appendChild(table);
+}
+
+function createSingleChoice(word, choice) {
+  var tr = document.createElement("tr");
+  var td = document.createElement("td");
+  var input = document.createElement("input");
+  input.type = "radio";
+  input.name = "choices";
+  input.value = choice;
+  input.onclick = function() {
+    if (input.checked && choice == word) {
+      addCorrectIndicator();
+    } else {
+      addKeepTryingIndicator();
+    }
+  };
+  td.appendChild(input);
+  tr.appendChild(td);
+  var td = document.createElement("td");
+  td.appendChild(document.createTextNode(choice));
+  tr.appendChild(td);
+  return tr;
+}
+
+function addKeepTryingIndicator() {
+  _gel("message").innerHTML = "keep trying...";
+  _gel("message").style.backgroundColor = "#ff9797";
+  _gel("message").style.border = "1px dashed";
+
+}
+
+function addCorrectIndicator() {
+  _gel("message").innerHTML = "correct!";
+  _gel("message").style.backgroundColor = "#00ff00";
+  _gel("message").style.border = "1px dashed";
+}
+
+function clearCorrectIndicator() {
+  _gel("message").innerHTML = "&nbsp;";
+  _gel("message").style.backgroundColor = "#fff";
+  _gel("message").style.border = "none";
+}
+
+function addHintForWord(word) {
+  var hint_source = prefs.getString("hint_source");
+  if (hint_source == "image") {
+    _gel("attribution").innerHTML = "Images courtesy Google Image Search API."
+    addHintForWordFromImageSearch(word);
+  } else if (hint_source == "translation") {
+    _gel("attribution").innerHTML = "Translations courtesy Google Language API."
+    addHintForWordFromTranslation(word);
+  } else if (hint_source == "secondcolumn") {
+    addHintForWordFromSecondColumn(word);
+  } else if (hint_source == "definition") {
+    _gel("attribution").innerHTML = "Definitions from Wikipedia via the Fuktek API."
+    addHintForWordFromDefinition(word);
+  } 
+}
+
+function addHintForWordFromImageSearch(word) {
+  var searcher = new GimageSearch();
+  //searcher.setRestriction(GimageSearch.RESTRICT_IMAGESIZE, GimageSearch.IMAGESIZE_SMALL);
+  searcher.setResultSetSize(GSearch.SMALL_RESULTSET);
+  searcher.execute(word);
+  searcher.setSearchCompleteCallback(this, function() {
+    _gel("hint").innerHTML = "";
+    for (var i = 0; i < searcher.results.length; i++) {
+      var result = searcher.results[i];
+      var scaled = GSearch.scaleImage(result.tbWidth, result.tbHeight, {width:68,height:51});      
+      var img = document.createElement("img");
+      img.setAttribute("src", result.tbUrl);
+      img.setAttribute("width", scaled.width);
+      img.setAttribute("height", scaled.height);
+      img.style.padding = "5px";
+      _gel("hint").appendChild(img);
+    }
+  });
+}
+
+function addHintForWordFromTranslation(word) {
+  google.language.translate(word, prefs.getString("translation_source"), prefs.getString("translation_target"), function(result) {
+    _gel("hint").innerHTML = result.translation;
+  });
+}
+
+function addHintForWordFromSecondColumn(word) {
+  _gel("hint").innerHTML = wordHints[word];
+}
+
+function addHintForWordFromDefinition(word) {
+   _IG_FetchContent("http://api.futef.com/api/v1?query=" + word + "&appid=7367004ee9f71de584b2caee2da324b33e9", function (responseText) {
+    var json = eval("(" + responseText + ")");
+    var bestResult = json.records[0];
+    for (var i = 0; i < json.records.length; i++) {
+      if (json.records[i].title.toLowerCase() == word.toLowerCase()) {
+        bestResult = json.records[i];
+      }
+    }
+    var regex = new RegExp(word, 'gi');
+    var hint = bestResult.text.substr(0, 150).replace(regex, '***') + "...";
+    _gel("hint").innerHTML = hint;
+  });
+}
+
+function log(thing) {
+  if (console.log) {
+    console.log(thing);
+   }
+}
+
+String.prototype.randomize = function() {
+ var stringArray = this.split("");
+ var i = stringArray.length;
+ if (i == 0) return;
+ while (--i) {
+  var j = Math.floor(Math.random()*(i+1));
+  var tmp1 = stringArray[i];
+  var tmp2 = stringArray[j];
+  stringArray[i] = tmp2;
+  stringArray[j] = tmp1;
+ }
+ return stringArray.join("");
+}  
+
+
+Array.prototype.randomize = function() {
+ var i = this.length;
+ if (i == 0) return;
+ while (--i) {
+  var j = Math.floor(Math.random()*(i+1));
+  var tmp1 = this[i];
+  var tmp2 = this[j];
+  this[i] = tmp2;
+  this[j] = tmp1;
+ }
+ return this;
+}
+
+</script>
+
+  ]]>
+  </Content>
+</Module> 
