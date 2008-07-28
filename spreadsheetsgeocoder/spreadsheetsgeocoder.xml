@@ -1,0 +1,529 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Module> 
+<ModulePrefs title="Spreadsheets Geocoder"
+             description="Geocoding is the process of converting an address to a coordinate pair, and its necessary to plot data on a map. This gadget helps you geocode addresses from your spreadsheet, and gives you an output thats easy to copy-and-paste back into your sheet."
+             author="Pamela Fox"
+             author_affiliation="Google Inc."
+             author_email="pamela.fox+coolgadget@gmail.com"
+             screenshot="http://pamela.fox.googlepages.com/screenshot_spreadsheetsgeocodergadge.jpg"
+             thumbnail="http://pamela.fox.googlepages.com/thumbnail_spreadsheetsgeocodergadget.jpg" 
+              width="600" height="600"> 
+<Require feature="idi"/>
+<Require feature="locked-domain" />
+<Require feature="grid"/>
+</ModulePrefs>
+<UserPref name="_table_query_url" display_name="Data source url" 
+          required="true"/>
+<UserPref name="_table_query_refresh_interval" 
+          display_name="Data refresh interval (minutes)" 
+          default_value="0" datatype="enum" required="false">
+<EnumValue value="0" display_value="Do not refresh"/>
+<EnumValue value="60" display_value="1"/>
+<EnumValue value="300" display_value="5"/>
+<EnumValue value="1800" display_value="30"/>
+</UserPref>
+<Content type="html"><![CDATA[
+<style type="text/css">
+table {
+  border: 0px;
+  border-spacing:0;
+  margin:0px;
+}
+td {
+  border:0px;
+  padding:0px;
+  margin:0px;
+  height:40px;
+  text-align:center;
+  font-size:11pt;
+}
+body {
+  font-family:Arial, sans serif;
+  font-size:11pt;
+}
+</style>
+
+<div style="margin-left: 10px;">
+<p>
+Intructions: Once you click the button below, this will attempt to geocode
+all the addresses in the range provided. It will place markers for each row,
+at the latitude/longitude found. For those addresses that didn't geocode successfully,
+it will place markers along the bottom of the map that you can drag to the correct location.
+If you'd like to tweak the location of any particular marker, you can pick it up and drag it.
+To zoom in closer to the location of a marker, just click its number in the sidebar.
+</p>
+<p>
+When you've verified the addresses are correct, create two columns in your spreadsheet
+and  copy and paste the values in the text area below the map into those columns.
+</p>
+<p>
+<input type="button" onclick="startGeocoding();" value="Find Addresses"/>
+</p>
+
+<div id="map" style="width:65%; height:300px; 
+border:2px solid 
+black; float:left; clear:both;"></div>
+
+<div id="infoDIV" style="overflow-y:auto; overflow-x: hidden; 
+padding-left:10px; height:300px; float:left; border:2px solid black; width:25%">
+ <table id="infoTABLE" width="150" style="border:2px; vertical-align:middle;"
+cellpadding="0" cellspacing="0" valign="middle" align="center">
+   <TBODY id="infoTABLEBODY">
+   </TBODY>
+ </table>
+</div>
+
+<br clear="all"/>
+<textarea id="latlngTEXTAREA" style="margin-top: 10px; width:90%; height:50">Loading..</textarea>
+</div>
+
+<script src="http://www.google.com/jsapi?key=ABQIAAAA-O3c-Om9OcvXMOJXreXHAxTZqGWfQErE9pT-IucjscazSdFnjBTc_GPovcgWfia3_ru3nhdxaquODA" type="text/javascript"></script>
+<script language="JavaScript">
+/**
+ * Load the APIs and run sendQuery when the load is complete
+ */
+var gadgetHelper = null;
+var prefs = null;
+var map = null;
+var addresses = [];
+
+_IG_RegisterOnloadHandler(loadVisualizationAPI);
+      
+function loadVisualizationAPI() { 
+  google.load("visualization", "1");
+  google.load("maps", "2.100");
+  google.setOnLoadCallback(sendQuery);
+}
+
+/**
+ * Create a query (shaped by the Gadget's user preferences), then 
+ * send it to the spreadsheet data source. Also give the name of a 
+ * function ("handleQueryResponse") to run once the spreadsheet data 
+ * is retrieved:
+ */
+function sendQuery() {
+  prefs = new _IG_Prefs(); // User preferences 
+  gadgetHelper = new google.visualization.GadgetHelper(); 
+  var query = gadgetHelper.createQueryFromPrefs(prefs);
+  query.send(handleQueryResponse);
+} 
+
+/**
+ * The core logic. Process the spreadsheet data however you want. 
+ * In this case, we create HTML to be presented back to the user. 
+ * We'll use inline comments to provide a step-by-step description 
+ * of what we're doing:
+ */
+function handleQueryResponse(response) {
+/*
+  if (!gadgetHelper.validateResponse(response)) {
+    return;     // Default error handling was done, just leave. 
+  }
+*/
+  data = response.getDataTable();
+  
+  loadWords();
+  loadMap();
+}
+
+function loadWords() {
+  for (var row = 0; row < Math.min(data.getNumberOfRows(), 99); row++) {
+    var rowObj = [];
+    var formattedValue = data.getFormattedValue(row, 0);
+    formattedValue = _hesc(formattedValue);
+    addresses.push(formattedValue);
+  }
+}
+
+/**
+ * Loads the map into div with 'map' id.
+ * Adds controls, sets initial center.
+ * Initializes geocoder.
+ */
+function loadMap() {
+  map = new GMap2(document.getElementById("map"));
+  map.addControl(new GSmallMapControl());
+  map.addControl(new GMapTypeControl());
+  map.setCenter(new GLatLng(37.0625,-95.677068), 3);
+  geocoder = new GClientGeocoder();
+  GEvent.addListener(map, "zoomend", function() {
+    clearPolys();
+  });
+  baseIcon = new GIcon();
+  baseIcon.shadow = "http://www.google.com/mapfiles/shadow50.png";
+  baseIcon.iconSize = new GSize(20, 34);
+  baseIcon.shadowSize = new GSize(37, 34);
+  baseIcon.iconAnchor = new GPoint(9, 34);
+  baseIcon.infoWindowAnchor = new GPoint(9, 2);
+  baseIcon.infoShadowAnchor = new GPoint(18, 25);
+}
+
+var map;
+var entries;
+
+var geocoder = null;
+var numGeocodeReplies = 0;
+var columns = new Array();
+var baseIcon = null;
+var bounds = null;
+var unfoundMarkers = new Array();
+var markerOverlays = new Array();
+var highlightCircle = null;
+var loaded = false;
+var polys = [];
+
+function clearPolys() {
+  for (var i = 0; i < polys.length; i++) {
+    try {
+      map.removeOverlay(polys[i]);
+    } catch (e) {}
+  }
+  if (highlightCircle) {
+    map.removeOverlay(highlightCircle);
+  }
+}
+
+/**
+* Creates a "circle" using 20-sided GPolygon at the given point
+* Gpolygon object (highlightCircle) is global variable as there's only one
+* highlighted marker at a time and we want to remove the previously 
+* placed polygon before placing a new one.
+* @param {GLatLng} markerPoint The point to highlight
+*/
+function highlight(markerPoint) {
+  clearPolys();
+
+  if (markerPoint != -1) { // indicating we're going to highlight a new marker
+    var polyPoints = Array();
+    var mapNormalProj = G_NORMAL_MAP.getProjection();
+    var mapZoom = map.getZoom();
+    var clickedPixel = mapNormalProj.fromLatLngToPixel(markerPoint, mapZoom);
+
+    var polySmallRadius = 20;
+    var polyNumSides = 20;
+    var polySideLength = 18;
+
+    for (var a = 0; a < (polyNumSides+1); ++a) {
+      var aRad = polySideLength * a * (Math.PI/180);
+      var polyRadius = polySmallRadius;
+      var pixelX = clickedPixel.x + polyRadius * Math.cos(aRad);
+      var pixelY = clickedPixel.y + polyRadius * Math.sin(aRad);
+      var polyPixel = new GPoint(pixelX,pixelY);
+      var polyPoint = mapNormalProj.fromPixelToLatLng(polyPixel,mapZoom);
+      polyPoints.push(polyPoint);
+    }
+
+    highlightCircle = new GPolygon(polyPoints, "#000000", 2, 
+                                  0.0, "#666666", 0.5);
+    polys.push(highlightCircle);
+    map.addOverlay(highlightCircle);
+  }
+}
+
+
+function geocodeAll() {
+ if (numGeocodeReplies < addresses.length) {
+   var address = addresses[numGeocodeReplies];
+   var label = addresses[numGeocodeReplies];
+   geocoder.getLocations(address, function(response) {
+     addressResolved(response, address, label);}
+   );
+ } else {
+   // zoom and center map accordingly
+   map.setZoom(map.getBoundsZoomLevel(bounds));
+   var clat = (bounds.getNorthEast().lat() + 
+              bounds.getSouthWest().lat()) /2;
+   var clng = (bounds.getNorthEast().lng() + 
+               bounds.getSouthWest().lng()) /2;
+   map.setCenter(new GLatLng(clat,clng));
+   showUnfoundMarkers();
+   loaded = true;
+   updateLatLngs();
+ }
+}
+
+function updateLatLngs() {
+  var latlngs = "";
+  for (var i =0; i < markerOverlays.length; i++) {
+    if (markerOverlays[i].isFound) {
+      latlngs += markerOverlays[i].getLatLng().lat().toFixed(6) + "\t" + markerOverlays[i].getLatLng().lng().toFixed(6) + "\n";
+    } else {
+      latlngs += "Not \t Found \n";
+    }
+  }
+  document.getElementById("latlngTEXTAREA").value = latlngs;
+}
+
+/**
+ * Adds a row to the table of locations
+ * @param columnLat {Number} Latitude of location
+ * @param columnLng {Number} Longitude of location
+ * @param label {String} Identifying label for the location
+ * @param entryNum {Number} Row # of location in the feed
+ */
+function addTableRow(columnLat, columnLng, label, entryNum, isFound){
+  var latlngTABLEBODY = document.getElementById("latlngTABLEBODY");
+  var infoTABLEBODY = document.getElementById("infoTABLEBODY");
+
+  var entryTR = document.createElement("TR");
+  var entryInfoTR = document.createElement("TR");
+
+  entryTR.setAttribute("height","30");
+  entryInfoTR.setAttribute("height","30");
+  entryTR.setAttribute("valign","middle");
+  entryInfoTR.setAttribute("valign","middle");
+
+  var columnLatTD = document.createElement("TD");
+  var columnLngTD = document.createElement("TD");
+  var labelTD = document.createElement("TD");
+  var iconTD = document.createElement("TD");
+
+  entryTR.id = "entryTR" + entryNum;
+  entryInfoTR.id = "entryInfoTR" + entryNum;
+  columnLatTD.id = "latTD" + entryNum;
+  columnLngTD.id = "lngTD" + entryNum;
+  labelTD.id = "labelTD" + entryNum;
+  iconTD.id = "iconTD" + entryNum;
+  labelTD.style.paddingLeft = "3px";
+
+  columnLatTD.appendChild(createTextDiv(columnLat));
+  columnLngTD.appendChild(createTextDiv(columnLng));
+  labelTD.appendChild(createTextDiv(label));
+  if(isFound) {
+    iconTD.style.backgroundColor = "#9ce71a";
+  } else { 
+    iconTD.style.backgroundColor = "#ff0000";
+  }
+  var iconSPAN = document.createElement("span");
+  var number = entryNum + 1;
+  iconSPAN.innerHTML = number;
+  var iconA = document.createElement("A");
+  iconA.href = "#bottom";
+  iconA.onclick = function() {
+    if (isFound) {
+      map.setCenter(markerOverlays[entryNum].getLatLng(), 14);
+    } else {
+      map.setCenter(markerOverlays[entryNum].getLatLng(), 9);
+      isFound = true;
+    }
+  };
+  iconA.appendChild(iconSPAN);
+  iconTD.appendChild(iconA);
+
+  entryTR.onmouseover = function() { 
+     highlightMarker(entryNum,false);
+     highlightRow(entryNum, false);
+     return true;};
+  entryInfoTR.onmouseover = function() { 
+     highlightMarker(entryNum,false);
+     highlightRow(entryNum, false);
+     return true;};
+
+//  entryTR.appendChild(columnLatTD);
+//  entryTR.appendChild(columnLngTD);
+  entryInfoTR.appendChild(iconTD);
+  entryInfoTR.appendChild(labelTD);
+
+  //latlngTABLEBODY.appendChild(entryTR);
+  infoTABLEBODY.appendChild(entryInfoTR);
+}
+
+function createTextDiv(text) {
+  var div = document.createElement("div");
+  //div.style.overflow = "hidden";
+  //div.style.height = "30px";
+  div.appendChild(document.createTextNode(text));
+  return div;
+}
+
+/**
+ * Removes the output generated from the previous result.
+ */
+function removeOldResults() {
+  columns.length=0;
+ 
+  var dataTBODY = document.getElementById('dataTBODY');
+  while (dataTBODY.firstChild) {
+    dataTBODY.removeChild(dataTBODY.firstChild);
+  }
+  var columnsTBODY = document.getElementById('columnsTBODY');
+  while (columnsTBODY.firstChild) {
+    columnsTBODY.removeChild(columnsTBODY.firstChild);
+  }
+}
+
+/* Creates a marker at the given point with the given label
+ * and icon corresponding to row # (entryNum).
+ * Assigns listeners for mouse movement/clicks and drags.
+ * @param point {GLatLng} Representing desired point of marker placement
+ * @param entryNum {Number} Representing current entry number in feed
+ * @return marker {GMarker} Marker created
+ */
+function createMarker(point, entryNum, isFound) {
+  // Create a lettered icon for this point using our icon class
+  var nIcon = new GIcon(baseIcon);
+  var number = entryNum + 1;
+  if(isFound) {
+    nIcon.image = "http://gmaps-samples.googlecode.com/svn/trunk/markers/green/"
+                  + "marker" + number + ".png";
+    nIcon.imageSame = nIcon.image;
+  } else {
+    nIcon.image = "http://gmaps-samples.googlecode.com/svn/trunk/markers/red/"
+                + "marker" + number + ".png";
+  }
+
+  var label = addresses[entryNum];
+  var marker = new GMarker(point, {icon:nIcon, draggable:true});
+  GEvent.addListener(marker, "mouseover", function() {
+    highlightRow(entryNum,true);
+    highlight(marker.getPoint());
+  });
+  
+  GEvent.addListener(marker, "mouseout", function() {
+    highlightRow(-1,false);
+    highlight(-1);
+  });
+  
+  GEvent.addListener(marker, "click", function() {
+    highlight(marker.getPoint());
+    marker.openInfoWindowHtml("<b>" + label + "</b>");
+  });
+
+  GEvent.addListener(marker, "drag", function() {
+//    highlight(marker.getPoint());
+  });
+
+  GEvent.addListener(marker, "dragend", function() {
+    marker.isFound = true;
+    setTimeout(updateLatLngs, 2000);
+  });
+  marker.isFound = isFound; 
+  markerOverlays[entryNum] = marker;
+
+  return marker;
+}
+
+/**
+ * Iterates through the array of unfound locations,
+ * adding a marker in the bottom left corner of map for each one.
+ */
+function showUnfoundMarkers() {
+  var currentBounds = map.getBounds();
+  var mapNormalProj = G_NORMAL_MAP.getProjection();
+  var mapZoom = map.getZoom();
+
+  var lowerPixel = mapNormalProj.fromLatLngToPixel(currentBounds.getSouthWest(),
+                                                   mapZoom);
+  var pixelY = lowerPixel.y - 40;
+
+  for (var i = 0; i < unfoundMarkers.length; ++i) {
+    var pixelX = lowerPixel.x + i*25 + 20;
+    var markerPixel = new GPoint(pixelX,pixelY);
+    var markerLatLng = mapNormalProj.fromPixelToLatLng(markerPixel,mapZoom);
+    var marker = createMarker(markerLatLng, unfoundMarkers[i], false);
+    map.addOverlay(marker);
+  }
+}
+
+/**
+ * Calls highlight on the point of the marker for the row # passed in
+ * @param {Number} entryNum Row # of desired location marker to highlight
+ */
+function highlightMarker(entryNum){
+  if (!loaded) return;
+  highlight(markerOverlays[entryNum].getPoint());
+}
+
+/**
+ * Highlights row N in the table, un-highlights all other rows.
+ * Also scrolls to that row in table, in case table is very long.
+ * @param entryNum {Number} Row # of desired location to highlight
+ */
+function highlightRow(entryNum, fromMarker) {
+  if (!loaded) return;
+  var hColor = "#dddddd";
+  for(var i = 0; i < addresses.length; ++i) {
+    //document.getElementById("latTD"+i).style.backgroundColor = "#FFFFFF";
+    //document.getElementById("lngTD"+i).style.backgroundColor = "#FFFFFF";
+    document.getElementById("labelTD"+i).style.backgroundColor = "#FFFFFF";
+  }
+  if(entryNum > -1) { // so we can use this function to un-highlight all
+    //document.getElementById("latTD"+entryNum).style.backgroundColor = hColor;
+    //document.getElementById("lngTD"+entryNum).style.backgroundColor = hColor;
+    document.getElementById("labelTD"+entryNum).style.backgroundColor = hColor;
+  }
+  if(entryNum > -1 && fromMarker) {
+    var infoDiv = document.getElementById("infoDIV");
+    infoDiv.scrollTop = 40*entryNum - 180;
+  } 
+}
+
+/**
+ * Resets variables created from previous geocoding attempts.
+ * Calls findAddress on first row in feed
+ */
+function startGeocoding() {
+  // reset variables, arrays, DOM elements
+//  var latlngTABLEBODY = document.getElementById("latlngTABLEBODY");
+  var infoTABLEBODY = document.getElementById("infoTABLEBODY");
+  while(infoTABLEBODY.firstChild){
+    //latlngTABLEBODY.removeChild(latlngTABLEBODY.firstChild);
+    infoTABLEBODY.removeChild(infoTABLEBODY.firstChild);
+  }
+
+  unfoundMarkers.length = 0;
+  markerOverlays.length = 0;
+  numGeocodeReplies =0;
+  map.clearOverlays();
+
+  // We use bounds so we can rezoom and recenter map to fit new points
+  bounds = new GLatLngBounds();
+  // Geocode the first address
+  window.setTimeout(geocodeAll, 50);
+}
+
+/**
+ * Finds address and label of current row entryNum,
+ * calls geocoder.getLatLng and defines the callback function
+ * which either creates a marker if the address is found, 
+ * or adds that row to the not found array.
+ * Sends off next geocode request, if there is any.
+ * @param entryNum {Number} Row # of feed to search for
+ */
+function addressResolved(response, address, label) {
+  var delay = 0;
+  if (response.Status.code == 620) {
+    // Too fast. Try again, with a small pause.
+    delay = 500;
+  } else {
+    if (response.Status.code == 200) {
+      log('creating marker');
+      // Success. Do something with the address.
+      place = response.Placemark[0];
+      point = new GLatLng(place.Point.coordinates[1],
+                          place.Point.coordinates[0]);
+      var marker = createMarker(point, numGeocodeReplies, true);
+      map.addOverlay(marker);
+      addTableRow(point.lat(), point.lng(), label, numGeocodeReplies, true);
+      bounds.extend(point);
+    } else {
+      // Bad geocode.
+      addTableRow("", "", label, numGeocodeReplies, false);
+      unfoundMarkers.push(numGeocodeReplies);
+    }
+    numGeocodeReplies++;
+  }
+   
+  window.setTimeout(geocodeAll, delay);
+}
+
+function log(thing) {
+  if (window["console"]) {
+    console.log(thing);
+   }
+}
+</script>
+
+  ]]>
+  </Content>
+</Module> 
