@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Module>
+<ModulePrefs title="hello world example" width="500" height="600">
+  <Require feature="minimessage"/>
+</ModulePrefs>
+<Content type="html"><![CDATA[
+ <style type="text/css">
+   .category {
+     cursor: pointer;
+   }
+   
+   .eligible {
+     background-color: white;
+   }
+   .active {
+     background-color: #eee;
+   }
+   .ineligible {
+     color: #eee;
+    }
+ </style>
+ 
+ <div id="results"></div>
+ <div id="entries"></div>
+ <div id="message"></div>
+ <script>
+ var categoryGroups = {};
+ var sortedCategories = [];
+ var entries = [];  
+ var mini = new _IG_MiniMessage(__MODULE_ID__, document.getElementById("message"));
+ var loadMsg;
+ 
+ function refreshData() {
+    loadMsg = mini.createStaticMessage("Loading content..."); 
+   
+    var script = document.createElement("script");
+    script.src = "http://www.google.com/notebook/feeds/01486888193186099707/notebooks/BDSVoIgoQt5SnzKoj?max-results=1000&alt=json-in-script&callback=myCallbackFunction";
+    document.body.appendChild(script);
+  }
+    
+  function myCallbackFunction(root) {
+    entries = root.feed.entry || [];
+    for (var i = 0; i < entries.length; ++i) {
+      var entry = entries[i];
+      addCategories(entry);
+    }
+    createSortedCategories();
+    
+    for (var i = 0; i < sortedCategories.length; i++) {
+      var categoryLink = createCategoryLink(sortedCategories[i]);
+      document.getElementById("results").appendChild(categoryLink);
+      document.getElementById("results").appendChild(document.createTextNode(" "));
+    } 
+    
+    mini.dismissMessage(loadMsg);
+   }
+   
+   function createCategoryLink(category) {
+     var categoryLink = document.createElement("span");
+     categoryLink.className = "eligible category";
+     categoryLink.id = "category_" + category;
+     categoryLink.onclick = function() {
+       toggleCategory(category);
+     };
+     categoryLink.innerHTML = category;
+     return categoryLink;
+   }
+   
+   function createSortedCategories() {
+     for (var category in categoryGroups) {
+       sortedCategories.push(category);
+     }
+     sortedCategories.sort();
+   }
+   
+   function addCategories(entry) {
+     var categories = entry.category || [];
+     for (var i = 0; i < categories.length; i++) {
+       var category = categories[i].term;
+       if (categories[i].scheme != "http://schemas.google.com/g/2005/label") continue;
+       if (categoryGroups[category] == undefined) {
+         categoryGroups[category] = {};
+         categoryGroups[category].isActive = false;
+         categoryGroups[category].isEligible = true;
+       } 
+     }
+   }
+   
+   function toggleCategory(category) {
+     var categoryLink = document.getElementById("category_" + category);
+     if (categoryLink.className.indexOf("ineligible") > -1) {
+       // do nothing
+     } else if (categoryLink.className.indexOf("eligible") > -1) {
+       categoryGroups[category].isActive = true;
+     } else {
+       categoryGroups[category].isActive = false;
+     }
+     showEntries();
+   }
+   
+   function showEntries() {
+    var currentCategories = [];
+    for (var category in categoryGroups) {
+      if (categoryGroups[category].isActive == true) {
+        currentCategories.push(category);
+      }
+      categoryGroups[category].isEligible = false;
+    } 
+    var currentEntries = [];
+    for (var i = 0; i < entries.length; i++) {
+      var entry = entries[i];
+      if (matchesCategories(entry, currentCategories)) {
+        currentEntries.push('<a href="' + entry.link[0].href + '"> ' + entry.title.$t + '</a>');
+      }
+    }
+    document.getElementById("entries").innerHTML = currentEntries.join("<br/>");
+   
+    for (var category in categoryGroups) {
+      var categoryLink = document.getElementById("category_" + category);
+      if (categoryGroups[category].isEligible == false) {
+        categoryLink.className = "ineligible category";
+      } else if (categoryGroups[category].isActive) {
+        categoryLink.className = "active category";
+      } else {
+        categoryLink.className = "eligible category";
+      }
+    } 
+   }
+   
+   function matchesCategories(entry, currentCategories) {
+     var matchedCategories = {};
+     for (var i = 0; i < currentCategories.length; i++) {
+       matchedCategories[currentCategories[i]] = false;
+     }
+     
+     var categories = entry.category || [];
+     for (var i = 0; i < categories.length; i++) {
+       if (categories[i].scheme != "http://schemas.google.com/g/2005/label") continue;
+       var category = categories[i].term;
+       for (var j = 0; j < currentCategories.length; j++) {
+         if (category == currentCategories[j]) {
+           matchedCategories[currentCategories[j]] = true;
+         }
+       }
+     }
+     for (var category in matchedCategories) {
+       if (matchedCategories[category] == false) {
+         return false;
+       }
+     }
+     for (var i = 0; i < categories.length; i++) {
+       if (categories[i].scheme != "http://schemas.google.com/g/2005/label") continue;
+       var category = categories[i].term;
+       categoryGroups[category].isEligible = true;
+     }
+     return true;
+   }
+   
+   refreshData();
+  </script>
+]]></Content>
+</Module>
