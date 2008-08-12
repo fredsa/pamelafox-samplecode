@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Module>
+<ModulePrefs title="hello world example" width="500" height="600">
+  <Require feature="minimessage"/>
+</ModulePrefs>
+<Content type="html"><![CDATA[
+ <style type="text/css">
+   body {
+     font-size: 12px;
+   }
+   #results {
+     text-align: center;
+   }
+   #entries {
+     border-top: 1px dashed #aaa;
+     margin-top: 10px;
+     font-size: 11px;
+   }
+   .category {
+     cursor: pointer;
+     font-size: 11px;
+   }
+   .eligible {
+     background-color: white;
+   }
+   .active {
+     background-color: #eee;
+   }
+   .ineligible {
+     color: #eee;
+    }
+ </style>
+<form>
+Enter GData Feed: 
+<input type="text" id="url" value="http://www.google.com/notebook/feeds/01486888193186099707/notebooks/BDSVoIgoQt5SnzKoj?max-results=1000"/>
+<input type="submit" value="Load Categories" onclick="refreshData(); return false;"/>
+</form>
+ <div id="message"></div>
+ <div id="results"></div>
+ <div id="entries"></div>
+ <script>
+ var categoryGroups = {};
+ var sortedCategories = [];
+ var entries = [];  
+ var mini = new _IG_MiniMessage(__MODULE_ID__, document.getElementById("message"));
+ var loadMsg;
+ 
+ function refreshData() {
+    categoryGroups = {};
+    sortedCategories = [];
+    entries = [];  
+    document.getElementById("results").innerHTML = "";
+    
+    loadMsg = mini.createStaticMessage("Loading categories..."); 
+   
+    var url =  document.getElementById("url").value;
+    if (url.indexOf("?") > -1) {
+      url += "&";
+    } else {
+      url += "?";
+    }
+    url += "alt=json-in-script&callback=myCallbackFunction";
+
+    var script = document.createElement("script");
+    script.src = url;
+    document.body.appendChild(script);
+  }
+    
+  function myCallbackFunction(root) {
+    entries = root.feed.entry || [];
+    for (var i = 0; i < entries.length; ++i) {
+      var entry = entries[i];
+      addCategories(entry);
+    }
+    createSortedCategories();
+    
+    for (var i = 0; i < sortedCategories.length; i++) {
+      var categoryLink = createCategoryLink(sortedCategories[i]);
+      document.getElementById("results").appendChild(categoryLink);
+      document.getElementById("results").appendChild(document.createTextNode(" "));
+    } 
+    
+    mini.dismissMessage(loadMsg);
+   }
+   
+   function createCategoryLink(category) {
+     var categoryLink = document.createElement("span");
+     categoryLink.className = "eligible category";
+     categoryLink.id = "category_" + category;
+     categoryLink.onclick = function() {
+       toggleCategory(category);
+     };
+     if (categoryGroups[category].numEntries > 1) {
+       categoryLink.style.fontSize = "14px";
+     }
+     categoryLink.innerHTML = category;
+     return categoryLink;
+   }
+   
+   function createSortedCategories() {
+     for (var category in categoryGroups) {
+       sortedCategories.push(category);
+     }
+     sortedCategories.sort();
+   }
+   
+   function addCategories(entry) {
+     var categories = entry.category || [];
+     for (var i = 0; i < categories.length; i++) {
+       var category = categories[i].term;
+       if (categories[i].scheme != "http://schemas.google.com/g/2005/label"
+         && categories[i].scheme != "http://gdata.youtube.com/schemas/2007/keywords.cat"
+         && categories[i].scheme != "http://www.blogger.com/atom/ns#") {
+         continue;
+       }
+       if (categoryGroups[category] == undefined) {
+         categoryGroups[category] = {};
+         categoryGroups[category].isActive = false;
+         categoryGroups[category].isEligible = true;
+         categoryGroups[category].numEntries = 1;
+       } else {
+         categoryGroups[category].numEntries++;
+       }
+     }
+   }
+   
+   function toggleCategory(category) {
+     var categoryLink = document.getElementById("category_" + category);
+     if (categoryLink.className.indexOf("ineligible") > -1) {
+       // do nothing
+     } else if (categoryLink.className.indexOf("eligible") > -1) {
+       categoryGroups[category].isActive = true;
+     } else {
+       categoryGroups[category].isActive = false;
+     }
+     showEntries();
+   }
+   
+   function showEntries() {
+    var currentCategories = [];
+    for (var category in categoryGroups) {
+      if (categoryGroups[category].isActive == true) {
+        currentCategories.push(category);
+      }
+      categoryGroups[category].isEligible = true;
+    } 
+   
+    if (currentCategories.length == 0) {
+      document.getElementById("entries").innerHTML = "";
+    } else {
+      for (var category in categoryGroups) {
+        categoryGroups[category].isEligible = categoryGroups[category].isActive;
+      }
+      var currentEntries = [];
+      for (var i = 0; i < entries.length; i++) {
+        var entry = entries[i];
+        if (matchesCategories(entry, currentCategories)) {
+          currentEntries.push('<p><a target="_blank" href="' + entry.link[0].href + '"> ' + entry.title.$t + '</a></p>');
+        }
+      }
+      document.getElementById("entries").innerHTML = currentEntries.join("");
+    }
+     
+    for (var category in categoryGroups) {
+      var categoryLink = document.getElementById("category_" + category);
+      if (categoryGroups[category].isEligible == false) {
+        categoryLink.className = "ineligible category";
+      } else if (categoryGroups[category].isActive) {
+        categoryLink.className = "active category";
+      } else {
+        categoryLink.className = "eligible category";
+      }
+    } 
+   }
+   
+   function matchesCategories(entry, currentCategories) {
+     var matchedCategories = {};
+     for (var i = 0; i < currentCategories.length; i++) {
+       matchedCategories[currentCategories[i]] = false;
+     }
+     
+     var categories = entry.category || [];
+     for (var i = 0; i < categories.length; i++) {
+       if (categories[i].scheme != "http://schemas.google.com/g/2005/label"
+         && categories[i].scheme != "http://gdata.youtube.com/schemas/2007/keywords.cat"
+         && categories[i].scheme != "http://www.blogger.com/atom/ns#") {
+         continue;
+       }
+       var category = categories[i].term;
+       for (var j = 0; j < currentCategories.length; j++) {
+         if (category == currentCategories[j]) {
+           matchedCategories[currentCategories[j]] = true;
+         }
+       }
+     }
+     for (var category in matchedCategories) {
+       if (matchedCategories[category] == false) {
+         return false;
+       }
+     }
+     for (var i = 0; i < categories.length; i++) {
+       if (categories[i].scheme != "http://schemas.google.com/g/2005/label"
+         && categories[i].scheme != "http://gdata.youtube.com/schemas/2007/keywords.cat"
+         && categories[i].scheme != "http://www.blogger.com/atom/ns#") {
+         continue;
+       }
+       var category = categories[i].term;
+       categoryGroups[category].isEligible = true;
+     }
+     return true;
+   }
+  
+  </script>
+]]></Content>
+</Module>
