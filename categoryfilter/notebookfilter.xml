@@ -5,10 +5,18 @@
 </ModulePrefs>
 <Content type="html"><![CDATA[
  <style type="text/css">
+   #results {
+     text-align: center;
+   }
+   #entries {
+     border-top: 1px dashed #aaa;
+     margin-top: 10px;
+     font-size: 11px;
+   }
    .category {
      cursor: pointer;
+     font-size: 11px;
    }
-   
    .eligible {
      background-color: white;
    }
@@ -19,10 +27,9 @@
      color: #eee;
     }
  </style>
- 
+ <div id="message"></div>
  <div id="results"></div>
  <div id="entries"></div>
- <div id="message"></div>
  <script>
  var categoryGroups = {};
  var sortedCategories = [];
@@ -31,7 +38,7 @@
  var loadMsg;
  
  function refreshData() {
-    loadMsg = mini.createStaticMessage("Loading content..."); 
+    loadMsg = mini.createStaticMessage("Loading categories..."); 
    
     var script = document.createElement("script");
     script.src = "http://www.google.com/notebook/feeds/01486888193186099707/notebooks/BDSVoIgoQt5SnzKoj?max-results=1000&alt=json-in-script&callback=myCallbackFunction";
@@ -62,6 +69,9 @@
      categoryLink.onclick = function() {
        toggleCategory(category);
      };
+     if (categoryGroups[category].numEntries > 1) {
+       categoryLink.style.fontSize = "14px";
+     }
      categoryLink.innerHTML = category;
      return categoryLink;
    }
@@ -82,7 +92,10 @@
          categoryGroups[category] = {};
          categoryGroups[category].isActive = false;
          categoryGroups[category].isEligible = true;
-       } 
+         categoryGroups[category].numEntries = 1;
+       } else {
+         categoryGroups[category].numEntries++;
+       }
      }
    }
    
@@ -104,17 +117,24 @@
       if (categoryGroups[category].isActive == true) {
         currentCategories.push(category);
       }
-      categoryGroups[category].isEligible = false;
+      categoryGroups[category].isEligible = true;
     } 
-    var currentEntries = [];
-    for (var i = 0; i < entries.length; i++) {
-      var entry = entries[i];
-      if (matchesCategories(entry, currentCategories)) {
-        currentEntries.push('<a href="' + entry.link[0].href + '"> ' + entry.title.$t + '</a>');
+    if (currentCategories.length == 0) {
+      document.getElementById("entries").innerHTML = "";
+    } else {
+      for (var category in categoryGroups) {
+        categoryGroups[category].isEligible = false;
       }
+      var currentEntries = [];
+      for (var i = 0; i < entries.length; i++) {
+        var entry = entries[i];
+        if (matchesCategories(entry, currentCategories)) {
+          currentEntries.push('<p><a target="_blank" href="' + entry.link[0].href + '"> ' + entry.title.$t + '</a></p>');
+        }
+      }
+      document.getElementById("entries").innerHTML = currentEntries.join("");
     }
-    document.getElementById("entries").innerHTML = currentEntries.join("<br/>");
-   
+     
     for (var category in categoryGroups) {
       var categoryLink = document.getElementById("category_" + category);
       if (categoryGroups[category].isEligible == false) {
