@@ -1,0 +1,48 @@
+<html>
+<head>
+<style type="text/css">
+td {
+  border:1px solid black;
+  padding:0px;
+  margin:0px;
+}
+#header {
+  background-color: #FFF000;
+}
+</style>
+<script src="gears_init.js"></script>
+<script>
+  var db;
+
+  function load() {
+    getEntries();
+  }
+
+  function listEntries(root) {
+    var feed = root.feed;
+    var html = [];
+    html.push('<ul>');
+    for (var i = 0; i < feed.entry.length; i++) {
+      var entry = feed.entry[i];
+      var step = entry.gsx$step.$t;
+      var task = entry.gsx$task.$t
+      html.push('<li>', step, ': ', task, '</li>');
+    }
+    html.push('</ul>');
+    document.getElementById("agenda").innerHTML = html.join("");
+  }
+
+  function getEntries() {
+    var script = document.createElement("script");
+    script.src = "http://spreadsheets.google.com/feeds/list/p9pdwsai2hDM1te1Hw0IpDg/od6/public/values?alt=json-in-script&callback=listEntries";
+    document.body.appendChild(script);
+  }
+ 
+</script>
+</head>
+<body onload="load()">
+<h3>Entries:</h3>
+
+<div id="agenda"></div>
+</body>
+</html>
