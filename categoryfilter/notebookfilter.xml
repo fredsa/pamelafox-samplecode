@@ -1,8 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Module>
-<ModulePrefs title="hello world example" width="500" height="600">
+<ModulePrefs title="Notebook Filter Gadget" width="500" height="600">
   <Require feature="minimessage"/>
 </ModulePrefs>
+<UserPref name="notebook_user" 
+          display_name="Notebook User ID" 
+          datatype="string"
+          default_value="01486888193186099707"/>
+<UserPref name="notebook_id" 
+          display_name="Notebook ID" 
+          datatype="string"
+          default_value="BDSVoIgoQt5SnzKoj"/>
+<UserPref name="categories" 
+          display_name="Categories" 
+          datatype="list" 
+          default_value="gmaps|streetview"/>
 <Content type="html"><![CDATA[
  <style type="text/css">
    #results {
@@ -35,21 +47,42 @@
  var sortedCategories = [];
  var entries = [];  
  var mini = new _IG_MiniMessage(__MODULE_ID__, document.getElementById("message"));
+ var prefs = new _IG_Prefs();
  var loadMsg;
  
  function refreshData() {
     loadMsg = mini.createStaticMessage("Loading categories..."); 
-   
+    loadURL("http://www.google.com/notebook/feeds/" + prefs.getString("notebook_user") + "/notebooks/" + prefs.getString("notebook_id") + "?max-results=100&alt=json-in-script");
+ }
+
+ function loadURL(url) {   
     var script = document.createElement("script");
-    script.src = "http://www.google.com/notebook/feeds/01486888193186099707/notebooks/BDSVoIgoQt5SnzKoj?max-results=1000&alt=json-in-script&callback=myCallbackFunction";
+    script.src = url + "&callback=myCallbackFunction";
     document.body.appendChild(script);
   }
     
   function myCallbackFunction(root) {
-    entries = root.feed.entry || [];
+    entries = entries.concat(root.feed.entry);
+    var nextLink = findNextLink(root.feed.link);
+    if (nextLink) {
+      loadURL(nextLink);
+    } else {
+      createCategories();
+    }
+  }
+
+  function findNextLink(links) {
+    for (var i = 0; i < links.length; i++) {
+      if (links[i].rel == "next") {
+        return links[i].href;
+      }
+    }
+    return null;
+  }
+
+  function createCategories() {
     for (var i = 0; i < entries.length; ++i) {
-      var entry = entries[i];
-      addCategories(entry);
+      addCategories(entries[i]);
     }
     createSortedCategories();
     
@@ -58,7 +91,10 @@
       document.getElementById("results").appendChild(categoryLink);
       document.getElementById("results").appendChild(document.createTextNode(" "));
     } 
-    
+    var default_categories = prefs.getArray("categories");
+    for (var i = 0; i < default_categories.length; i++) {
+      toggleCategory(default_categories[i]);
+    }
     mini.dismissMessage(loadMsg);
    }
    
@@ -101,6 +137,7 @@
    
    function toggleCategory(category) {
      var categoryLink = document.getElementById("category_" + category);
+     if (!categoryLink) return;
      if (categoryLink.className.indexOf("ineligible") > -1) {
        // do nothing
      } else if (categoryLink.className.indexOf("eligible") > -1) {
