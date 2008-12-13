@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute" creationComplete="addSWF()">
+<mx:VBox>
+<mx:HBox>
+    <mx:Button
+        label="Next"
+        click="loadNext(event)"
+        height="10%"
+        width="50%"/>
+	<mx:Button
+		label="Dispose"
+		click="dispose(event)"
+		height="10%"
+		width="50%"/>
+		</mx:HBox>
+   <mx:Box
+   	 id="panel"
+   	 width = "100%"
+   	 height = "90%"/>
+   	 
+</mx:VBox>
+	<mx:Script>
+        <![CDATA[
+        import mx.controls.SWFLoader;
+        private var ids:Array = ["aBgC0ytvTMs", "Ekgb5oJSobU", "H71Fv3PcQQY"];
+        private var counter:Number = 0;
+        private var outgoing_lc:LocalConnection;
+        
+        private function onInitialize(event:Event):void {
+        	trace("onInitialize");
+        }
+        
+         private function onLoaderIoError(event:IOErrorEvent):void {
+           trace( 'onLoaderIoError: ' + event );
+         }
+         
+         private function dispose(event:Event):void {
+         	trace("dispose");
+         	outgoing_lc.send("YTB", "dispose");
+         }
+         
+         private function loadNext(event:Event):void {
+            trace("loadNext");	
+            if (counter > (ids.length-1)) counter = 0;
+            outgoing_lc.send("YTB", "loadMovie", ids[counter]);
+            counter++;
+         }
+         
+         private function addSWF():void {
+         	
+         outgoing_lc = new LocalConnection(); 
+         outgoing_lc.addEventListener(StatusEvent.STATUS, function(event:StatusEvent):void {
+             switch (event.level) {
+               case "status":
+                   trace("LocalConnection.send succeeded");
+                   break;
+               case "error":
+                   trace("LocalConnection.send failed");
+                   break;
+                   }
+            });
+            
+         var swfLoader:SWFLoader = new SWFLoader();
+	         swfLoader.addEventListener(Event.COMPLETE, onInitialize);
+	         swfLoader.addEventListener(flash.events.IOErrorEvent.IO_ERROR , onLoaderIoError);
+	         swfLoader.autoLoad = true;
+	         swfLoader.percentWidth = 100;
+	         swfLoader.percentHeight = 100;
+	         swfLoader.scaleContent = true;
+	         swfLoader.maintainAspectRatio = true;
+	         swfLoader.load("youtubeplayer.swf")
+	         panel.addChild(swfLoader);
+         }
+         
+    ]]>
+    </mx:Script>
+</mx:Application>
