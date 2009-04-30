@@ -25,9 +25,9 @@
 
       function getCustomerInfo() {
      var phone = document.getElementById("phone").value;
-     var keyword = phone.replace(" ","%20");
+     var keyword = phone;
      var searchindex = document.getElementById("searchindex").value;
-     var url = "getsalesrank.php?keyword=" + escape(keyword)+ "&searchindex=" + escape(searchindex);
+     var url = "getsalesrank2.php?keyword=" + encodeURI(keyword)+ "&searchindex=" + escape(searchindex);
      request.open("GET", url, true);
      document.getElementById("statustext").innerHTML = "<img src=\"indicator_medium.gif\"><i>Searching for matching Amazon titles...</i>";
      request.onreadystatechange = updatePage;
@@ -86,7 +86,7 @@ htmlResponse += "<h1>" + responses[0].replace("%20"," ") + ": </h1>";
 			htmlResponse += "<input type=\"radio\" name=\"results\" id=\"results\" value=\"" + response[2] + "\"> " + response[0] + "<br>";
 	}
 	}
-	document.getElementById("address").innerHTML += htmlResponse;
+	document.getElementById("address").innerHTML = htmlResponse;
        } else if (request.status == 404)
          alert("Request URL does not exist");
        else
@@ -242,8 +242,10 @@ onClick="getCustomerInfo();"/>
     <br/> 
 	</div>
 <script type="text/javascript">
+/*
 _uacct = "UA-964209-1";
 urchinTracker();
+*/
 </script>
 	
  </body>
