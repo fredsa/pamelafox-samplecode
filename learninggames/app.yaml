@@ -1,0 +1,25 @@
+application: learning-games
+version: 1
+runtime: python
+api_version: 1
+
+handlers:
+- url: /js
+  static_dir: js
+- url: /css
+  static_dir: css
+- url: /chat
+  script: simplechat.py
+- url: /getchats
+  script: simplechat.py
+- url: /geogame/newquestion
+  script: newquestion.py
+  login: admin
+- url: /geogame/useranswer
+  script: newquestion.py
+- url: /geogame/allanswers
+  script: newquestion.py
+- url: /geogame/currentquestion
+  script: newquestion.py
+- url: /
+  script: learninggames.py

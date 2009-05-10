@@ -1,0 +1,4 @@
+cron:
+- description: game question update
+  url: /geogame/newquestion
+  schedule: every 1 minutes
