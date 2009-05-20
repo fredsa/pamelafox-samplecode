@@ -34,7 +34,6 @@
           default_value="image" datatype="enum" required="false">
 <EnumValue value="none" display_value="No Hint"/>
 <EnumValue value="secondcolumn" display_value="Second Column"/>
-<EnumValue value="definition" display_value="Definition"/>
 <EnumValue value="image" display_value="Image Search"/>
 <EnumValue value="translation" display_value="Translation"/>
 </UserPref>
