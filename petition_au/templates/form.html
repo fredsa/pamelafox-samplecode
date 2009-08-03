@@ -1,0 +1,123 @@
+{% extends "base.html" %}
+{% block scripts %}
+  <link type="text/css" rel="stylesheet" href="/css/styles.css" />
+  <link type="text/css" href="css/jquery-ui-1.7.2.custom.css" rel="Stylesheet" /> 
+  <script type="text/javascript" src="/js/jquery-1.3.2.min.js"></script>
+  <script type="text/javascript" src="/js/jquery-ui-1.7.2.custom.min.js"></script>
+  <style type = "text/css">
+tr.org {
+  display:none;
+}
+  </style>
+  <script>
+function toggleForm(value) {
+  if (value == 'org') {
+    jQuery('tr.org').show();
+    jQuery('tr.family').hide();
+  } else {
+    jQuery('tr.org').hide();
+    jQuery('tr.family').show();
+  }
+}
+  </script>
+{% endblock %}
+{% block content %}
+  <div id="formblock" class="ui-widget-content ui-corner-all" style="width:100%">
+  <h5 class="ui-widget-header ui-corner-all">Please enter your details into this
+form and click the submit button.</h5>
+  <br/>
+   <form action="/sendform" method="post">
+     <table>
+      <tr>
+      <td>
+       <label for="type">You are an:</label>
+      </td>
+      <td>
+       <select name="type" onchange="toggleForm(this.options[this.selectedIndex].value)">
+        <option value="family" SELECTED>Individual/Family</option>
+        <option value="org">Organization/Company</option>
+       </select>
+      </td>
+      </tr>
+      <tr class="family">
+      <td><label for="family_name">Family name*:</label></td>
+      <td><input type="text" name="family_name" value=""></td>
+      </tr>
+      <tr class="family">
+      <td><label for="family_num">Number in household:</label></td>
+      <td><input type="text" name="family_num" value=""></td>
+      </tr>
+      <tr class="org">
+      <td><label for="org_name">Name of organization*:</label></td>
+      <td><input type="text" name="org_name" value=""></td>
+      </tr>
+      <tr class="org">
+      <td><label for="org_num">Number of people:</label></td>
+      <td><input type="text" name="org_num" value=""></td>
+      </tr>
+      <tr class="org">
+      <td><label for="org_icon">Icon URL (32*32px):</label></td>
+      <td><input type="text" name="org_icon" value=""></td>
+      </tr>
+      <tr>
+      <td><label for="email">Email address:</label></td>
+      <td><input type="text" name="email" value=""></td>
+      </tr>
+      <tr>
+      <td>
+        <label for="streetinfo">Your street number and address:</label>
+      </td>
+      <td>
+        <input type="text" name="streetinfo" id="streetinfo" value="">
+      </td>
+      </tr>
+      <tr>
+      <td>
+        <label for="city">Your suburb:</span></label>
+      </td>
+      <td>
+        <input type="text" name="city" id="city" value="">
+      </td>
+      </tr>
+      <tr>
+      <td>
+        <label for="state">Your state/territory:</label>
+      </td>
+      <td>
+        <select name="state" id="state">
+         <option value="ACT">ACT</option>
+         <option value="NSW" SELECTED>NSW</option>
+         <option value="NT">NT</option>
+         <option value="QLD">QLD</option>
+         <option value="SA">SA</option>
+         <option value="TAS">TAS</option>
+         <option value="VIC">VIC</option>
+         <option value="WA">WA</option>
+       </select>
+      </td>
+      </tr>
+      <tr>
+      <td><label for="postcode">Postcode:</label></td>
+      <td><input type="text" name="postcode" id="postcode" value=""></td>
+      </tr>
+      <tr><td colspan="2"><em>Share how you're doing your part (Optional):</em></td></tr>
+      <tr>
+      <td><label for="freetext">Your contributions:</label></td>
+      <td><input type="text" name="freetext" value=""></td>
+      </tr>
+      <tr>
+      <td><label for="picasa">Picasa Slideshow:</label></td>
+      <td><input type="text" name="picasa" value=""></td>
+      </tr>
+      <tr>
+      <td><label for="youtube">Youtube Video:</label></td>
+      <td><input type="text" name="youtube" value=""></td>
+      </tr>
+     </table>
+        <input type="submit" id="submit" value="Submit">
+    </form>
+
+    <p>
+    *We are collecting your family name to combat spam - we will only use it to verify that you are indeed the resident at this address.
+   </p>
+{% endblock %}

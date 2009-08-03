@@ -1,0 +1,76 @@
+<html>
+ <head>
+  <title>Sign the Petition</title>
+  <link type="text/css" rel="stylesheet" href="/css/styles.css" />
+  <link type="text/css" href="css/jquery-ui-1.7.2.custom.css" rel="Stylesheet" /> 
+  <script type="text/javascript" src="/js/jquery-1.3.2.min.js"></script>
+  <script type="text/javascript" src="/js/jquery-ui-1.7.2.custom.min.js"></script>
+ </head>
+<body>
+ <div id="mainblock">
+  <img src="/images/header.gif" alt="Yellow GO GREEN">
+  <br/><br/>
+  <div id="formblock" class="ui-widget-content ui-corner-all" style="width:100%">
+  <h5 class="ui-widget-header ui-corner-all">Please enter your details into this form and click the submit button to tell Yellow GO GREEN!</h5>
+  <br/>
+   <form action="/sendform" method="post">
+     <table>
+      <tr>
+      <td>
+       <label for="lastname">Your household's family name*:</span></label>
+      </td>
+      <td>
+        <input type="text" name="lastname" value="">
+      </td>
+      </tr>
+      <tr>
+      <td>
+        <label for="streetinfo">Your street number and address:</span></label>
+      </td>
+      <td>
+        <input type="text" name="streetinfo" id="streetinfo" value="">
+      </td>
+      </tr>
+      <tr>
+      <td>
+        <label for="city">Your suburb:</span></label>
+      </td>
+      <td>
+        <input type="text" name="city" id="city" value="">
+      </td>
+      </tr>
+      <tr>
+      <td>
+        <label for="state">Your state/territory:</label>
+      </td>
+      <td>
+        <select name="state" id="state">
+         <option value="ACT">ACT</option>
+         <option value="NSW" SELECTED>NSW</option>
+         <option value="NT">NT</option>
+         <option value="QLD">QLD</option>
+         <option value="SA">SA</option>
+         <option value="TAS">TAS</option>
+         <option value="VIC">VIC</option>
+         <option value="WA">WA</option>
+       </select>
+      </td>
+      </tr>
+      <tr>
+      <td>
+        <label for="postcode">...and finally, your postcode:</label>
+      </td>
+      <td>
+        <input type="text" name="postcode" id="postcode" value="">
+      </td>
+      </tr>
+     </table>
+        <input type="submit" id="submit" value="Submit">
+    </form>
+
+    <p>
+    *We are collecting your family name to combat spam - we will only use it to verify that you are indeed the resident at this address.
+   </p>
+   </div>
+  </body>
+</html>

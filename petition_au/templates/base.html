@@ -1,0 +1,17 @@
+<html>
+ <head>
+  <title>{{ page_title }}</title>
+  <link type="text/css" rel="stylesheet" href="/css/styles.css" />
+  {% block scripts %}
+  {% endblock %}
+ </head>
+<body>
+<div id="mainblock">
+<img src="/images/header.gif" alt="Yellow GO GREEN">
+<br/>
+{% block content %}
+{% endblock %}
+</div>
+
+</body>
+</html>

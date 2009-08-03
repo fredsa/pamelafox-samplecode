@@ -1,0 +1,222 @@
+<html>
+ <head>
+  <title>Sign the Petition</title>
+  <link type="text/css" rel="stylesheet" href="/css/styles.css" />
+  <link type="text/css" href="css/jquery-ui-1.7.2.custom.css" rel="Stylesheet" /> 
+  <script type="text/javascript" src="/js/jquery-1.3.2.min.js"></script>
+  <script type="text/javascript" src="/js/jquery-ui-1.7.2.custom.min.js"></script>
+  <script src="http://gmaps-utility-library.googlecode.com/svn/trunk/mapiconmaker/1.1/src/mapiconmaker.js"></script>
+  <script src="/js/util.js"></script>
+   <script type="text/javascript"> document.write( 
+      '<script src="http://maps.google.com/maps?file=api&amp;v=2&amp;key=' + 
+      { 
+         'www.yellowgogreen.org': 'ABQIAAAA-O3c-Om9OcvXMOJXreXHAxTreeKHXLKw9gWop4iqmC6-DkdqFBQHLqmFcnMqCOB1zW6Qy_rmLtl_VA', 
+         'yellowgogreen.appspot.com': 'ABQIAAAA-O3c-Om9Ocv    XMOJXreXHAxRlOb26qSyU154aZeLwOrF4C7-DphSw7JoLuXrcDjUb_7h-S1txkSCY7A' 
+      }[location.host] + 
+      '" type="text/javascript"><\/script>' ); 
+   </script> 
+  <script src="/js/markermanager.js"></script>
+  <script>
+var map;
+var currentPostcode;
+var currentState;
+var maxInPostcodes;
+
+function initialize() {
+  calcStats();
+  map = new GMap2(document.getElementById("map_canvas"));
+  map.setCenter(new GLatLng(-26.74561,135.615234), 4, G_PHYSICAL_MAP);
+  map.setUIToDefault();
+  downloadUrl("/getclusters", processClusters);
+}
+
+function calcStats() {
+  currentPostcode = getURLParam("postcode");
+  if (currentPostcode) {
+     document.getElementById("postcode").innerHTML = currentPostcode;
+  }
+  currentState = getURLParam("state");
+  if (currentState) {
+     document.getElementById("state").innerHTML = currentState;
+  }
+}
+
+function fillPostcodeStats(count) {
+  $("#pc_count").html(count);
+  $("#pc_trees").html(format(count * .038));
+  $("#pc_paper").html(format(count * 3.2));
+  $("#pc_oil").html(format(count * .0144));
+  $("#pc_elec").html(format(count * 6.4));
+}
+
+function fillStateStats(count) {
+  $("#st_count").html(count);
+  $("#st_trees").html(format(count * .038));
+  $("#st_paper").html(format(count * 3.2));
+  $("#st_oil").html(format(count * .0144));
+  $("#st_elec").html(format(count * 6.4));
+}
+
+function fillAustraliaStats(count) {
+  $("#au_count").html(count);
+  $("#au_trees").html(format(count * .038));
+  $("#au_paper").html(format(count * 3.2));
+  $("#au_oil").html(format(count * .0144));
+  $("#au_elec").html(format(count * 6.4));
+}
+
+function format(num) {
+  return num.toFixed(2);
+}
+
+function processClusters(response) {
+  var clusterJSON = eval("(" + response + ")");
+  maxInPostcodes = clusterJSON.maxpostcodes;
+  stateClusters = clusterJSON.states;
+
+  var totalCount = 0;
+
+  var stateMarkers = [];
+  var postcodeMarkers = [];
+  var addressMarkers = [];
+  for (stateName in stateClusters) {
+    totalCount += stateClusters[stateName].count;
+    stateMarkers.push(createStateMarker(stateName, stateClusters[stateName]));
+    var statePostcodes = stateClusters[stateName].postcodes;
+    for (var i = 0; i < statePostcodes.length; i++) {
+      postcodeMarkers.push(createPostcodeMarker(statePostcodes[i]));
+      var postcodeAddresses = statePostcodes[i];
+      for (var j = 0; j < postcodeAddresses.length; j++) {
+        addressMarkers.push(createAddressMarker(postcodeAddresses[j]));
+      }
+    }
+  }
+  fillAustraliaStats(totalCount);
+  var markerManager = new MarkerManager(map);
+  markerManager.addMarkers(stateMarkers, 0, 6);
+  markerManager.addMarkers(postcodeMarkers, 7, 14);
+  markerManager.addMarkers(addressMarkers, 15);
+  markerManager.refresh();
+}
+
+function createStateMarker(stateName, stateCluster) {
+  if (stateName == currentState) {
+    fillStateStats(stateCluster.count);
+  }
+
+  var iconOptions = {};
+  iconOptions.width = 75;
+  iconOptions.height = 20;
+  iconOptions.primaryColor = "#63a915";
+  iconOptions.label = stateName;
+  iconOptions.labelSize = 16;
+  iconOptions.labelColor = "#ffffff";
+  iconOptions.shape = "roundrect";
+  var icon = MapIconMaker.createFlatIcon(iconOptions);
+  iconOptions.label = stateName + " - " + stateCluster.count;
+  var iconOver = MapIconMaker.createFlatIcon(iconOptions);
+  var latlng = new GLatLng(stateCluster.lat, stateCluster.lng);
+  var marker = new GMarker(latlng, {icon: icon});
+  GEvent.addListener(marker, "mouseover", function() {
+    marker.setImage(iconOver.image);
+  });
+  GEvent.addListener(marker, "mouseout", function() {
+    marker.setImage(icon.image);
+  });
+  GEvent.addListener(marker, "click", function() {
+    marker.openInfoWindow(stateCluster.count + " people signed the petition in this state.<br/>" + '<a href="javascript:map.setZoom(7)">Zoom in</a>');
+  });
+  return marker;
+}
+
+function createPostcodeMarker(postcodeAddresses) {
+  var first = postcodeAddresses[0];
+  var postcode = first.postcode;
+  var latlng = new GLatLng(first.lat, first.lng);
+  var numAddresses = postcodeAddresses.length;
+  if (postcode == currentPostcode) {
+    fillPostcodeStats(numAddresses);
+    map.setCenter(latlng, 15);
+  }
+  var range = [{size: 32, color: "#61a615"},
+               {size: 24, color: "#6cb510"},
+               {size: 16, color: "#acdc3f"},
+               {size: 12, color: "#c6f329"}];
+  var percent = numAddresses/maxInPostcodes;
+  if (numAddresses == 1) rangeNum = 3;
+  else if (percent < .6) rangeNum = 2;
+  else if (percent < .8) rangeNum = 1;
+  else rangeNum = 0;
+
+  var iconOptions = {};
+  iconOptions.width = range[rangeNum].size;
+  iconOptions.height = range[rangeNum].size;
+  iconOptions.primaryColor = range[rangeNum].color;
+  if (numAddresses > 1) {
+    iconOptions.label = numAddresses + "";
+  }
+//  iconOptions.labelSize = 15;
+  iconOptions.labelColor = "#ffffff";
+  iconOptions.shape = "circle";
+  var icon = MapIconMaker.createFlatIcon(iconOptions);
+  var marker = new GMarker(latlng, {icon: icon});
+  GEvent.addListener(marker, "click", function() {
+    marker.openInfoWindow(postcodeAddresses.length + " people signed the petition in postcode " + postcode + ".<br/>" + '<a href="javascript:map.setZoom(15)">Zoom in</a>');
+  });
+  return marker;
+}
+
+function createAddressMarker(address) {
+  var icon = new GIcon();
+  icon.image = "/images/homeicon.png";
+  icon.iconSize = new GSize(32,32);
+  icon.shadow = null;
+  icon.iconAnchor = new GPoint(16, 16);
+  icon.infoWindowAnchor = new GPoint(16, 8);
+  
+  var latlng = new GLatLng(address.lat, address.lng);
+  var marker = new GMarker(latlng, {icon: icon});
+  GEvent.addListener(marker, "click", function() {
+    marker.openInfoWindow("<p>The " + address.lastname + " household at " + address.streetinfo + " " + address.city + " signed the petition.</p>");
+  });
+  return marker;
+}
+
+</script>
+</head>
+<body onload="initialize()">
+ <div id="mainblock">
+  <img src="/images/header.gif" alt="Yellow GO GREEN">
+  <br/><br/>
+  <div style="float:left;width:400px;margin-right:10px;">
+  <div id="map_canvas" style="border:2px solid white; width:100%;height:315px;margin-bottom:5px"></div>
+  <img src="/images/actnow.png">
+  </div>
+  <div class="ui-widget-content ui-corner-all" style="float:left;width:220px;">
+  <h5 class="ui-widget-header ui-corner-all">In postcode <span id="postcode"></span>:</h5>
+  <p><span id="pc_count">?</span> households voted, which could save:</p>
+   <span class="indent"><span id="pc_trees">?</span> trees<br>
+   <span class="indent"><span id="pc_paper">?</span> kilograms of paper<br>
+   <span class="indent"><span id="pc_oil">?</span> litres of oil<br>
+   <span class="indent"><span id="pc_elec">?</span> kilowatt-hours of electricity<br>
+  </div>
+
+  <div class="ui-widget-content ui-corner-all" style="float:left;width:220px;">
+  <h5 class="ui-widget-header ui-corner-all">In <span id="state"></span>:</h5>
+  <p><span id="st_count">?</span> households voted, which could save:</p>
+   <span class="indent"><span id="st_trees">?</span> trees<br>
+   <span class="indent"><span id="st_paper">?</span> kilograms of paper<br>
+   <span class="indent"><span id="st_oil">?</span> litres of oil<br>
+   <span class="indent"><span id="st_elec">?</span> kilowatt-hours of electricity<br>
+  </div>
+
+  <div class="ui-widget-content ui-corner-all" style="float:left;width:220px;">
+  <h5 class="ui-widget-header ui-corner-all">In Australia:</h5>
+  <p><span id="au_count">?</span> households voted, which could save:</p>
+   <span class="indent"><span id="au_trees">?</span> trees<br>
+   <span class="indent"><span id="au_paper">?</span> kilograms of paper<br>
+   <span class="indent"><span id="au_oil">?</span> litres of oil<br>
+   <span class="indent"><span id="au_elec">?</span> kilowatt-hours of electricity<br>
+  </div>
+</body>
+</html>
