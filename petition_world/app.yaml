@@ -1,4 +1,4 @@
-application: petition_world 
+application: pamelafox-randomdemo 
 version: 1
 runtime: python
 api_version: 1
@@ -14,5 +14,4 @@ handlers:
   static_dir: images
 
 - url: /.*
-  login: admin
   script: main.py

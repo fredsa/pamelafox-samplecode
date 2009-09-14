@@ -45,7 +45,7 @@ indexes:
   - name: index
     direction: desc
 
-# Used 10 times in query history.
+# Unused in query history -- copied from input.
 - kind: RegionCluster
   properties:
   - name: type

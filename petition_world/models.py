@@ -6,6 +6,20 @@
 
 from google.appengine.ext import db
 
+MEMCACHE_VOTES = 'VOTES_'
+
+def genKeyForContinentsInfo():
+  return 'INFO_CONTINENTS'
+
+def genKeyForCountriesInfo():
+  return 'INFO_COUNTRIES'
+
+def genKeyForStatesInfo(countryCode):
+  return 'INFO_STATES' + countryCode
+
+def genKeyForPostcodesInfo(countryCode):
+  return 'INFO_POSTCODES' + countryCode
+
 class PetitionSigner(db.Model):
   type = db.StringProperty()
   name = db.StringProperty()
@@ -18,13 +32,15 @@ class PetitionSigner(db.Model):
   country = db.StringProperty()
   latlng = db.GeoPtProperty()
 
-
-class PostcodeCounter(db.Model):
+class Postcode(db.Model):
   postcode = db.StringProperty()
   counter = db.IntegerProperty(default=0)
   state = db.StringProperty()
-  country = db.StrngProperty()
+  country = db.StringProperty()
+  data = db.TextProperty()
+  latlng = db.GeoPtProperty()
 
-class CountryCounter(db.Model):
+class Country(db.Model):
   country = db.StringProperty()
   counter = db.IntegerProperty(default=0)
+  data = db.TextProperty()
