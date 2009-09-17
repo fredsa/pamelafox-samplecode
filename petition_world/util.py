@@ -15,7 +15,7 @@ import models
 import geocoder
 import geodata 
 
-def addSignerToClusters(signer):
+def addSignerToClusters(signer, extraLatLng):
   clusterdata = {'lastname': signer.name,
                  'streetinfo': signer.streetinfo,
                  'city': signer.city,
@@ -61,9 +61,7 @@ def addSignerToClusters(signer):
       postcodecluster.country = countryCode
       postcodecluster.data = simplejson.dumps([clusterdata])
       postcodecluster.counter = 1
-      latlng = geocoder.geocodeAddress(postcode + ", " + countryCode)
-      if latlng is not None:
-        postcodecluster.latlng = latlng
+      postcodecluster.latlng = extraLatLng
       postcodecluster.put()
     else:
       postcodecluster = result

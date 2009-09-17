@@ -2,6 +2,13 @@
 {% block scripts %}
   <link type="text/css" rel="stylesheet" href="/css/styles.css" />
   <link type="text/css" href="css/jquery-ui-1.7.2.custom.css" rel="Stylesheet" /> 
+  <script type="text/javascript"> document.write( 
+     '<script src="http://maps.google.com/maps?file=api&amp;v=2&amp;key=' + 
+     { 
+        'pamelafox-randomdemo.appspot.com': 'ABQIAAAA-O3c-Om9OcvXMOJXreXHAxSvRnMDgWHjDlFJuX_AlxQ7KeId4RRQR6oMLv04l2SldvFSFPU1s4_GXA' 
+     }[location.host] + 
+     '" type="text/javascript"><\/script>' ); 
+  </script>
   <script type="text/javascript" src="/js/jquery-1.3.2.min.js"></script>
   <script type="text/javascript" src="/js/jquery-ui-1.7.2.custom.min.js"></script>
   <script type="text/javascript" src="/js/countrybounds.js"></script>
@@ -13,6 +20,8 @@ tr.org {
   </style>
   <script>
 var frmvalidator;
+var map;
+
 function toggleForm(value) {
   if (value == 'org') {
     jQuery('tr.org').show();
@@ -28,6 +37,10 @@ function populateCountries() {
  frmvalidator  = new Validator("signup");
  frmvalidator.addValidation("country","req",
                             "Country is required.");
+ frmvalidator.addValidation("email","email",
+                            "Must be a valid email address.");
+ frmvalidator.addValidation("family_num","gt=0",
+                            "Number in household must be atleast 1.");
 
   var countrySELECT  = document.getElementById('country');
   for (var countryCode in countriesInfo) {
@@ -38,6 +51,12 @@ function populateCountries() {
     countrySELECT.appendChild(countryOPTION);
   }
   countrySELECT.onchange = populateStates;
+
+  center = new GLatLng(31.952162,1.054688);
+  zoom = 1;
+  map = new GMap2(document.getElementById("map"));
+  map.setCenter(center, zoom, G_PHYSICAL_MAP);
+  map.setUIToDefault();
 }
 
 function populateStates() {
@@ -61,6 +80,33 @@ function populateStates() {
     stateOPTION.appendChild(stateTEXT);
     stateSELECT.appendChild(stateOPTION);
   }
+}
+
+function checkAddress() {
+  map.clearOverlays();
+  var fullAddress = jQuery("#city").val() + "," + jQuery("#postcode").val() 
+    + "," + jQuery("#state").val() + "," + jQuery("#country").val();
+  geocodeAddress(fullAddress, "1", true);
+  var clusterAddress = jQuery("#postcode").val() + "," + jQuery("#country").val();
+  geocodeAddress(clusterAddress, "2", false);
+}
+
+function geocodeAddress(address, suffix, addMarker) {
+  var geocoder = new GClientGeocoder();
+  geocoder.getLatLng(address, function(point) {
+    if (!point) {
+      alert(address + " not found");
+    } else {
+      if (addMarker) {
+        map.setCenter(point, 13);
+        var marker = new GMarker(point, {title: address});
+        map.addOverlay(marker);
+      }
+      jQuery("#lat" + suffix).val(point.lat());
+      jQuery("#lng" + suffix).val(point.lng());
+      jQuery("#submit")[0].disabled = false;
+    }
+  });
 }
 
 jQuery(document).ready(populateCountries); 
@@ -133,7 +179,7 @@ form and click the submit button.</h5>
       </tr>
       <tr>
       <td>
-        <label for="city">Your suburb:</span></label>
+        <label for="city">Your city:</span></label>
       </td>
       <td>
         <input type="text" name="city" id="city" value="">
@@ -158,8 +204,16 @@ form and click the submit button.</h5>
       <td><input type="text" name="youtube" value=""></td>
       </tr>
 -->
+      <tr><td></td><td><input type="button" value="Check Address" onclick="checkAddress()"></td></tr>
+      <tr><td></td><td><div id="map" style="width:300px;height:200px"></div></td></tr>
+      <tr><td></td><td><input type="submit" id="submit" value="Submit" disabled></td></tr>
      </table>
-        <input type="submit" id="submit" value="Submit">
+     <div style="display:none">
+      <input type="text" id="lat1" name="lat1"/>
+      <input type="text" id="lng1" name="lng1"/>
+      <input type="text" id="lat2" name="lat2"/>
+      <input type="text" id="lng2" name="lng2"/>
+     </div>
         <div id="errmsg" style="color:red; font-weight: bold; font-size:1.5em"></div>
     </form>
 

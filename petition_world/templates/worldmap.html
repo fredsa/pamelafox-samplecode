@@ -30,14 +30,19 @@ function initialize() {
   var latlng = getURLParam("latlng");
   if (latlng) {
     latlng = new GLatLng(latlng.split(",")[0], latlng.split(",")[1]);
-    zoom = 11;
+    var latlng2 = getURLParam("latlng2");
+    latlng2 = new GLatLng(latlng2.split(",")[0], latlng2.split(",")[1]);
+    var newBounds = new GLatLngBounds();
+    newBounds.extend(latlng);
+    newBounds.extend(latlng2);
+    center = newBounds.getCenter();
+    zoom = Math.min(map.getBoundsZoomLevel(newBounds), 15);
   } else {
-    latlng = new GLatLng(31.952162,1.054688);
+    center = new GLatLng(31.952162,1.054688);
     zoom = 1;
-  } 
-  // todo: if no latlng but country, show country
+  }
 
-  map.setCenter(latlng, zoom, G_PHYSICAL_MAP);
+  map.setCenter(center, zoom, G_PHYSICAL_MAP);
   map.setUIToDefault();
   markerManager = new MarkerManager(map);
 

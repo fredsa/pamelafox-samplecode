@@ -1,6 +1,7 @@
 import cgi
 import os
 import random
+import logging
 
 from google.appengine.ext import webapp
 from google.appengine.ext.webapp.util import run_wsgi_app
@@ -116,10 +117,10 @@ class SignerAddService(webapp.RequestHandler):
   def post(self):
     signer = models.PetitionSigner()
     type = self.request.get('type')
-    if type is "family":
+    if type == "family":
       signer.name = self.request.get('family_name')
       signer.num = int(self.request.get('family_num'))
-    elif type is "org":
+    elif type == "org":
       signer.name = self.request.get('org_name')
       signer.num = int(self.request.get('org_num'))
       signer.org_icon = self.request.get('org_icon')
@@ -129,10 +130,11 @@ class SignerAddService(webapp.RequestHandler):
     signer.state = self.request.get('state')
     signer.country = self.request.get('country')
     signer.postcode = self.request.get('postcode')
-    latlng = geocoder.geocodeAddress(signer.city + " " + signer.state + " " + signer.postcode + " " + signer.country)
-    if latlng is not None:
-       signer.latlng = latlng
+    signer.latlng = db.GeoPt(float(self.request.get('lat1')), float(self.request.get('lng1')))
     signer.put()
-    util.addSignerToClusters(signer)
+    postcodeLatLng = db.GeoPt(float(self.request.get('lat2')), float(self.request.get('lng2')))
+    util.addSignerToClusters(signer, postcodeLatLng)
     #self.redirect('/signup')
-    self.redirect('/map?countryCode=' + signer.country + '&latlng=' + str(latlng.lat) + ',' + str(latlng.lon))
+    self.redirect('/map?countryCode=' + signer.country + '&latlng=' + str(signer.latlng.lat) + ',' + str(signer.latlng.lon)
+      + '&latlng2=' + str(postcodeLatLng.lat) + ',' + str(postcodeLatLng.lon)
+    )

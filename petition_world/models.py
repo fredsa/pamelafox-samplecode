@@ -44,3 +44,4 @@ class Country(db.Model):
   country = db.StringProperty()
   counter = db.IntegerProperty(default=0)
   data = db.TextProperty()
+  latlng = db.GeoPtProperty()
