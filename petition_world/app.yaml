@@ -13,5 +13,8 @@ handlers:
 - url: /images
   static_dir: images
 
+- url: /gfc
+  static_dir: gfc
+
 - url: /.*
   script: main.py
