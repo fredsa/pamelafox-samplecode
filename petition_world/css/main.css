@@ -13,20 +13,46 @@ p { margin: 10px 0; }
 .logo {
   margin-right: 10px;
 }
+.gfc.signin {
+  width: 282px;
+  margin: 5px 0 3px 10px;
+}
+
 .top {
-  overflow: auto;
-  width: 713px;
-  height: 408px;
+  overflow: hidden;
+  width: 100%;
+  height: 466px;
 }
 .bottom {
-  overflow: auto;
+  overflow: hidden;
+  height: 120;
 }
 .left {
   float: left;
 }
 .right {
   float: left;
-  margin-left: 5px;
+}
+
+#explore_map {
+  width: 479px;
+  height: 460px;
+  background-color: #ffffff;
+  margin: 3px 0 3px 3px;
+}
+
+#stats {
+  border: 1px solid #cccccc;
+  height: 60px;
+  width: 250px;
+  background-color: #ffffff;
+  margin: 3px 3px 3px 3px;
+}
+#comments_wrapper {
+  background-color: #ffffff;
+  margin: 0 3px 3px 3px;
+  height:395px;
+  width:252px
 }
 
 .ui-tabs .ui-tabs-panel {
@@ -44,18 +70,29 @@ p { margin: 10px 0; }
 }
 form.cmxform {
   margin: 0 auto;
+  padding: 30px 0 30px 0;
   text-align: left;
-  font-size:1.1em;
-  width:300px;
+  font-size: 1.1em;
+  width: 300px;
+  height: 525px;
+}
+#big_button {
+  float: left;
+  display: block;
+  margin: 12px;
 }
 #videoBar-bar {
+  margin: 3px;
   float: right;
 }
 
-/* YouTube */
-@import url("http://www.google.com/uds/css/gsearch.css");
-@import url("http://www.google.com/uds/solutions/videobar/gsvideobar.css");
-.playerInnerBox_gsvb .player_gsvb {
-  width : 320px;
-  height : 260px;
+#legal {
+  text-align: center;
+  width: 730px;
+  height: 15px;
+  margin: 0 auto;
+  padding: 5px;
+  background-color: #eeeeee;
 }
+
+/* YouTube */

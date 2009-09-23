@@ -7,7 +7,7 @@
   padding: 0;
   float: left;
   width: 186px;
-  height: 571px;
+  height: 584px;
   overflow-y: scroll;
   border: 1px solid #999;
 }
@@ -20,7 +20,7 @@
 
 #learn #map3d_container {
   width: 540px;
-  height: 450px;
+  height: 463px;
   border: 1px solid #000;
   float: right;
 }

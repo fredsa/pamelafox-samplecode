@@ -446,6 +446,9 @@ jQuery(document).ready(function() {
   google.friendconnect.container.setParentUrl('/gfc/');
   loadVideoBar();
 
+  initJoinMap();
+  initExploreMap();
+
   $('#show_your_vote').tabs().bind('tabsshow', function(event, ui) {
     switch (ui.index) {
     case 0:
@@ -502,7 +505,7 @@ function initJoinMap() {
 
 function initExploreMap() {
   if (GBrowserIsCompatible()) {
-    explore_map = new GMap2(jQuery("#join_map")[0]);
+    explore_map = new GMap2(jQuery("#explore_map")[0]);
     explore_map.setCenter(new GLatLng(37.0625,-95.677068), 3);
     explore_map.setUIToDefault();
   }
