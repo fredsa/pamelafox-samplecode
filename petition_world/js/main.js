@@ -440,6 +440,25 @@ function loadVideoBar() {
   );
 }
 
+function performFormsGeoCode() {
+  var country = jQuery('#country').val();
+  if (country != null && country.replace(/^\s+|\s+$/g, '') != '') {
+    // They've set their country, we can geocode something.
+    // TODO: Do fewer geocodes.
+    setTimeout(function () {
+      var state = jQuery('#state').val();
+      var city = jQuery('#city').val();
+      var postcode = jQuery('#postcode').val();
+      var geocoder = new GClientGeocoder();
+      if (state) {
+        geocoder.getLatLng(city + ", " + state + " " + postcode + ", " + country, latLngHandler);
+      } else {
+        geocoder.getLatLng(city + ", " + postcode + ", " + country, latLngHandler);
+      }
+    }, 100);
+  }
+}
+
 jQuery(document).ready(function() {
   jQuery('.org').hide();
   /* location of rpc_relay.html and canvas.html */
@@ -449,7 +468,7 @@ jQuery(document).ready(function() {
   initJoinMap();
   initExploreMap();
 
-  $('#show_your_vote').tabs().bind('tabsshow', function(event, ui) {
+  jQuery('#show_your_vote').tabs().bind('tabsshow', function(event, ui) {
     switch (ui.index) {
     case 0:
       learnInit();
@@ -467,6 +486,24 @@ jQuery(document).ready(function() {
     }
   });
   
+  // Do a geocode when the form has changed.
+  jQuery('#country').change(performFormsGeoCode);
+  jQuery('#state').change(performFormsGeoCode);
+  jQuery('#city').change(performFormsGeoCode);
+  jQuery('#postcode').change(performFormsGeoCode);
+  jQuery('#country').blur(performFormsGeoCode);
+  jQuery('#state').blur(performFormsGeoCode);
+  jQuery('#city').blur(performFormsGeoCode);
+  jQuery('#postcode').blur(performFormsGeoCode);
+  jQuery('#country').focus(performFormsGeoCode);
+  jQuery('#state').focus(performFormsGeoCode);
+  jQuery('#city').focus(performFormsGeoCode);
+  jQuery('#postcode').focus(performFormsGeoCode);
+  jQuery('#country').keypress(performFormsGeoCode);
+  jQuery('#state').keypress(performFormsGeoCode);
+  jQuery('#city').keypress(performFormsGeoCode);
+  jQuery('#postcode').keypress(performFormsGeoCode);
+
   google.friendconnect.container.initOpenSocialApi({
     site: '16982815293172380621',
     onload: function(securityToken) {
@@ -586,9 +623,12 @@ function latLngHandler(point) {
     if (!join_map) {
       initJoinMap();
     }
-    join_map.setCenter(point, 13);
+    join_map.clearOverlays();
+    join_map.setCenter(point, 11);
     var marker = new GMarker(point);
     join_map.addOverlay(marker);
+    // TODO: Fill in hidden fields with lat/lng for form submission.
+    // TODO: Enable form submit when we do this.
   }
 }
 
