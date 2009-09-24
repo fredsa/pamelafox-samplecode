@@ -425,8 +425,9 @@ function cmxform() {
 function loadVideoBar() {
   var videoBar;
   var options = {
-    largeResultSet : !true,
+    largeResultSet : true,
     horizontal : true,
+    thumbnailSize : GSvideoBar.THUMBNAILS_SMALL,
     autoExecuteList : {
       cycleTime : GSvideoBar.CYCLE_TIME_MEDIUM,
       cycleMode : GSvideoBar.CYCLE_MODE_LINEAR,
