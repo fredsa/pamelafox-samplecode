@@ -22,7 +22,7 @@ var visitorName = null;
 
 var locationId = "global";
 
-var join_map;
+var vote_map;
 var explore_map;
 
 function learnReset() {
@@ -465,7 +465,7 @@ jQuery(document).ready(function() {
   google.friendconnect.container.setParentUrl('/gfc/');
   loadVideoBar();
 
-  initJoinMap();
+  initVoteMap();
   initExploreMap();
 
   jQuery('#show_your_vote').tabs().bind('tabsshow', function(event, ui) {
@@ -474,7 +474,7 @@ jQuery(document).ready(function() {
       learnInit();
     case 1:
       learnReset();
-      initJoinMap();
+      initVoteMap();
       if (geo_position_js.init()) {
         geo_position_js.getCurrentPosition(geoSuccess, geoError);
       } else {
@@ -532,11 +532,11 @@ jQuery(document).ready(function() {
   learnInit();
 });
 
-function initJoinMap() {
+function initVoteMap() {
   if (GBrowserIsCompatible()) {
-    join_map = new GMap2(jQuery("#join_map")[0]);
-    join_map.setCenter(new GLatLng(37.0625,-95.677068), 3);
-    join_map.setUIToDefault();
+    vote_map = new GMap2(jQuery("#vote_map")[0]);
+    vote_map.setCenter(new GLatLng(37.0625,-95.677068), 3);
+    vote_map.setUIToDefault();
   }
 }
 
@@ -620,13 +620,13 @@ function latLngHandler(point) {
   if (!point) {
     geoError();
   } else {
-    if (!join_map) {
-      initJoinMap();
+    if (!vote_map) {
+      initVoteMap();
     }
-    join_map.clearOverlays();
-    join_map.setCenter(point, 11);
+    vote_map.clearOverlays();
+    vote_map.setCenter(point, 11);
     var marker = new GMarker(point);
-    join_map.addOverlay(marker);
+    vote_map.addOverlay(marker);
     // TODO: Fill in hidden fields with lat/lng for form submission.
     // TODO: Enable form submit when we do this.
   }
