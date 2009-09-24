@@ -94,7 +94,7 @@
       </p>
     </div>
     <!-- TODO set form action to correct location -->
-    <form name="sign" action="#" method="post" class="cmxform">
+    <form name="sign" action="/add/signer" method="post" class="cmxform">
       <fieldset>
         <ol>
           <li>
@@ -106,15 +106,15 @@
           </li>
           <li class="person">
             <label for="person_name">Name <em>*</em></label>
-            <input id="person_name" />
-          </li>
-          <li class="person">
-            <label for="person_email">Email</label>
-            <input id="person_email" />
+            <input name="person_name" id="person_name" />
           </li>
           <li class="org">
             <label for="org_name">Organization <em>*</em></label>
-            <input id="org_name" />
+            <input name="org_name" id="org_name" />
+          </li>
+          <li>
+            <label for="email">Email</label>
+            <input name="email" id="email" />
           </li>
           <li class="loc country">
             <label for="country">Country <em>*</em></label>
@@ -137,10 +137,12 @@
             <input type="text" name="postcode" id="postcode"/>
           </li>
         </ol>
+        <input type="hidden" id="lat" name="lat" />
+        <input type="hidden" id="lng" name="lng" />
       </fieldset>
       <div id="vote_map" style="width: 300px; height: 200px"></div>
       <p>Required fields marked <em>*</em>.</p>
-      <p><input type="submit" value="Submit" disabled="disabled"/></p>
+      <p><input id="submit" type="submit" value="Submit" disabled="disabled"/></p>
     </form>
   </div>
   <div id="explore">

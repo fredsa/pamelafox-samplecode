@@ -116,25 +116,24 @@ class RandomAddService(webapp.RequestHandler):
 class SignerAddService(webapp.RequestHandler):
   def post(self):
     signer = models.PetitionSigner()
-    type = self.request.get('type')
-    if type == "family":
-      signer.name = self.request.get('family_name')
-      signer.num = int(self.request.get('family_num'))
-    elif type == "org":
+    if not self.request.get('org_name') or self.request.get('org_name') == '':
+      signer.type = 'person'
+      signer.name = self.request.get('person_name')
+    else:
+      signer.type = 'org'
       signer.name = self.request.get('org_name')
-      signer.num = int(self.request.get('org_num'))
-      signer.org_icon = self.request.get('org_icon')
     signer.email = self.request.get('email')
     #signer.streetinfo = self.request.get('streetinfo')
     signer.city = self.request.get('city')
     signer.state = self.request.get('state')
     signer.country = self.request.get('country')
     signer.postcode = self.request.get('postcode')
-    signer.latlng = db.GeoPt(float(self.request.get('lat1')), float(self.request.get('lng1')))
+    signer.latlng = db.GeoPt(float(self.request.get('lat')), float(self.request.get('lng')))
     signer.put()
-    postcodeLatLng = db.GeoPt(float(self.request.get('lat2')), float(self.request.get('lng2')))
+    # Without street info, these values are essentially the same
+    postcodeLatLng = db.GeoPt(float(self.request.get('lat')), float(self.request.get('lng')))
     util.addSignerToClusters(signer, postcodeLatLng)
-    #self.redirect('/signup')
-    self.redirect('/map?countryCode=' + signer.country + '&latlng=' + str(signer.latlng.lat) + ',' + str(signer.latlng.lon)
-      + '&latlng2=' + str(postcodeLatLng.lat) + ',' + str(postcodeLatLng.lon)
-    )
+    self.redirect('/#explore')
+    # self.redirect('/map?countryCode=' + signer.country + '&latlng=' + str(signer.latlng.lat) + ',' + str(signer.latlng.lon)
+    #   + '&latlng2=' + str(postcodeLatLng.lat) + ',' + str(postcodeLatLng.lon)
+    # )

@@ -22,10 +22,12 @@ def genKeyForPostcodesInfo(countryCode):
 
 class PetitionSigner(db.Model):
   type = db.StringProperty()
+  gfc_id = db.StringProperty()
   name = db.StringProperty()
-  num = db.IntegerProperty()
-  org_icon = db.StringProperty()
-  streetinfo = db.StringProperty()
+  email = db.StringProperty()
+  # num = db.IntegerProperty()
+  # org_icon = db.StringProperty()
+  # streetinfo = db.StringProperty()
   state = db.StringProperty()
   city = db.StringProperty()
   postcode = db.StringProperty()

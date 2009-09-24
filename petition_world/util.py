@@ -17,7 +17,7 @@ import geodata
 
 def addSignerToClusters(signer, extraLatLng):
   clusterdata = {'lastname': signer.name,
-                 'streetinfo': signer.streetinfo,
+                 # 'streetinfo': signer.streetinfo,
                  'city': signer.city,
                  'state': signer.state,
                  'country': signer.country,

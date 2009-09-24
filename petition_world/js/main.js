@@ -22,8 +22,9 @@ var visitorName = null;
 
 var locationId = "global";
 
-var vote_map;
-var explore_map;
+var voteMap;
+var exploreMap;
+var exploreMarkerManager;
 
 function learnReset() {
   // Destroy the existing plugin.
@@ -487,7 +488,7 @@ jQuery(document).ready(function() {
     }
   });
   
-  // Do a geocode when the form has changed.
+  // Do a geocode for any events that might fire if the form has changed.
   jQuery('#country').change(performFormsGeoCode);
   jQuery('#state').change(performFormsGeoCode);
   jQuery('#city').change(performFormsGeoCode);
@@ -535,17 +536,17 @@ jQuery(document).ready(function() {
 
 function initVoteMap() {
   if (GBrowserIsCompatible()) {
-    vote_map = new GMap2(jQuery("#vote_map")[0]);
-    vote_map.setCenter(new GLatLng(37.0625,-95.677068), 3);
-    vote_map.setUIToDefault();
+    voteMap = new GMap2(jQuery("#vote_map")[0]);
+    voteMap.setCenter(new GLatLng(37.0625,-95.677068), 3);
+    voteMap.setUIToDefault();
   }
 }
 
 function initExploreMap() {
   if (GBrowserIsCompatible()) {
-    explore_map = new GMap2(jQuery("#explore_map")[0]);
-    explore_map.setCenter(new GLatLng(37.0625,-95.677068), 3);
-    explore_map.setUIToDefault();
+    exploreMap = new GMap2(jQuery("#explore_map")[0]);
+    exploreMap.setCenter(new GLatLng(37.0625,-95.677068), 3, G_PHYSICAL_MAP);
+    exploreMap.setUIToDefault();
   }
 }
 
@@ -621,15 +622,16 @@ function latLngHandler(point) {
   if (!point) {
     geoError();
   } else {
-    if (!vote_map) {
+    if (!voteMap) {
       initVoteMap();
     }
-    vote_map.clearOverlays();
-    vote_map.setCenter(point, 11);
+    voteMap.clearOverlays();
+    voteMap.setCenter(point, 11);
     var marker = new GMarker(point);
-    vote_map.addOverlay(marker);
-    // TODO: Fill in hidden fields with lat/lng for form submission.
-    // TODO: Enable form submit when we do this.
+    voteMap.addOverlay(marker);
+    jQuery('#lat').val(point.lat());
+    jQuery('#lng').val(point.lng());
+    jQuery('#submit').removeAttr('disabled');
   }
 }
 
