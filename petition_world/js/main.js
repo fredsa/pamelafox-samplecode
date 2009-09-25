@@ -24,7 +24,11 @@ var locationId = "global";
 
 var voteMap;
 var exploreMap;
-var exploreMarkerManager;
+var markerManager;
+var maxZoomSeen = 0;
+var countries;
+var loadedCountries = false;
+var loadedContinents = false;
 
 function learnReset() {
   // Destroy the existing plugin.
@@ -554,7 +558,160 @@ function initExploreMap() {
       var point = new GLatLng(latlng.split(',')[0], latlng.split(',')[1]);
       exploreMap.setCenter(point, 8);
     }
+    markerManager = new MarkerManager(exploreMap);
+    GEvent.addListener(exploreMap, "zoomend", handleZoomChange);
+    GEvent.addListener(exploreMap, "moveend", handleBoundsChange);
+    handleZoomChange();
+    handleBoundsChange();
   }
+}
+
+function handleBoundsChange() {
+    var bounds = exploreMap.getBounds();
+    for (countryCode in countriesInfo) {
+      var countryInfo = countriesInfo[countryCode];
+      var countryBounds = new GLatLngBounds(new GLatLng(countryInfo.bounds.southWest[0], countryInfo.bounds.southWest[1]), new GLatLng(countryInfo.bounds.northEast[0], countryInfo.bounds.northEast[1]));
+      if (bounds.intersects(countryBounds)) {
+        if (!countryInfo.hasStates
+         && !countryInfo.loadedPostcodes
+         && exploreMap.getZoom() > 4) {
+          jQuery.getJSON("/info/postcodes?countryCode=" + countryCode, processPostcodes);
+          countryInfo.loadedPostcodes = true;
+        }
+        if ( countryInfo.hasStates
+         && !countryInfo.loadedStates
+         && exploreMap.getZoom() > 2) {
+          jQuery.getJSON("/info/states?countryCode=" + countryCode, processStates);
+          countryInfo.loadedStates = true;
+        }
+        if ( countryInfo.hasStates
+         && !countryInfo.loadedPostcodes
+         && exploreMap.getZoom() > 4) {
+          jQuery.getJSON("/info/postcodes?countryCode=" + countryCode, processPostcodes);
+          countryInfo.loadedPostcodes = true;
+        }
+      }
+     }
+}
+
+function handleZoomChange() {    
+ if (exploreMap.getZoom() > 2 && exploreMap.getZoom() < 6 && !loadedCountries) {
+   jQuery.getJSON("/info/countries", processCountries);
+   loadedCountries = true;
+ }
+ if (exploreMap.getZoom() >= 0 && exploreMap.getZoom() < 4 && !loadedContinents) {
+   jQuery.getJSON("/info/continents", processContinents);
+   loadedContinents = true;
+ }
+}
+
+function processContinents(json) {
+  var info = json;
+  var markers = [];
+  for (continentCode in info.continents) {
+    var continent = info.continents[continentCode];
+    if (continent.count == 0) continue;
+    var marker = createMarker(new GLatLng(continent.center[0], continent.center[1]), createBigIcon(continent.count), continent.name, 3);
+    markers.push(marker);
+  }
+  markerManager.addMarkers(markers, 0, 2);
+  markerManager.refresh();
+}
+
+function processCountries(json) {
+  var info = json;
+  var markers = [];
+  for (countryCode in info.countries) {
+    var country = info.countries[countryCode];
+    var marker = createMarker(new GLatLng(country.center[0], country.center[1]), createBigIcon(country.count), country.name, 6);
+    markers.push(marker);
+  }
+  markerManager.addMarkers(markers, 3, 5);
+  markerManager.refresh();
+}
+
+function processStates(json) {
+  var info = json;
+  var markers = [];
+  for (stateCode in info.states) {
+    var state = info.states[stateCode];
+    var marker = createMarker(new GLatLng(state.center[0], state.center[1]), createMediumIcon(state.count), state.name, 6);
+    markers.push(marker);
+  }
+
+  
+  markerManager.addMarkers(markers, 3, 5);
+  markerManager.refresh();
+}
+
+function processPostcodes(json) {
+  var info = json;
+  var markers = [];
+  for (postcodeCode in info.postcodes) {
+    var postcode = info.postcodes[postcodeCode];
+    var marker = createMarker(new GLatLng(postcode.center[0], postcode.center[1]), createSmallIcon(postcode.count), postcodeCode, 14);
+    markers.push(marker);
+  }
+
+  markerManager.addMarkers(markers, 6);
+  markerManager.refresh();
+}
+
+function createBigIcon(label) {
+  var iconOptions = {};
+  iconOptions.width = 32;
+  iconOptions.height = 32;
+  iconOptions.primaryColor = "#b3e742";
+  iconOptions.label = "" + label;
+  iconOptions.labelSize = 20;
+  iconOptions.labelColor = "#FFFFFF";
+  iconOptions.shape = "roundrect";
+  var icon = MapIconMaker.createFlatIcon(iconOptions);
+  icon.iconOptions = iconOptions;
+  return icon;
+}
+
+function createMediumIcon(label) {
+  var iconOptions = {};
+  iconOptions.width = 24;
+  iconOptions.height = 24;
+  iconOptions.primaryColor =  "#86cb23";
+  iconOptions.label = "" + label;
+  iconOptions.labelSize = 16;
+  iconOptions.labelColor = "#FFFFFF";
+  iconOptions.shape = "roundrect";
+  var icon = MapIconMaker.createFlatIcon(iconOptions);
+  icon.iconOptions = iconOptions;
+  return icon;
+}
+
+function createSmallIcon(label) {
+  var iconOptions = {};
+  iconOptions.width = 18;
+  iconOptions.height = 18;
+  iconOptions.primaryColor = "#5fa612";
+  iconOptions.label = "" + label;
+  iconOptions.labelSize = 12;
+  iconOptions.labelColor = "#FFFFFF";
+  iconOptions.shape = "roundrect";
+  var icon = MapIconMaker.createFlatIcon(iconOptions);
+  icon.iconOptions = iconOptions;
+  return icon;
+}
+
+function createMarker(latlng, icon, title, zoom) {
+  var marker = new GMarker(latlng, {icon: icon});
+  var tooltip = new MapTooltip(marker, title, {offsetX: icon.iconOptions.width - 6, backgroundColor: icon.iconOptions.primaryColor});
+  GEvent.addListener(marker, "mouseover", function() {
+    exploreMap.addOverlay(tooltip);
+  });
+  GEvent.addListener(marker, "mouseout", function() {
+    exploreMap.removeOverlay(tooltip);
+  });
+  GEvent.addListener(marker, "click", function() {
+    marker.openInfoWindowHtml(icon.iconOptions.label + " signed the petition here. <a href='javascript:exploreMap.setCenter(new GLatLng(" + latlng.toUrlValue(6) + "), " + zoom + ")'>Zoom in.</a>");
+  });
+  return marker;
 }
 
 function populateCountries() {
