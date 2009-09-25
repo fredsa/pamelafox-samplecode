@@ -119,6 +119,7 @@ class SignerAddService(webapp.RequestHandler):
     if not self.request.get('org_name') or self.request.get('org_name') == '':
       signer.type = 'person'
       signer.name = self.request.get('person_name')
+      signer.gfc_id = self.request.get('person_gfc_id')
     else:
       signer.type = 'org'
       signer.name = self.request.get('org_name')
@@ -133,6 +134,7 @@ class SignerAddService(webapp.RequestHandler):
     # Without street info, these values are essentially the same
     postcodeLatLng = db.GeoPt(float(self.request.get('lat')), float(self.request.get('lng')))
     util.addSignerToClusters(signer, postcodeLatLng)
+    self.response.headers.add_header('Set-Cookie', 'latlng=%s; expires=Fri, 31-Dec-2020 23:59:59 GMT; path=/' % (str(signer.latlng.lat) + ',' + str(signer.latlng.lon)))
     self.redirect('/#explore')
     # self.redirect('/map?countryCode=' + signer.country + '&latlng=' + str(signer.latlng.lat) + ',' + str(signer.latlng.lon)
     #   + '&latlng2=' + str(postcodeLatLng.lat) + ',' + str(postcodeLatLng.lon)

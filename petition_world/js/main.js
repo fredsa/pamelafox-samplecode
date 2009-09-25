@@ -520,6 +520,8 @@ jQuery(document).ready(function() {
           if (nameField.val() == null || nameField.val().replace(/^\s+|\s+$/g, '') == '') {
             nameField.val(visitorName);
           }
+          var gfcIdField = jQuery('#person_gfc_id');
+          gfcIdField.val(visitorId);
         } else {
           // Not logged in
           visitorId = null;
@@ -547,6 +549,11 @@ function initExploreMap() {
     exploreMap = new GMap2(jQuery("#explore_map")[0]);
     exploreMap.setCenter(new GLatLng(37.0625,-95.677068), 3, G_PHYSICAL_MAP);
     exploreMap.setUIToDefault();
+    var latlng = jQuery.cookie('latlng');
+    if (latlng) {
+      var point = new GLatLng(latlng.split(',')[0], latlng.split(',')[1]);
+      exploreMap.setCenter(point, 8);
+    }
   }
 }
 
@@ -557,7 +564,7 @@ function populateCountries() {
   for (var countryCode in countriesInfo) {
     var countryOption = jQuery(document.createElement('option'));
     countryOption.val(countryCode);
-    countryOption.text(countriesInfo[countryCode].name);
+    countryOption.text(countryCode + " - " + countriesInfo[countryCode].name);
     countrySelect.append(countryOption);
   }
 }
