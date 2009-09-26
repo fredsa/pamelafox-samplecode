@@ -811,7 +811,7 @@ function latLngHandler(point) {
 }
 
 function geoError() {
-  jQuery('.loc').show();
+  // jQuery('.loc').show();
 }
 
 function toggleForm(formValue) {
