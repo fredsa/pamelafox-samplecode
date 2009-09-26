@@ -508,7 +508,7 @@ jQuery(document).ready(function() {
       initExploreMap();
     }
   });
-  
+
   // Do a geocode for any events that might fire if the form has changed.
   jQuery('#country').change(performFormsGeoCode);
   jQuery('#state').change(performFormsGeoCode);
@@ -541,18 +541,17 @@ jQuery(document).ready(function() {
       });
     }
   });
-  
+
   // jQuery('.loc').hide();
   populateCountries();
+  addFormValidator();
   learnInit();
 });
 
 function initVoteMap() {
-  if (GBrowserIsCompatible()) {
-    voteMap = new GMap2(jQuery("#vote_map")[0]);
-    voteMap.setCenter(new GLatLng(37.0625,-95.677068), 3);
-    voteMap.setUIToDefault();
-  }
+  voteMap = new GMap2(jQuery("#vote_map")[0]);
+  voteMap.setCenter(new GLatLng(37.0625,-95.677068), 3);
+  voteMap.setUIToDefault();
 }
 
 function initExploreMap() {
@@ -721,6 +720,10 @@ function createMarker(latlng, icon, title, zoom) {
   return marker;
 }
 
+function addFormValidator() {
+  jQuery('#sign').validate();
+}
+
 function populateCountries() {
   jQuery('.state').hide();
   var countrySelect = jQuery('#country');
@@ -734,21 +737,30 @@ function populateCountries() {
 }
 
 function populateStates() {
-  var stateSelect = jQuery('#state');
-  stateSelect.html('');
   var countryCode = jQuery('#country').val();
-  var states = countriesInfo[countryCode].states;
-  if (!states) {
+  if (countriesInfo[countryCode].hasStates) {
+    jQuery('.state').show();
+    var states = countriesInfo[countryCode].states;
+    jQuery('#state').rules('add', {required: true});
+    jQuery('#state').html('');
+    for (var i = 0; i < states.length; i++) {
+      var stateOption = jQuery(document.createElement('option'));
+      stateOption.val(states[i]);
+      stateOption.text(states[i]);
+      jQuery('#state').append(stateOption);
+    }
+  } else {
     jQuery('.state').hide();
-    return;
+    jQuery('#state').rules('remove');
   }
-  jQuery('.state').show();
 
-  for (var i = 0; i < states.length; i++) {
-    var stateOption = jQuery(document.createElement('option'));
-    stateOption.val(states[i]);
-    stateOption.text(states[i]);
-    stateSelect.append(stateOption);
+  var postcodeInput = jQuery('#postcode');
+  if (countriesInfo[countryCode].hasPostcodes) {
+    jQuery('.postcode').show();
+    jQuery('#postcode').rules('add', {required: true});
+  } else {
+    jQuery('.postcode').hide();
+    jQuery('#postcode').rules('remove');
   }
 }
 
@@ -785,7 +797,7 @@ function addressHandler(response) {
       geocoder.getLatLng(city + ", " + state + " " + postcode + ", " + country, latLngHandler);
     } else {
       geocoder.getLatLng(city + ", " + postcode + ", " + country, latLngHandler);
-    }          
+    }
   }
 }
 

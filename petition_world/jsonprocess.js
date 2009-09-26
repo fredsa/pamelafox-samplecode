@@ -6,7 +6,10 @@ for (var i = 0; i < places.length; i++) {
 }
 console.log(str.join(",\n"));
 
-// generate countrybounds.js
+// Load http://gmaps-samples.googlecode.com/svn/trunk/versionchecker.html?v=2
+// Copy geodata.py into FB console, remove top line
+// Run this code below
+// Open js/countrybounds.js in WordPad, copy results in
 var str = [];
 for (var countryCode in countries) {
   var country = countries[countryCode];
@@ -24,10 +27,12 @@ for (var countryCode in countries) {
   var bounds = poly.getBounds();
   var hasStates = false;
   if (country.states) hasStates = true;
+   var hasPostcodes = false;
+  if (country.postcode > 0) hasPostcodes = true;
+   var newStr = '"' + countryCode + '": { "hasPostcodes": ' + hasPostcodes + ', "hasStates": ' + hasStates + ', "bounds": ' + ' {"southWest": [' + bounds.getSouthWest().toUrlValue(6) + '], "northEast": [' + bounds.getNorthEast().toUrlValue(6) + ']}, "name": "' + country.name + '"';
  
-  var newStr = '"' + countryCode + '": {"hasStates": ' + hasStates + ', "bounds": ' + ' new GLatLngBounds(new GLatLng(' + bounds.getSouthWest().toUrlValue(6) + '), new GLatLng(' + bounds.getNorthEast().toUrlValue(6) + '))';
   if (hasStates) {
-    newStr += '"states": ['
+    newStr += ',"states": ['
     states = [];
     for (var stateCode in country.states) {
       states.push('"' + stateCode + '"');
