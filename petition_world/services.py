@@ -5,6 +5,7 @@ import copy
 
 from google.appengine.ext import webapp
 from google.appengine.api import memcache
+from google.appengine.ext import db
 
 from django.utils import simplejson
 
@@ -23,6 +24,30 @@ class CryptographicNonceService(webapp.RequestHandler):
       'Set-Cookie', 'nonce=%s; path=/' % randomVal
     )
     self.response.out.write(simplejson.dumps({'nonce': randomVal}))
+
+class VotesInLocationService(webapp.RequestHandler):
+  def get(self):
+    country = self.request.get('country')
+    state = self.request.get('state')
+    city = self.request.get('city')
+    postcode = self.request.get('postcode')
+    query = db.Query(models.PetitionSigner)
+    if country is not None and country != '':
+      query.filter('country =', country)
+    if state is not None and state != '':
+      query.filter('state =', state)
+    if city is not None and city != '':
+      query.filter('city =', city)
+    if postcode is not None and postcode != '':
+      query.filter('postcode =', postcode)
+    results = query.fetch(20)
+    data = []
+    for result in results:
+      if result.gfc_id is not None and result.gfc_id != '':
+        signer = {}
+        signer['gfcId'] = result.gfc_id
+        data.append(signer)
+    self.response.out.write(simplejson.dumps(data))
 
 class ContinentsInfoService(webapp.RequestHandler):
   def get(self):
