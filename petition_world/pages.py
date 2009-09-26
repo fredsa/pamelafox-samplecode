@@ -2,6 +2,7 @@ import cgi
 import os
 import random
 import logging
+import hashlib
 
 from google.appengine.ext import webapp
 from google.appengine.ext.webapp.util import run_wsgi_app
@@ -115,27 +116,33 @@ class RandomAddService(webapp.RequestHandler):
 
 class SignerAddService(webapp.RequestHandler):
   def post(self):
-    signer = models.PetitionSigner()
-    if not self.request.get('org_name') or self.request.get('org_name') == '':
-      signer.type = 'person'
-      signer.name = self.request.get('person_name')
-      signer.gfc_id = self.request.get('person_gfc_id')
+    originalNonce = self.request.cookies.get('nonce', None)
+    hashedNonce = self.request.get('nonce')
+    if hashedNonce and originalNonce and hashlib.sha1(originalNonce).hexdigest() == hashedNonce:
+      signer = models.PetitionSigner()
+      if not self.request.get('org_name') or self.request.get('org_name') == '':
+        signer.type = 'person'
+        signer.name = self.request.get('person_name')
+        signer.gfc_id = self.request.get('person_gfc_id')
+      else:
+        signer.type = 'org'
+        signer.name = self.request.get('org_name')
+      signer.email = self.request.get('email')
+      #signer.streetinfo = self.request.get('streetinfo')
+      signer.city = self.request.get('city')
+      signer.state = self.request.get('state')
+      signer.country = self.request.get('country')
+      signer.postcode = self.request.get('postcode')
+      signer.latlng = db.GeoPt(float(self.request.get('lat')), float(self.request.get('lng')))
+      signer.put()
+      # Without street info, these values are essentially the same
+      postcodeLatLng = db.GeoPt(float(self.request.get('lat')), float(self.request.get('lng')))
+      util.addSignerToClusters(signer, postcodeLatLng)
+      self.response.headers.add_header('Set-Cookie', 'latlng=%s; expires=Fri, 31-Dec-2020 23:59:59 GMT; path=/' % (str(signer.latlng.lat) + ',' + str(signer.latlng.lon)))
+      self.redirect('/#explore')
+      # self.redirect('/map?countryCode=' + signer.country + '&latlng=' + str(signer.latlng.lat) + ',' + str(signer.latlng.lon)
+      #   + '&latlng2=' + str(postcodeLatLng.lat) + ',' + str(postcodeLatLng.lon)
+      # )
     else:
-      signer.type = 'org'
-      signer.name = self.request.get('org_name')
-    signer.email = self.request.get('email')
-    #signer.streetinfo = self.request.get('streetinfo')
-    signer.city = self.request.get('city')
-    signer.state = self.request.get('state')
-    signer.country = self.request.get('country')
-    signer.postcode = self.request.get('postcode')
-    signer.latlng = db.GeoPt(float(self.request.get('lat')), float(self.request.get('lng')))
-    signer.put()
-    # Without street info, these values are essentially the same
-    postcodeLatLng = db.GeoPt(float(self.request.get('lat')), float(self.request.get('lng')))
-    util.addSignerToClusters(signer, postcodeLatLng)
-    self.response.headers.add_header('Set-Cookie', 'latlng=%s; expires=Fri, 31-Dec-2020 23:59:59 GMT; path=/' % (str(signer.latlng.lat) + ',' + str(signer.latlng.lon)))
-    self.redirect('/#explore')
-    # self.redirect('/map?countryCode=' + signer.country + '&latlng=' + str(signer.latlng.lat) + ',' + str(signer.latlng.lon)
-    #   + '&latlng2=' + str(postcodeLatLng.lat) + ',' + str(postcodeLatLng.lon)
-    # )
+      # Spam
+      self.redirect('/')

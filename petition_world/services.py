@@ -12,6 +12,18 @@ import models
 import util
 import geodata
 
+class CryptographicNonceService(webapp.RequestHandler):
+  def get(self):
+    # Produces 160 bits of randomness to send back to the user
+    randomVal = ''.join(["%02x" % ord(x) for x in os.urandom(20)])
+    # No value is required, we only need to be able to verify that we've
+    # issued this nonce in the recent past.
+    memcache.set(randomVal, '', 900, 0, 'nonce')
+    self.response.headers.add_header(
+      'Set-Cookie', 'nonce=%s; path=/' % randomVal
+    )
+    self.response.out.write(simplejson.dumps({'nonce': randomVal}))
+
 class ContinentsInfoService(webapp.RequestHandler):
   def get(self):
     cachedVal = memcache.get(models.genKeyForContinentsInfo())

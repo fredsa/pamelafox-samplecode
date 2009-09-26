@@ -7,6 +7,7 @@ google.load('friendconnect', '0.8');
 // Needed for YouTube
 window._uds_vbw_donotrepair = true;
 
+var nonce;
 var ge;
 var currentTourKmlObject = null; // a KmlTour object
 var currentFetchedKmlObject = null; // the original fetchKml'd target
@@ -465,7 +466,17 @@ function performFormsGeoCode() {
   }
 }
 
+function loadNonce() {
+  if (!nonce) {
+    jQuery.getJSON('/nonce', function (data) {
+      nonce = data['nonce'];
+      jQuery('#nonce').val(SHA1(nonce));
+    })
+  }
+}
+
 jQuery(document).ready(function() {
+  loadNonce();
   jQuery('.org').hide();
   /* location of rpc_relay.html and canvas.html */
   google.friendconnect.container.setParentUrl('/gfc/');

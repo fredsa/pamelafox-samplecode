@@ -15,6 +15,7 @@ def main():
                                       ('/map', pages.MapPage),
                                       ('/add/random', pages.RandomAddService),
                                       ('/add/signer', pages.SignerAddService),
+                                      ('/nonce', services.CryptographicNonceService),
                                       ('/info/continents', services.ContinentsInfoService),
                                       ('/info/countries', services.CountriesInfoService),
                                       ('/info/states', services.StatesInfoService),
