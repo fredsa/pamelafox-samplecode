@@ -118,7 +118,9 @@ class SignerAddService(webapp.RequestHandler):
   def post(self):
     originalNonce = self.request.cookies.get('nonce', None)
     hashedNonce = self.request.get('nonce')
-    if hashedNonce and originalNonce and hashlib.sha1(originalNonce).hexdigest() == hashedNonce:
+    cachedVal = memcache.get(originalNonce, 'nonce')
+    if hashedNonce and originalNonce and cachedVal is not None and hashlib.sha1(originalNonce).hexdigest() == hashedNonce:
+      memcache.delete(originalNonce, 0, 'nonce')
       signer = models.PetitionSigner()
       if not self.request.get('org_name') or self.request.get('org_name') == '':
         signer.type = 'person'
