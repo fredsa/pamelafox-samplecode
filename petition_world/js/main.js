@@ -8,6 +8,7 @@ google.load('friendconnect', '0.8');
 window._uds_vbw_donotrepair = true;
 
 var nonce;
+var geocodeInProgress;
 var ge;
 var currentTourKmlObject = null; // a KmlTour object
 var currentFetchedKmlObject = null; // the original fetchKml'd target
@@ -457,10 +458,15 @@ function performFormsGeoCode() {
       var city = jQuery('#city').val();
       var postcode = jQuery('#postcode').val();
       var geocoder = new GClientGeocoder();
+      var locationString;
       if (state) {
-        geocoder.getLatLng(city + ", " + state + " " + postcode + ", " + country, latLngHandler);
+        locationString = city + ", " + state + " " + postcode + ", " + country;
       } else {
-        geocoder.getLatLng(city + ", " + postcode + ", " + country, latLngHandler);
+        locationString = city + ", " + postcode + ", " + country;
+      }
+      if (!geocodeInProgress || locationString != geocodeInProgress) {
+        geocoder.getLatLng(locationString, latLngHandler);
+        geocodeInProgress = locationString;
       }
     }, 100);
   }
@@ -508,16 +514,6 @@ jQuery(document).ready(function() {
   jQuery('#state').change(performFormsGeoCode);
   jQuery('#city').change(performFormsGeoCode);
   jQuery('#postcode').change(performFormsGeoCode);
-  jQuery('#country').blur(performFormsGeoCode);
-  jQuery('#state').blur(performFormsGeoCode);
-  jQuery('#city').blur(performFormsGeoCode);
-  jQuery('#postcode').blur(performFormsGeoCode);
-  jQuery('#country').focus(performFormsGeoCode);
-  jQuery('#state').focus(performFormsGeoCode);
-  jQuery('#city').focus(performFormsGeoCode);
-  jQuery('#postcode').focus(performFormsGeoCode);
-  jQuery('#country').keypress(performFormsGeoCode);
-  jQuery('#state').keypress(performFormsGeoCode);
   jQuery('#city').keypress(performFormsGeoCode);
   jQuery('#postcode').keypress(performFormsGeoCode);
 
