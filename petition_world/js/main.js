@@ -508,6 +508,9 @@ jQuery(document).ready(function() {
       initExploreMap();
     }
   });
+  jQuery('#show_your_vote').tabs().bind('tabsselect', function(event, ui) {
+    learnReset();
+  });
 
   // Do a geocode for any events that might fire if the form has changed.
   jQuery('#country').change(performFormsGeoCode);
