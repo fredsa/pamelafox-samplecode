@@ -21,6 +21,8 @@ def main():
                                       ('/info/countries', services.CountriesInfoService),
                                       ('/info/states', services.StatesInfoService),
                                       ('/info/postcodes', services.PostcodesInfoService),
+                                      ('/info/orgs', services.OrgsInfoService),
+                                      ('/info/totals', services.TotalsInfoService),
                                       ('/clearcache', pages.MemcacheClearer)
                                       ],
                                      debug=True)

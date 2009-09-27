@@ -17,6 +17,7 @@
     <script src="/js/maptooltip.js"></script>
     <script src="/js/mapiconmaker.js"></script>
     <script src="http://www.google.com/uds/solutions/videobar/gsvideobar.js?mode=new" type="text/javascript"></script>
+    <script type="text/javascript" src="http://jquery.malsup.com/cycle/jquery.cycle.all.js"></script> 
 {% endblock %}
 {% block tabs %}
     <li class="ui-state-default ui-corner-top"><a href="/learn">Learn</a></li>
@@ -30,8 +31,14 @@
         <div id="explore_map"></div>
       </div>
       <div class="right">
-        <div id="stats">
-          Stats go here.
+           <div class="ui-state-default ui-corner-all" style="width:250px; text-align: center; font-size: 24px; font-weight: bold;">
+             <span id="prev" >&#8592;</span>
+             <span id="stats" >
+                <span id="votes_span"><span id="votes"></span> Votes</span>
+                <span id="countries_span" style="display:none"><span id="countries"></span> Countries</span>
+             </span>
+             <span id="next" >&#8594;</span>
+           </div>
         </div>
         <div id="comments_wrapper">
           <!-- Define the div tag where the gadget will be inserted. -->

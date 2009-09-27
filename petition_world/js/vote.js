@@ -37,16 +37,13 @@ function performFormsGeoCode() {
     // They've set their country, we can geocode something.
     // TODO: Do fewer geocodes.
     setTimeout(function () {
+      var streetinfo = jQuery('#streetinfo').val();
       var state = jQuery('#state').val();
       var city = jQuery('#city').val();
       var postcode = jQuery('#postcode').val();
       var geocoder = new GClientGeocoder();
       var locationString;
-      if (state) {
-        locationString = city + ", " + state + " " + postcode + ", " + country;
-      } else {
-        locationString = city + ", " + postcode + ", " + country;
-      }
+      locationString = streetinfo + ", " + city + ", " + state + " " + postcode + ", " + country;
       if (!geocodeInProgress || locationString != geocodeInProgress) {
         geocoder.getLatLng(locationString, latLngHandler);
         geocodeInProgress = locationString;
@@ -84,6 +81,7 @@ jQuery(document).ready(function() {
   jQuery('#state').change(performFormsGeoCode);
   jQuery('#city').change(performFormsGeoCode);
   jQuery('#postcode').change(performFormsGeoCode);
+  jQuery('#streetinfo').change(performFormsGeoCode);
   jQuery('#city').keypress(performFormsGeoCode);
   jQuery('#postcode').keypress(performFormsGeoCode);
 
@@ -222,6 +220,7 @@ function geoError() {
 function toggleForm(formValue) {
   if (formValue == 'org') {
     jQuery('#email').rules('add', {required: true});
+    jQuery('#streetinfo').rules('add', {required: true});
     jQuery('#org_name').rules('add', {required: true});
     jQuery('#person_name').rules('remove');
     jQuery('.person').hide();
@@ -229,6 +228,7 @@ function toggleForm(formValue) {
   } else {
     jQuery('.org').hide();
     jQuery('#email').rules('remove');
+    jQuery('#streetinfo').rules('remove');
     jQuery('#org_name').rules('remove');
     jQuery('#person_name').rules('add', {required: true});
     jQuery('.person').show();

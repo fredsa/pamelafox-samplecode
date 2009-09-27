@@ -35,6 +35,8 @@ function loadVideoBar() {
 }
 
 jQuery(document).ready(function() {
+  window.setInterval(animateTotals, 1000);
+
   /* location of rpc_relay.html and canvas.html */
   google.friendconnect.container.setParentUrl('/gfc/');
   loadVideoBar();
@@ -67,6 +69,11 @@ jQuery(document).ready(function() {
   });
 });
 
+function animateTotals() {
+  jQuery('#votes_span').toggle();
+  jQuery('#countries_span').toggle();
+}
+
 function initExploreMap() {
   exploreMap = new GMap2(jQuery("#explore_map")[0]);
   exploreMap.setCenter(new GLatLng(37.0625,-95.677068), 3, G_PHYSICAL_MAP);
@@ -81,6 +88,7 @@ function initExploreMap() {
   GEvent.addListener(exploreMap, "moveend", handleBoundsChange);
   handleZoomChange();
   handleBoundsChange();
+  jQuery.getJSON("/info/totals", processTotals);
 }
 
 function handleBoundsChange() {
@@ -93,6 +101,7 @@ function handleBoundsChange() {
        && !countryInfo.loadedPostcodes
        && exploreMap.getZoom() > 4) {
         jQuery.getJSON("/info/postcodes?countryCode=" + countryCode, processPostcodes);
+        jQuery.getJSON("/info/orgs?countryCode=" + countryCode, processOrgs);
         countryInfo.loadedPostcodes = true;
       }
       if ( countryInfo.hasStates
@@ -105,6 +114,7 @@ function handleBoundsChange() {
        && !countryInfo.loadedPostcodes
        && exploreMap.getZoom() > 4) {
         jQuery.getJSON("/info/postcodes?countryCode=" + countryCode, processPostcodes);
+        jQuery.getJSON("/info/orgs?countryCode=" + countryCode, processOrgs);
         countryInfo.loadedPostcodes = true;
       }
     }
@@ -120,6 +130,11 @@ function handleZoomChange() {
    jQuery.getJSON("/info/continents", processContinents);
    loadedContinents = true;
  }
+}
+
+function processTotals(json) {
+  jQuery("#votes").html(json.total.totalVotes);
+  jQuery("#countries").html(json.total.totalCountries);
 }
 
 function processContinents(json) {
@@ -173,6 +188,28 @@ function processPostcodes(json) {
   markerManager.refresh();
 }
 
+function processOrgs(json) {
+  var orgs = json.orgs;
+  var markers = [];
+  for (var i = 0; i < orgs.length; i++) {
+    var marker = createOrgMarker(orgs[i]);
+    markers.push(marker);
+  }
+  markerManager.addMarkers(markers, 6);
+  markerManager.refresh();
+}
+
+function createOrgIcon(url) {
+  var icon = new GIcon();
+  icon.iconSize = new GSize(32, 32);
+  icon.image = url;
+  icon.shadow = null;
+  icon.iconAnchor = new GPoint(16, 16);
+  icon.infoWindowAnchor = new GPoint(16, 24);
+
+  return icon;
+}
+
 function createBigIcon(label) {
   var iconOptions = {};
   iconOptions.width = 32;
@@ -215,6 +252,14 @@ function createSmallIcon(label) {
   return icon;
 }
 
+function createOrgMarker(info) {
+  var marker = new GMarker(new GLatLng(info.center[0], info.center[1]), {icon: createOrgIcon(info.icon)});
+  GEvent.addListener(marker, "click", function() {
+    marker.openInfoWindowHtml("<b>" + info.name + "</b>");
+  });
+  return marker;
+}
+
 function createMarker(markerType, locationCode, latlng, icon, title, zoom) {
   var marker = new GMarker(latlng, {icon: icon});
   var tooltip = new MapTooltip(marker, title, {offsetX: icon.iconOptions.width - 6, backgroundColor: icon.iconOptions.primaryColor});
@@ -227,6 +272,13 @@ function createMarker(markerType, locationCode, latlng, icon, title, zoom) {
   if (markerType != "continent") {
     GEvent.addListener(marker, "click", function() {
       jQuery.getJSON("/info/votelocal?" + markerType + "=" + locationCode, function (gfcSigners) {
+        if (gfcSigners.length == 0) {
+          marker.openInfoWindowHtml(
+              '<p>' +
+                icon.iconOptions.label + ' signed the petition here.' +
+              '</p>');
+          return;
+        }
         var gfcIds = [];
         for (var i = 0; i < gfcSigners.length; i++) {
           gfcIds.push(gfcSigners[i]['gfcId']);

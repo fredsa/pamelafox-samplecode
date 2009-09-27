@@ -20,6 +20,12 @@ def genKeyForStatesInfo(countryCode):
 def genKeyForPostcodesInfo(countryCode):
   return 'INFO_POSTCODES' + countryCode
 
+def genKeyForOrgsInfo(countryCode):
+  return 'INFO_ORGS' + countryCode
+
+def genKeyForTotalsInfo():
+  return 'INFO_TOTALS'
+
 class PetitionSigner(db.Model):
   type = db.StringProperty()
   gfc_id = db.StringProperty()
@@ -29,6 +35,7 @@ class PetitionSigner(db.Model):
   state = db.StringProperty()
   city = db.StringProperty()
   postcode = db.StringProperty()
+  streetinfo = db.StringProperty()
   country = db.StringProperty()
   latlng = db.GeoPtProperty()
   media = db.StringProperty()

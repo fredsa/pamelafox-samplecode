@@ -129,8 +129,9 @@ class SignerAddService(webapp.RequestHandler):
       else:
         signer.type = 'org'
         signer.name = self.request.get('org_name')
-        signer.name = self.request.get('org_icon')
+        signer.org_icon = self.request.get('org_icon')
         signer.email = self.request.get('email')
+        signer.streetinfo = self.request.get('streetinfo')
       signer.city = self.request.get('city')
       signer.state = self.request.get('state')
       signer.country = self.request.get('country')

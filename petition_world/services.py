@@ -134,3 +134,37 @@ class PostcodesInfoService(webapp.RequestHandler):
       newVal = simplejson.dumps(data)
       memcache.set(models.genKeyForPostcodesInfo(countryCode), newVal, 10)
       self.response.out.write(newVal)
+
+class OrgsInfoService(webapp.RequestHandler):
+  def get(self):
+    self.response.headers.add_header('Cache-Control', 'no-cache, must-revalidate')
+    self.response.headers.add_header('Expires', 'Sat, 26 Jul 1997 05:00:00 GMT')
+    countryCode = self.request.get('countryCode')
+    cachedVal = memcache.get(models.genKeyForOrgsInfo(countryCode))
+    if cachedVal is not None:
+      self.response.out.write(cachedVal)
+    else:
+      data  = {}
+      results = util.getOrgsInCountry(countryCode)
+      data['orgs'] = []
+      for result in results:
+        data['orgs'].append({"name": result.name, "center": [result.latlng.lat, result.latlng.lon], "freetext": result.freetext, "media": result.media, "icon": result.org_icon});
+
+      newVal = simplejson.dumps(data)
+      memcache.set(models.genKeyForOrgsInfo(countryCode), newVal, 10)
+      self.response.out.write(newVal)
+
+class TotalsInfoService(webapp.RequestHandler):
+  def get(self):
+    self.response.headers.add_header('Cache-Control', 'no-cache, must-revalidate')
+    self.response.headers.add_header('Expires', 'Sat, 26 Jul 1997 05:00:00 GMT')
+    cachedVal = memcache.get(models.genKeyForTotalsInfo())
+    if cachedVal is not None:
+      self.response.out.write(cachedVal)
+    else:
+      data  = {}
+      totalVotes, totalCountries = util.getTotals()
+      data['total'] = {'totalVotes': totalVotes, 'totalCountries': totalCountries}
+      newVal = simplejson.dumps(data)
+      memcache.set(models.genKeyForTotalsInfo(), newVal, 10)
+      self.response.out.write(newVal)

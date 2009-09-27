@@ -17,7 +17,6 @@ import geodata
 
 def addSignerToClusters(signer, extraLatLng):
   clusterdata = {'lastname': signer.name,
-                 # 'streetinfo': signer.streetinfo,
                  'city': signer.city,
                  'state': signer.state,
                  'country': signer.country,
@@ -132,18 +131,25 @@ def getStateVotesInStore(countryCode, stateCode):
     numVotesInState += result.counter
   return numVotesInState
 
-def getTotalVotes():
+def getTotals():
   # keep this memcached as much as possible
   # perhaps only re-calculate every 5 minutes?
   votesMemcache = memcache.get(models.MEMCACHE_VOTES + 'TOTAL')
-  if votesMemcache is not None:
-    return int(votesMemcache)
+  countriesMemcache = memcache.get(models.MEMCACHE_VOTES + 'COUNTRIES')
+  if votesMemcache is not None and countriesMemcache is not None:
+    return int(votesMemcache), int(countriesMemcache)
   else:
     numVotesTotal = 0
+    numCountries = 0
     for countryCode in geodata.countries:
-      numVotesTotal += getCountryVotes(countryCode)
+      numVotesInCountry = getCountryVotes(countryCode)
+      if numVotesInCountry > 0:
+        numCountries += 1
+        numVotesTotal += numVotesInCountry
+
     memcache.set(models.MEMCACHE_VOTES + 'TOTAL', str(numVotesTotal), 300)
-    return numVotesTotal
+    memcache.set(models.MEMCACHE_VOTES + 'COUNTRIES', str(numCountries), 300)
+    return numVotesTotal, numCountries
 
 def getContinentVotes(continentCode):
   votesMemcache = memcache.get(models.MEMCACHE_VOTES + 'CONT_' + continentCode)
@@ -194,5 +200,12 @@ def getPostcodesInCountry(countryCode):
   query = db.Query(models.Postcode)
   query.filter('country =', countryCode)
   # todo: account for some countries having more than 1000 postcodes
+  results = query.fetch(1000)
+  return results
+
+def getOrgsInCountry(countryCode):
+  query = db.Query(models.PetitionSigner)
+  query.filter('country = ', countryCode)
+  query.filter('type = ', 'org')
   results = query.fetch(1000)
   return results

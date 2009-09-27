@@ -32,6 +32,7 @@ p { margin: 10px 0; }
 }
 .right {
   float: left;
+  padding: 2px;
 }
 
 #explore_map {
