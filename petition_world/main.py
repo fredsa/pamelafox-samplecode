@@ -9,10 +9,10 @@ import services
 
 def main():
   application = webapp.WSGIApplication([
-                                      ('/', pages.MainPage),
-                                      ('/signup', pages.FormPage),
+                                      ('/learn', pages.LearnPage),
+                                      ('/vote', pages.VotePage),
+                                      ('/explore', pages.ExplorePage),
                                       ('/debug', pages.DebugPage),
-                                      ('/map', pages.MapPage),
                                       ('/add/random', pages.RandomAddService),
                                       ('/add/signer', pages.SignerAddService),
                                       ('/nonce', services.CryptographicNonceService),

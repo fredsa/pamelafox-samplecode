@@ -22,8 +22,8 @@ class BasePage(webapp.RequestHandler):
   def get(self):
     self.render(self.getTemplateFilename(), self.getTemplateValues())
 
-  def getTemplateValues(self, page_title):
-    template_values = {'page_title': page_title}
+  def getTemplateValues(self, page_title, page_num):
+    template_values = {'page_title': page_title, 'page_num': page_num}
     return template_values
 
   def getTemplateFilename(self):
@@ -33,29 +33,29 @@ class BasePage(webapp.RequestHandler):
     path = os.path.join(os.path.dirname(__file__), 'templates', filename)
     self.response.out.write(template.render(path, template_values))
 
-class MainPage(BasePage):
+class LearnPage(BasePage):
   def getTemplateValues(self):
-    template_values = BasePage.getTemplateValues(self, 'PETITION')
+    template_values = BasePage.getTemplateValues(self, 'Show Your Vote: Learn', 0)
     return template_values
 
   def getTemplateFilename(self):
-    return "main.html"
+    return "learn.html"
 
-class FormPage(BasePage):
+class VotePage(BasePage):
   def getTemplateValues(self):
-    template_values = BasePage.getTemplateValues(self, 'SIGN THE PETITION')
+    template_values = BasePage.getTemplateValues(self, 'Show Your Vote: Vote', 1)
     return template_values
 
   def getTemplateFilename(self):
-    return "form.html"
+    return "vote.html"
 
-class MapPage(BasePage):
+class ExplorePage(BasePage):
   def getTemplateValues(self):
-    template_values = BasePage.getTemplateValues(self, 'VIEW THE MAP')
+    template_values = BasePage.getTemplateValues(self, 'Show Your Vote: Explore', 2)
     return template_values
 
   def getTemplateFilename(self):
-    return "worldmap.html"
+    return "explore.html"
 
 class DebugPage(webapp.RequestHandler):
   def get(self):
@@ -118,9 +118,9 @@ class SignerAddService(webapp.RequestHandler):
   def post(self):
     originalNonce = self.request.cookies.get('nonce', None)
     hashedNonce = self.request.get('nonce')
-    cachedVal = memcache.get(originalNonce, 'nonce')
+    cachedVal = memcache.get(originalNonce)
     if hashedNonce and originalNonce and cachedVal is not None and hashlib.sha1(originalNonce).hexdigest() == hashedNonce:
-      memcache.delete(originalNonce, 0, 'nonce')
+      memcache.delete(originalNonce, 0)
       signer = models.PetitionSigner()
       if not self.request.get('org_name') or self.request.get('org_name') == '':
         signer.type = 'person'
@@ -129,22 +129,18 @@ class SignerAddService(webapp.RequestHandler):
       else:
         signer.type = 'org'
         signer.name = self.request.get('org_name')
-      signer.email = self.request.get('email')
-      #signer.streetinfo = self.request.get('streetinfo')
+        signer.name = self.request.get('org_icon')
+        signer.email = self.request.get('email')
       signer.city = self.request.get('city')
       signer.state = self.request.get('state')
       signer.country = self.request.get('country')
       signer.postcode = self.request.get('postcode')
       signer.latlng = db.GeoPt(float(self.request.get('lat')), float(self.request.get('lng')))
       signer.put()
-      # Without street info, these values are essentially the same
-      postcodeLatLng = db.GeoPt(float(self.request.get('lat')), float(self.request.get('lng')))
-      util.addSignerToClusters(signer, postcodeLatLng)
+      util.addSignerToClusters(signer, signer.latlng)
       self.response.headers.add_header('Set-Cookie', 'latlng=%s; expires=Fri, 31-Dec-2020 23:59:59 GMT; path=/' % (str(signer.latlng.lat) + ',' + str(signer.latlng.lon)))
-      self.redirect('/#explore')
-      # self.redirect('/map?countryCode=' + signer.country + '&latlng=' + str(signer.latlng.lat) + ',' + str(signer.latlng.lon)
-      #   + '&latlng2=' + str(postcodeLatLng.lat) + ',' + str(postcodeLatLng.lon)
-      # )
+      self.redirect('/explore')
     else:
       # Spam
+      # TODO: log this!
       self.redirect('/')

@@ -21,7 +21,7 @@ class CryptographicNonceService(webapp.RequestHandler):
     randomVal = ''.join(["%02x" % ord(x) for x in os.urandom(20)])
     # No value is required, we only need to be able to verify that we've
     # issued this nonce in the recent past.
-    memcache.set(randomVal, '', 900, 0, 'nonce')
+    memcache.set(randomVal, '', 900)
     self.response.headers.add_header(
       'Set-Cookie', 'nonce=%s; path=/' % randomVal
     )

@@ -111,15 +111,19 @@
             <label for="org_name">Organization <em>*</em></label>
             <input name="org_name" id="org_name" />
           </li>
-          <li>
-            <label for="email">Email</label>
+          <li class="org">
+            <label for="email">Email <em>*</em></label>
             <input name="email" id="email" class="required email"/>
+          </li>
+          <li class="org">
+            <label for="org_icon">Icon URL (32*32px):</label>
+            <input type="text" name="org_icon" value="" class="url">
           </li>
           <li class="loc country">
             <label for="country">Country <em>*</em></label>
             <select name="country" id="country" class="required">
               <option value="">- Select Your Country -</option>
-            </select>                
+            </select>
           </li>
           <li class="loc state">
             <label for="state">State <em>*</em></label>
@@ -135,13 +139,22 @@
             <label for="postcode">Postcode <em>*</em></label>
             <input type="text" name="postcode" id="postcode"/>
           </li>
+          <li><em>Share how you're doing your part (optional):</em></li>
+          <li>
+            <label for="freetext">Your contributions:</label>
+            <textarea name="freetext" id="freetext"></textarea>
+          </li>
+          <li>
+            <label for="media">Your pictures:</label>
+            <input type="text" name="media" id="media" value="" class="url"/>
+          </li>
         </ol>
         <input type="hidden" id="nonce" name="nonce" />
         <input type="hidden" id="person_gfc_id" name="person_gfc_id" />
         <input type="hidden" id="lat" name="lat" />
         <input type="hidden" id="lng" name="lng" />
       </fieldset>
-      <div id="vote_map" style="width: 300px; height: 200px"></div>
+      <div id="vote_map" style="width: 300px; height: 150px"></div>
       <p>Required fields marked <em>*</em>.</p>
       <p><input id="submit" type="submit" value="Submit" disabled="disabled"/></p>
       <div id="errmsg" style="color:#ff0000"></div>

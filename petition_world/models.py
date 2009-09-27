@@ -25,14 +25,14 @@ class PetitionSigner(db.Model):
   gfc_id = db.StringProperty()
   name = db.StringProperty()
   email = db.StringProperty()
-  # num = db.IntegerProperty()
-  # org_icon = db.StringProperty()
-  # streetinfo = db.StringProperty()
+  org_icon = db.StringProperty()
   state = db.StringProperty()
   city = db.StringProperty()
   postcode = db.StringProperty()
   country = db.StringProperty()
   latlng = db.GeoPtProperty()
+  media = db.StringProperty()
+  freetext = db.StringProperty()
 
 class Postcode(db.Model):
   postcode = db.StringProperty()
