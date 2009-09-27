@@ -15,6 +15,8 @@ import geodata
 
 class CryptographicNonceService(webapp.RequestHandler):
   def get(self):
+    self.response.headers.add_header('Cache-Control', 'no-cache, must-revalidate')
+    self.response.headers.add_header('Expires', 'Sat, 26 Jul 1997 05:00:00 GMT')
     # Produces 160 bits of randomness to send back to the user
     randomVal = ''.join(["%02x" % ord(x) for x in os.urandom(20)])
     # No value is required, we only need to be able to verify that we've
@@ -27,6 +29,8 @@ class CryptographicNonceService(webapp.RequestHandler):
 
 class VotesInLocationService(webapp.RequestHandler):
   def get(self):
+    self.response.headers.add_header('Cache-Control', 'no-cache, must-revalidate')
+    self.response.headers.add_header('Expires', 'Sat, 26 Jul 1997 05:00:00 GMT')
     country = self.request.get('country')
     state = self.request.get('state')
     city = self.request.get('city')
@@ -51,6 +55,8 @@ class VotesInLocationService(webapp.RequestHandler):
 
 class ContinentsInfoService(webapp.RequestHandler):
   def get(self):
+    self.response.headers.add_header('Cache-Control', 'no-cache, must-revalidate')
+    self.response.headers.add_header('Expires', 'Sat, 26 Jul 1997 05:00:00 GMT')
     cachedVal = memcache.get(models.genKeyForContinentsInfo())
     if cachedVal is not None:
       self.response.out.write(cachedVal)
@@ -65,6 +71,8 @@ class ContinentsInfoService(webapp.RequestHandler):
 
 class CountriesInfoService(webapp.RequestHandler):
   def get(self):
+    self.response.headers.add_header('Cache-Control', 'no-cache, must-revalidate')
+    self.response.headers.add_header('Expires', 'Sat, 26 Jul 1997 05:00:00 GMT')
     cachedVal = memcache.get(models.genKeyForCountriesInfo())
     if cachedVal is not None:
       self.response.out.write(cachedVal)
@@ -88,6 +96,8 @@ class CountriesInfoService(webapp.RequestHandler):
 
 class StatesInfoService(webapp.RequestHandler):
   def get(self):
+    self.response.headers.add_header('Cache-Control', 'no-cache, must-revalidate')
+    self.response.headers.add_header('Expires', 'Sat, 26 Jul 1997 05:00:00 GMT')
     countryCode = self.request.get('countryCode')
     cachedVal = memcache.get(models.genKeyForStatesInfo(countryCode))
     if cachedVal is not None:
@@ -108,6 +118,8 @@ class StatesInfoService(webapp.RequestHandler):
 
 class PostcodesInfoService(webapp.RequestHandler):
   def get(self):
+    self.response.headers.add_header('Cache-Control', 'no-cache, must-revalidate')
+    self.response.headers.add_header('Expires', 'Sat, 26 Jul 1997 05:00:00 GMT')
     countryCode = self.request.get('countryCode')
     cachedVal = memcache.get(models.genKeyForPostcodesInfo(countryCode))
     if cachedVal is not None:
