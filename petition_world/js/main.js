@@ -620,7 +620,7 @@ function processContinents(json) {
   for (continentCode in info.continents) {
     var continent = info.continents[continentCode];
     if (continent.count == 0) continue;
-    var marker = createMarker(new GLatLng(continent.center[0], continent.center[1]), createBigIcon(continent.count), continent.name, 3);
+    var marker = createMarker("continent", continentCode, new GLatLng(continent.center[0], continent.center[1]), createBigIcon(continent.count), continent.name, 3);
     markers.push(marker);
   }
   markerManager.addMarkers(markers, 0, 2);
@@ -632,7 +632,7 @@ function processCountries(json) {
   var markers = [];
   for (countryCode in info.countries) {
     var country = info.countries[countryCode];
-    var marker = createMarker(new GLatLng(country.center[0], country.center[1]), createBigIcon(country.count), country.name, 6);
+    var marker = createMarker("country", countryCode, new GLatLng(country.center[0], country.center[1]), createBigIcon(country.count), country.name, 6);
     markers.push(marker);
   }
   markerManager.addMarkers(markers, 3, 5);
@@ -644,11 +644,10 @@ function processStates(json) {
   var markers = [];
   for (stateCode in info.states) {
     var state = info.states[stateCode];
-    var marker = createMarker(new GLatLng(state.center[0], state.center[1]), createMediumIcon(state.count), state.name, 6);
+    var marker = createMarker("state", stateCode, new GLatLng(state.center[0], state.center[1]), createMediumIcon(state.count), state.name, 6);
     markers.push(marker);
   }
 
-  
   markerManager.addMarkers(markers, 3, 5);
   markerManager.refresh();
 }
@@ -658,7 +657,7 @@ function processPostcodes(json) {
   var markers = [];
   for (postcodeCode in info.postcodes) {
     var postcode = info.postcodes[postcodeCode];
-    var marker = createMarker(new GLatLng(postcode.center[0], postcode.center[1]), createSmallIcon(postcode.count), postcodeCode, 14);
+    var marker = createMarker("postcode", postcodeCode, new GLatLng(postcode.center[0], postcode.center[1]), createSmallIcon(postcode.count), postcodeCode, 14);
     markers.push(marker);
   }
 
@@ -708,7 +707,7 @@ function createSmallIcon(label) {
   return icon;
 }
 
-function createMarker(latlng, icon, title, zoom) {
+function createMarker(markerType, locationCode, latlng, icon, title, zoom) {
   var marker = new GMarker(latlng, {icon: icon});
   var tooltip = new MapTooltip(marker, title, {offsetX: icon.iconOptions.width - 6, backgroundColor: icon.iconOptions.primaryColor});
   GEvent.addListener(marker, "mouseover", function() {
@@ -717,9 +716,50 @@ function createMarker(latlng, icon, title, zoom) {
   GEvent.addListener(marker, "mouseout", function() {
     exploreMap.removeOverlay(tooltip);
   });
-  GEvent.addListener(marker, "click", function() {
-    marker.openInfoWindowHtml(icon.iconOptions.label + " signed the petition here. <a href='javascript:exploreMap.setCenter(new GLatLng(" + latlng.toUrlValue(6) + "), " + zoom + ")'>Zoom in.</a>");
-  });
+  if (markerType != "continent") {
+    GEvent.addListener(marker, "click", function() {
+      jQuery.getJSON("/info/votelocal?" + markerType + "=" + locationCode, function (gfcSigners) {
+        var gfcIds = [];
+        for (var i = 0; i < gfcSigners.length; i++) {
+          gfcIds.push(gfcSigners[i]['gfcId']);
+        }
+        var openSocialReq = opensocial.newDataRequest();
+        var idSpec = opensocial.newIdSpec({'userId': gfcIds});
+        openSocialReq.add(openSocialReq.newFetchPeopleRequest(idSpec), 'signers');
+        openSocialReq.send(function (data) {
+          if (!data.hadError()) {
+            var signers = data.get('signers').getData();
+            var gfcImageList = '';
+            gfcImageList = gfcImageList + '<ul class="picture_set">';
+            signers.each(function(signer) {
+              if (signer.getField(opensocial.Person.Field.PROFILE_URL)) {
+                gfcImageList = gfcImageList +
+                  '<li><a href="' +
+                    signer.getField(opensocial.Person.Field.PROFILE_URL) +
+                  '"><img src="' +
+                    signer.getField(opensocial.Person.Field.THUMBNAIL_URL) +
+                  '" alt="' + signer.getDisplayName() + '" /></a></li>';
+              } else {
+                gfcImageList = gfcImageList +
+                  '<li><img src="' +
+                    signer.getField(opensocial.Person.Field.THUMBNAIL_URL) +
+                  '" alt="' + signer.getDisplayName() + '" /></li>';
+              }
+            });
+            gfcImageList = gfcImageList + '</ul>';
+            marker.openInfoWindowHtml(
+              gfcImageList +
+              '<p>' +
+                icon.iconOptions.label + ' signed the petition here.' +
+              '</p>'
+            );
+          } else {
+            alert(data.getErrorMessage());
+          }
+        });
+      });
+    });
+  }
   return marker;
 }
 

@@ -44,7 +44,7 @@ class VotesInLocationService(webapp.RequestHandler):
       query.filter('city =', city)
     if postcode is not None and postcode != '':
       query.filter('postcode =', postcode)
-    results = query.fetch(20)
+    results = query.fetch(16) # 4 x 4 pictures
     data = []
     for result in results:
       if result.gfc_id is not None and result.gfc_id != '':
