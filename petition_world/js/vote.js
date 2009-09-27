@@ -222,13 +222,15 @@ function geoError() {
 function toggleForm(formValue) {
   if (formValue == 'org') {
     jQuery('#email').rules('add', {required: true});
-    jQuery('#name').rules('remove');
+    jQuery('#org_name').rules('add', {required: true});
+    jQuery('#person_name').rules('remove');
     jQuery('.person').hide();
     jQuery('.org').show();
   } else {
     jQuery('.org').hide();
     jQuery('#email').rules('remove');
-    jQuery('#name').rules('add', {required: true});
+    jQuery('#org_name').rules('remove');
+    jQuery('#person_name').rules('add', {required: true});
     jQuery('.person').show();
   }
 }
