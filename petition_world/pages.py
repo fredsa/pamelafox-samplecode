@@ -18,7 +18,7 @@ import geocoder
 import util 
 import geodata
 
-class HomeRedirect(webapp.RequestHandler):
+class RootRedirect(webapp.RequestHandler):
   def get(self):
     self.redirect('/learn')
 
