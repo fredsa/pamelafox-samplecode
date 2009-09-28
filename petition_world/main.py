@@ -9,6 +9,7 @@ import services
 
 def main():
   application = webapp.WSGIApplication([
+                                      ('/', pages.HomeRedirect),
                                       ('/learn', pages.LearnPage),
                                       ('/vote', pages.VotePage),
                                       ('/explore', pages.ExplorePage),

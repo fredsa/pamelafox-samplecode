@@ -18,6 +18,10 @@ import geocoder
 import util 
 import geodata
 
+class HomeRedirect(webapp.RequestHandler):
+  def get(self):
+    self.redirect('/learn')
+
 class BasePage(webapp.RequestHandler):
   def get(self):
     self.render(self.getTemplateFilename(), self.getTemplateValues())
