@@ -283,9 +283,11 @@ function createMarker(markerType, locationCode, latlng, icon, title, zoom) {
         for (var i = 0; i < gfcSigners.length; i++) {
           gfcIds.push(gfcSigners[i]['gfcId']);
         }
+        var params = {};
+        params[opensocial.DataRequest.PeopleRequestFields.PROFILE_DETAILS] = [opensocial.Person.Field.PROFILE_URL];
         var openSocialReq = opensocial.newDataRequest();
         var idSpec = opensocial.newIdSpec({'userId': gfcIds});
-        openSocialReq.add(openSocialReq.newFetchPeopleRequest(idSpec), 'signers');
+        openSocialReq.add(openSocialReq.newFetchPeopleRequest(idSpec, params), 'signers');
         openSocialReq.send(function (data) {
           if (!data.hadError()) {
             var signers = data.get('signers').getData();
