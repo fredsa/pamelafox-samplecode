@@ -97,10 +97,10 @@ form.cmxform {
 #big_button {
   float: left;
   display: block;
-  margin: 12px;
 }
 #videoBar-bar {
   margin: 3px;
+  padding-top: 4px;
   float: right;
 }
 
@@ -137,3 +137,20 @@ form.cmxform {
   width: 45px;
   height: 45px;
 }
+
+#voices_for_earth h2 {
+  background-color: #f2f2f2;
+  border: 1px solid #cccccc;
+  font-size: 120%;
+  padding: 5px;
+  margin: 1px;
+}
+
+#voices_for_earth p {
+  position: absolute;
+  top: 594px;
+  left: 21px;
+  width: 590px;
+  font-size: 0.8em;
+}
+
