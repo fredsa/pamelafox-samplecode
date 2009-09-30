@@ -166,6 +166,14 @@ function geoSuccess(p) {
   geocoder.getLocations(point, addressHandler);
 }
 
+function locationString(country, state, city, postcode) {
+  if (state) {
+    return city + ", " + state + " " + postcode + ", " + country;
+  } else {
+    return city + ", " + postcode + ", " + country;
+  }
+}
+
 function addressHandler(response) {
   if (!response || response.Status.code != 200) {
     geoError();
@@ -188,11 +196,7 @@ function addressHandler(response) {
     jQuery('#city').val(city);
     jQuery('#postcode').val(postcode);
     var geocoder = new GClientGeocoder();
-    if (state) {
-      geocoder.getLatLng(city + ", " + state + " " + postcode + ", " + country, latLngHandler);
-    } else {
-      geocoder.getLatLng(city + ", " + postcode + ", " + country, latLngHandler);
-    }
+    geocoder.getLatLng(locationString(country, state, city, postcode), latLngHandler);
   }
 }
 

@@ -252,6 +252,14 @@ function createSmallIcon(label) {
   return icon;
 }
 
+function locationString(country, state, city, postcode) {
+  if (state) {
+    return city + ", " + state + " " + postcode + ", " + country;
+  } else {
+    return city + ", " + postcode + ", " + country;
+  }
+}
+
 function createOrgMarker(info) {
   var marker = new GMarker(new GLatLng(info.center[0], info.center[1]), {icon: createOrgIcon(info.icon)});
   GEvent.addListener(marker, "click", function() {
@@ -261,6 +269,18 @@ function createOrgMarker(info) {
 }
 
 function createMarker(markerType, locationCode, latlng, icon, title, zoom) {
+  
+  var infoWindowOptions = function () {
+    return {
+      maxTitle: title,
+      maxContent: '\
+<div class="map_comments">\
+  <div id="div-864264044956702366" style="width:441px;border:1px solid #cccccc;"></div>\
+</div>\
+'
+    }
+  }
+
   var marker = new GMarker(latlng, {icon: icon});
   var tooltip = new MapTooltip(marker, title, {offsetX: icon.iconOptions.width - 6, backgroundColor: icon.iconOptions.primaryColor});
   GEvent.addListener(marker, "mouseover", function() {
@@ -274,9 +294,11 @@ function createMarker(markerType, locationCode, latlng, icon, title, zoom) {
       jQuery.getJSON("/info/votelocal?" + markerType + "=" + locationCode, function (gfcSigners) {
         if (gfcSigners.length == 0) {
           marker.openInfoWindowHtml(
-              '<p>' +
-                icon.iconOptions.label + ' signed the petition here.' +
-              '</p>');
+            '<p>' +
+              icon.iconOptions.label + ' signed the petition here.' +
+            '</p>',
+            infoWindowOptions()
+          );
           return;
         }
         var gfcIds = [];
@@ -313,7 +335,11 @@ function createMarker(markerType, locationCode, latlng, icon, title, zoom) {
               gfcImageList +
               '<p>' +
                 icon.iconOptions.label + ' signed the petition here.' +
-              '</p>'
+              '</p>' +
+              '<p>' +
+              '<a href="javascript:exploreMap.getInfoWindow().maximize()">Discuss</a>' +
+              '</p>',
+              infoWindowOptions()
             );
           } else {
             alert(data.getErrorMessage());
@@ -321,7 +347,39 @@ function createMarker(markerType, locationCode, latlng, icon, title, zoom) {
         });
       });
     });
+    GEvent.addListener(marker, "infowindowopen", function() {
+      var iw = exploreMap.getInfoWindow();
+      GEvent.addListener(iw, "maximizeend", function() {
+        window.setTimeout(function () {
+          var skin = {};
+          skin['BORDER_COLOR'] = '#cccccc';
+          skin['ENDCAP_BG_COLOR'] = '#f2f2f2';
+          skin['ENDCAP_TEXT_COLOR'] = '#333333';
+          skin['ENDCAP_LINK_COLOR'] = '#0000cc';
+          skin['ALTERNATE_BG_COLOR'] = '#ffffff';
+          skin['CONTENT_BG_COLOR'] = '#ffffff';
+          skin['CONTENT_LINK_COLOR'] = '#0000cc';
+          skin['CONTENT_TEXT_COLOR'] = '#333333';
+          skin['CONTENT_SECONDARY_LINK_COLOR'] = '#7777cc';
+          skin['CONTENT_SECONDARY_TEXT_COLOR'] = '#666666';
+          skin['CONTENT_HEADLINE_COLOR'] = '#333333';
+          skin['DEFAULT_COMMENT_TEXT'] = '- add your comment here -';
+          skin['HEADER_TEXT'] = 'Comments for ' + title;
+          skin['POSTS_PER_PAGE'] = '4';
+          google.friendconnect.container.renderWallGadget({
+            id: 'div-864264044956702366',
+            site: '16982815293172380621',
+            'view-params': {
+              "disableMinMax": "true",
+              "scope": "ID",
+              "features": "video,comment",
+              "docId": SHA1(markerType + locationCode + title),
+              "startMaximized": "true"
+            }
+          }, skin);
+        }, 5);
+      });
+    });
   }
   return marker;
 }
-
