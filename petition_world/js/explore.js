@@ -275,7 +275,7 @@ function createMarker(markerType, locationCode, latlng, icon, title, zoom) {
       maxTitle: title,
       maxContent: '\
 <div class="map_comments">\
-  <div id="div-864264044956702366" style="width:441px;border:1px solid #cccccc;"></div>\
+  <div id="div-864264044956702366" style="width:441px;border:1px solid #cccccc;max-height:336px"></div>\
 </div>\
 '
     }
@@ -366,6 +366,7 @@ function createMarker(markerType, locationCode, latlng, icon, title, zoom) {
           skin['DEFAULT_COMMENT_TEXT'] = '- add your comment here -';
           skin['HEADER_TEXT'] = 'Comments for ' + title;
           skin['POSTS_PER_PAGE'] = '4';
+          skin['HEIGHT'] = '336';
           google.friendconnect.container.renderWallGadget({
             id: 'div-864264044956702366',
             site: '16982815293172380621',
@@ -374,7 +375,8 @@ function createMarker(markerType, locationCode, latlng, icon, title, zoom) {
               "scope": "ID",
               "features": "video,comment",
               "docId": SHA1(markerType + locationCode + title),
-              "startMaximized": "true"
+              "startMaximized": "true",
+              "useFixedHeight": "true"
             }
           }, skin);
         }, 5);
