@@ -1,0 +1,96 @@
+{% extends "base.html" %}
+{% block includes %}
+    <link type="text/css" href="/css/syv.css" rel="stylesheet" />
+    <script src="/js/explore.js"></script>
+    <script type="text/javascript">
+      document.write(
+        '<script src="http://maps.google.com/maps?file=api&amp;v=2&amp;sensor=true&amp;key=' +
+        {
+          'localhost:8080': 'ABQIAAAAD8M9IMy5hGBBbqIohA4R4hTwM0brOpm-All5BF6PoaKBxRWWERQKBKqDm80in1RTu5PkBiNU5rC6TQ',
+          'www.corp.google.com': 'ABQIAAAAD8M9IMy5hGBBbqIohA4R4hRCgqPHFwXE2zePYmMJxuu4uk_b2xT9IjfnJgIf53UIW67eDyEQGkZn7w',
+          'showyourvote.org': 'ABQIAAAAD8M9IMy5hGBBbqIohA4R4hQ8ELJusaStVeLp-McODOsiHrSWGhTwoDA6OSVhixqIn2IyFPsBBWLRlA',
+          'show-your-vote.appspot.com': 'ABQIAAAA-O3c-Om9OcvXMOJXreXHAxRlOb26qSyU154aZeLwOrF4C7-DphSw7JoLuXrcDjUb_7h-S1txkSCY7A',
+		  'syv-test.appspot.com': 'ABQIAAAALrtqAVfQq7mfTTl0EBb7vBT0h0tJ-bKGUcjUByQY52vcgVjYfBTGUDVuRrptlbTJqV8QJhQ1sQgxDQ'
+        }[location.host] +
+        '"><\/script>'
+      );
+    </script>
+    <script src="/js/markermanager.js"></script>
+    <script src="/js/maptooltip.js"></script>
+    <script src="/js/mapiconmaker.js"></script>
+<!--    <script src="http://www.google.com/uds/solutions/videobar/gsvideobar.js?mode=new" type="text/javascript"></script> -->
+    <script type="text/javascript" src="http://jquery.malsup.com/cycle/jquery.cycle.all.js"></script> 
+{% endblock %}
+{% block tabs %}
+    <li class="ui-state-default ui-corner-top"><a href="/vote?skin=mini">Vote</a></li>
+    <li class="ui-state-default ui-corner-top ui-tabs-selected ui-state-active"><a href="/explore?skin=mini">Explore</a></li>
+    <li class="ui-state-default ui-corner-top"><a href="/learn?skin=mini">Learn</a></li>
+
+{% endblock %}
+{% block content %}
+  <div id="explore">
+    <div class="top">
+      <div class="left">
+        <div id="explore_map"></div>
+      </div>
+      <div class="right">
+           <div style="width:211px; text-align: center; font-size: 20px; font-weight: bold; border: 1px solid #cccccc;margin-top:3px;">
+             <!-- <span id="prev" >&#8592;</span> -->
+             <span id="stats" >
+                <span id="votes_span"><span id="votes"></span> Votes</span>
+                <span id="countries_span" style="display:none"><span id="countries"></span> Countries</span>
+             </span>
+             <!-- <span id="next" >&#8594;</span> -->
+           </div>
+        </div>
+		<div class="right">
+        <div id="comments_wrapper">
+          <!-- Define the div tag where the gadget will be inserted. -->
+          <div id="div-6448190187886641253" style="width:211px;border:1px solid #cccccc;max-height:394px;margin-left:2px;"></div>
+        </div>
+        <!-- Render the gadget into a div. -->
+        <script type="text/javascript">
+          var skin = {};
+          skin['BORDER_COLOR'] = '#cccccc';
+          skin['ENDCAP_BG_COLOR'] = '#fdf7eb';
+          skin['ENDCAP_TEXT_COLOR'] = '#333333';
+          skin['ENDCAP_LINK_COLOR'] = '#0000cc';
+          skin['ALTERNATE_BG_COLOR'] = '#ffffff';
+          skin['CONTENT_BG_COLOR'] = '#ffffff';
+          skin['CONTENT_LINK_COLOR'] = '#0000cc';
+          skin['CONTENT_TEXT_COLOR'] = '#333333';
+          skin['CONTENT_SECONDARY_LINK_COLOR'] = '#7777cc';
+          skin['CONTENT_SECONDARY_TEXT_COLOR'] = '#666666';
+          skin['CONTENT_HEADLINE_COLOR'] = '#333333';
+          skin['DEFAULT_COMMENT_TEXT'] = '- add your comment here -';
+          skin['HEADER_TEXT'] = 'Comments';
+          skin['POSTS_PER_PAGE'] = '4';
+          skin['HEIGHT'] = '394';
+google.friendconnect.container.setParentUrl('/gfc' /* location of rpc_relay.html and canvas.html */);
+          google.friendconnect.container.renderWallGadget({
+            id: 'div-6448190187886641253',
+            site: '11822491580648762423',
+              'view-params':{"disableMinMax":"true","scope":"ID","features":"video,comment","docId":locationId,"startMaximized":"true","useFixedHeight":"true"}
+          }, skin);
+        </script>
+      </div>
+    </div>
+<!--    <div class="bottom">
+      <a id="big_button" href="http://www.youtube.com/user/Cop15">
+      <img src="images/raise_your_voice.png" />
+      </a>
+      <div id="videoBar-bar">
+        <span style="color:#676767;font-size:11px;margin:10px;padding:4px;">Loading...</span>
+      </div>
+      <style type="text/css">
+        @import url("http://www.google.com/uds/css/gsearch.css");
+        @import url("http://www.google.com/uds/solutions/videobar/gsvideobar.css");
+        .playerInnerBox_gsvb .player_gsvb {
+          width : 320px;
+          height : 260px;
+        }
+      </style>
+    </div>
+-->
+  </div>
+{% endblock %}

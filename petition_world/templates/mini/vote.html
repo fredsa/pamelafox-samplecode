@@ -1,0 +1,113 @@
+{% extends "base.html" %}
+{% block includes %}
+    <link type="text/css" href="/css/syv.css" rel="stylesheet" />
+    <link type="text/css" href="/css/forms.css" rel="stylesheet" />
+    <script src="http://dev.jquery.com/view/trunk/plugins/validate/jquery.validate.js"></script>
+    <script src="/js/vote.js"></script>
+    <script type="text/javascript">
+      document.write(
+        '<script src="http://maps.google.com/maps?file=api&amp;v=2&amp;sensor=true&amp;key=' +
+        {
+          'localhost:8080': 'ABQIAAAAD8M9IMy5hGBBbqIohA4R4hTwM0brOpm-All5BF6PoaKBxRWWERQKBKqDm80in1RTu5PkBiNU5rC6TQ',
+          'www.corp.google.com': 'ABQIAAAAD8M9IMy5hGBBbqIohA4R4hRCgqPHFwXE2zePYmMJxuu4uk_b2xT9IjfnJgIf53UIW67eDyEQGkZn7w',
+          'showyourvote.org': 'ABQIAAAAD8M9IMy5hGBBbqIohA4R4hQ8ELJusaStVeLp-McODOsiHrSWGhTwoDA6OSVhixqIn2IyFPsBBWLRlA',
+          'show-your-vote.appspot.com': 'ABQIAAAA-O3c-Om9OcvXMOJXreXHAxRlOb26qSyU154aZeLwOrF4C7-DphSw7JoLuXrcDjUb_7h-S1txkSCY7A',
+		  'syv-test.appspot.com': 'ABQIAAAALrtqAVfQq7mfTTl0EBb7vBT0h0tJ-bKGUcjUByQY52vcgVjYfBTGUDVuRrptlbTJqV8QJhQ1sQgxDQ'
+        }[location.host] +
+        '" type="text/javascript"><\/script>'
+      );
+    </script>
+
+
+{% endblock %}
+{% block tabs %}
+    <li class="ui-state-default ui-corner-top ui-tabs-selected ui-state-active"><a href="/vote?skin=mini">Vote</a></li>
+    <li class="ui-state-default ui-corner-top"><a href="/explore?skin=mini">Explore</a></li>
+    <li class="ui-state-default ui-corner-top"><a href="/learn?skin=mini">Learn</a></li>
+{% endblock %}
+{% block content %}
+  <div id="vote">
+    <div id="why">
+      <p style="font-size:12px; margin-top:0px; margin-bottom:0px; margin-left:5px"><b>Why should I join the vote?</b></p>
+
+      <p style="margin-top:0px; margin-left:10px; margin-right:10px">Fill in your details to vote for Earth over global warming. A vote for Earth is a vote for a safer, more sustainable and prosperous future for us all.  Your vote will be shown to world leaders at the UN climate summit in Copenhagen, telling them to seal a fair and effective climate deal.</p>
+	
+	
+
+    </div>
+    <form name="sign" id="sign" action="/add/signer" method="post" class="cmxform">
+	<div id="vote_map" style="width: 250px; height: 250px; overflow:hidden">
+
+		
+	</div>
+      <fieldset>
+        <ol>
+          <li>
+            <label for="form_toggle">Are You An <em>*</em></label>
+            <select id="form_toggle" onchange="toggleForm(jQuery(this).val())">
+              <option value="person">Individual</option>
+              <option value="org">Organization</option>
+            </select>
+          </li>
+          <li class="person">
+            <label for="person_name">Name <em>*</em></label>
+            <input name="person_name" id="person_name" minlength="2"/>
+          </li>
+          <li class="org">
+            <label for="org_name">Organization <em>*</em></label>
+            <input name="org_name" id="org_name" />
+          </li>
+          <li class="org">
+            <label for="email">Email <em>*</em></label>
+            <input name="email" id="email" class="email"/>
+          </li>
+          <li class="org">
+            <label for="org_icon">Icon URL (32*32px):</label>
+            <input type="text" name="org_icon" value="" class="url">
+          </li>
+          <li class="loc country">
+            <label for="country">Country <em>*</em></label>
+            <select name="country" id="country" class="required">
+              <option value="">- Select Your Country -</option>
+            </select>
+          </li>
+          <li class="loc state">
+            <label for="state">State <em>*</em></label>
+            <select name="state" id="state">
+              <option value="">- Select Your State -</option>
+            </select>
+          </li>
+          <li class="loc org">
+            <label for="streetinfo">Street Address <em>*</em></label>
+            <input type="text" name="streetinfo" id="streetinfo"/>
+          </li>
+          <li class="loc">
+            <label for="city">City</label>
+            <input type="text" name="city" id="city"/>
+          </li>
+          <li class="loc postcode">
+            <label for="postcode">Postcode <em>*</em></label>
+            <input type="text" name="postcode" id="postcode"/>
+          </li>
+          <li><em>Share how you're doing your part (optional):</em></li>
+          <li>
+            <label for="freetext">Your contributions:</label>
+            <textarea name="freetext" id="freetext"></textarea>
+          </li>
+          <li>
+            <label for="media">Your pictures:</label>
+            <input type="text" name="media" id="media" value="" class="url"/>
+          </li>
+        </ol>
+        <input type="hidden" id="nonce" name="nonce" />
+        <input type="hidden" id="person_gfc_id" name="person_gfc_id" />
+        <input type="hidden" id="lat" name="lat" />
+        <input type="hidden" id="lng" name="lng" />
+      </fieldset>
+      
+      <p style="margin-left:6px">Required fields marked <em>*</em>
+        <input id="submit" type="submit" value="Submit" disabled="disabled"/></p>
+      <div id="errmsg" style="color:#ff0000"></div>
+    </form>
+  </div>
+{% endblock %}

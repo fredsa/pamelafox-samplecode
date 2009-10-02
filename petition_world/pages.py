@@ -7,7 +7,6 @@ import hashlib
 from google.appengine.ext import webapp
 from google.appengine.ext.webapp.util import run_wsgi_app
 from google.appengine.ext.webapp import template
-from google.appengine.ext.webapp import template
 from google.appengine.ext import db
 from google.appengine.api import memcache
 
@@ -20,21 +19,29 @@ import geodata
 
 class RootRedirect(webapp.RequestHandler):
   def get(self):
-    self.redirect('/learn')
+    skin = self.request.get('skin') or 'main'
+    if skin == 'main':
+      self.redirect('/learn')
+    else:
+      self.redirect('/learn?skin=' + skin)
 
 class BasePage(webapp.RequestHandler):
   def get(self):
     self.render(self.getTemplateFilename(), self.getTemplateValues())
 
   def getTemplateValues(self, page_title, page_num):
-    template_values = {'page_title': page_title, 'page_num': page_num}
+    skin = self.request.get('skin') or 'main'
+    if not skin in ['main', 'mini']:
+      skin = 'main'
+
+    template_values = {'page_title': page_title, 'page_num': page_num, 'skin': skin}
     return template_values
 
   def getTemplateFilename(self):
     return "base.html"
 
   def render(self, filename, template_values):
-    path = os.path.join(os.path.dirname(__file__), 'templates', filename)
+    path = os.path.join(os.path.dirname(__file__), 'templates', template_values['skin'], filename)
     self.response.out.write(template.render(path, template_values))
 
 class LearnPage(BasePage):
@@ -144,6 +151,7 @@ class SignerAddService(webapp.RequestHandler):
       signer.put()
       util.addSignerToClusters(signer, signer.latlng)
       self.response.headers.add_header('Set-Cookie', 'latlng=%s; expires=Fri, 31-Dec-2020 23:59:59 GMT; path=/' % (str(signer.latlng.lat) + ',' + str(signer.latlng.lon)))
+      # TODO: redirect to the correct skin, check referrer?
       self.redirect('/explore')
     else:
       # Spam
