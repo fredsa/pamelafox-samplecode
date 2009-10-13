@@ -10,6 +10,7 @@ p { margin: 10px 0; }
   width: 600px;
   height: 500px;
   background-color: #fdf7eb;
+  border: 1px solid #cccccc;
 }
 .logo {
   margin-right: 10px;
@@ -70,7 +71,7 @@ p { margin: 10px 0; }
 
 #vote #why {
   float: left;
-  border: 1px solid #cccccc;
+  border: 0px solid #cccccc;
   width: 598px;
   height: 50px;
   margin: 0px 0px 0px 0;
@@ -79,12 +80,12 @@ p { margin: 10px 0; }
 
 #vote #vote_map {
 float: right;	
-	
+border: 1px solid #cccccc;		
 }
 
 #vote form {
   float: left;
-  border: 1px solid #cccccc;
+  border: 0px solid #cccccc;
   width: 588px;
   height: 380px;
   margin: 2px 0 2px 0;
