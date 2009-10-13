@@ -198,7 +198,7 @@ var geo_position_js=function() {
 					
 			}
 		}
-		catch (e){ console.log(e); }		
+		catch (e){ }		
 		
 		
 		return  provider!=null;
