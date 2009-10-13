@@ -5,7 +5,7 @@ form.cmxform fieldset {
 
 form.cmxform label {
   display: inline-block;
-  line-height: 1.8;
+  line-height: 1.0;
   vertical-align: top;
   width: 140px;
 }
