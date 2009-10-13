@@ -4,7 +4,7 @@ for (var i = 0; i < places.length; i++) {
   var place = places[i];
   str.push('  "' + place.state.toUpperCase() + '": {' + '"name": "' + place.name + '", "center": [' + place.centroid[1] + ',' + place.centroid[0] + ']}');
 }
-console.log(str.join(",\n"));
+//console.log(str.join(",\n"));
 
 // Load http://gmaps-samples.googlecode.com/svn/trunk/versionchecker.html?v=2
 // Copy geodata.py into FB console, remove top line
@@ -45,4 +45,4 @@ for (var countryCode in countries) {
   //map.addOverlay(new GPolyline([bounds.getSouthWest(), bounds.getNorthEast()], '#0000ff', 8, .7));
   //map.addOverlay(new GMarker(poly.getBounds().getNorthEast(), {title: country.name}));
 }
-console.log('var countriesInfo = {\n' + str.join(",\n") + '}');
+//console.log('var countriesInfo = {\n' + str.join(",\n") + '}');
