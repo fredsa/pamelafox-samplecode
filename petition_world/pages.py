@@ -152,7 +152,7 @@ class SignerAddService(webapp.RequestHandler):
       util.addSignerToClusters(signer, signer.latlng)
       self.response.headers.add_header('Set-Cookie', 'latlng=%s; expires=Fri, 31-Dec-2020 23:59:59 GMT; path=/' % (str(signer.latlng.lat) + ',' + str(signer.latlng.lon)))
       # TODO: redirect to the correct skin, check referrer?
-      self.redirect('/explore')
+      self.redirect('/explore?skin=mini')
     else:
       # Spam
       # TODO: log this!
