@@ -19,26 +19,31 @@
     <script src="/js/maptooltip.js"></script>
     <script src="/js/mapiconmaker.js"></script>
 <!--    <script src="http://www.google.com/uds/solutions/videobar/gsvideobar.js?mode=new" type="text/javascript"></script> -->
-    <script type="text/javascript" src="http://jquery.malsup.com/cycle/jquery.cycle.all.js"></script> 
+<!--    <script type="text/javascript" src="http://jquery.malsup.com/cycle/jquery.cycle.all.js"></script> -->
 {% endblock %}
 {% block tabs %}
-    <li class="ui-state-default ui-corner-top"><a href="/vote?skin=mini">Vote</a></li>
-    <li class="ui-state-default ui-corner-top ui-tabs-selected ui-state-active"><a href="/explore?skin=mini">Explore</a></li>
-    <li class="ui-state-default ui-corner-top"><a href="/learn?skin=mini">Learn</a></li>
-
+<img src="/images/mini/HeaderExplore.png" width="600" height="39" border="0" usemap="#Map" />
+<map name="Map" id="Map">
+  <area shape="rect" coords="1,1,189,39" href="http://showyourvote.org" />
+  <area shape="rect" coords="204,10,250,39" href="vote?skin=mini" />
+  <area shape="rect" coords="251,10,323,39" href="explore?skin=mini" />
+  <area shape="rect" coords="324,10,381,39" href="learn?skin=mini" />
+</map>
 {% endblock %}
 {% block content %}
   <div id="explore">
     <div class="top">
       <div class="left">
-        <div id="explore_map"></div>
+       <br>
+ <div id="explore_map"></div>
       </div>
+<br>
       <div class="right">
-           <div style="width:211px; text-align: center; font-size: 20px; font-weight: bold; border: 1px solid #cccccc;margin-top:3px;">
+           <div style="overflow: hidden; width:211px; height:25px; text-align: center; font-size: 20px; font-weight: bold; border: 1px solid #cccccc;margin-top:3px;">
              <!-- <span id="prev" >&#8592;</span> -->
              <span id="stats" >
-                <span id="votes_span"><span id="votes"></span> Votes</span>
-                <span id="countries_span" style="display:none"><span id="countries"></span> Countries</span>
+                <span id="votes_span"><span id="votes"></span>&nbsp;Votes</span>
+                <span id="countries_span" style="display:none"><span id="countries"></span>&nbsp;Countries</span>
              </span>
              <!-- <span id="next" >&#8594;</span> -->
            </div>

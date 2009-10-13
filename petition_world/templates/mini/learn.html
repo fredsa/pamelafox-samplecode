@@ -11,9 +11,13 @@
     <script src="/js/tours.js" type="text/javascript"></script>
 {% endblock %}
 {% block tabs %}
-    <li class="ui-state-default ui-corner-top"><a href="/vote?skin=mini">Vote</a></li>
-    <li class="ui-state-default ui-corner-top"><a href="/explore?skin=mini">Explore</a></li>
-    <li class="ui-state-default ui-corner-top ui-tabs-selected ui-state-active"><a href="/learn?skin=mini">Learn</a></li>
+<img src="/images/mini/HeaderLearn.png" width="600" height="39" border="0" usemap="#Map" />
+<map name="Map" id="Map">
+  <area shape="rect" coords="1,1,189,39" href="http://showyourvote.org" />
+  <area shape="rect" coords="204,10,250,39" href="vote?skin=mini" />
+  <area shape="rect" coords="251,10,323,39" href="explore?skin=mini" />
+  <area shape="rect" coords="324,10,381,39" href="learn?skin=mini" />
+</map>
 {% endblock %}
 {% block content %}
 <br>
