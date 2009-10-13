@@ -15,6 +15,7 @@ var loadedCountries = false;
 var loadedContinents = false;
 var locationId = "global";
 
+/*
 function loadVideoBar() {
   var videoBar;
   var options = {
@@ -33,13 +34,14 @@ function loadVideoBar() {
     options
   );
 }
+*/
 
 jQuery(document).ready(function() {
-  window.setInterval(animateTotals, 1000);
+  window.setInterval(animateTotals, 4000);
 
   /* location of rpc_relay.html and canvas.html */
   google.friendconnect.container.setParentUrl('/gfc/');
-  loadVideoBar();
+  //loadVideoBar();
 
   initExploreMap();
 
