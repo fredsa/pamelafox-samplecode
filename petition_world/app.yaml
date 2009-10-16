@@ -21,4 +21,5 @@ handlers:
   
 - url: /remote_api
   script: handler.py
+  login: admin
 
