@@ -16,10 +16,12 @@ handlers:
 - url: /gfc
   static_dir: gfc
 
-- url: /.*
-  script: main.py
-  
 - url: /remote_api
   script: handler.py
   login: admin
+
+- url: /.*
+  script: main.py
+  
+
 
