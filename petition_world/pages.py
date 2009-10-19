@@ -89,15 +89,17 @@ class DebugPage(webapp.RequestHandler):
 
 class MemcacheClearer(webapp.RequestHandler):
   def get(self):
-    memcache.delete(models.MEMCACHE_VOTES + 'TOTAL')
-    memcache.delete(models.genKeyForCountriesInfo())
-    memcache.delete(models.genKeyForContinentsInfo())
+    memcache.flush_all()
+    #
+    #memcache.delete(models.MEMCACHE_VOTES + 'TOTAL')
+    #memcache.delete(models.genKeyForCountriesInfo())
+    #memcache.delete(models.genKeyForContinentsInfo())
 
-    countryCode = self.request.get("countryCode")
-    memcache.delete(models.genKeyForStatesInfo(countryCode))
-    memcache.delete(models.MEMCACHE_VOTES + 'TOTAL')
-    for stateCode in geodata.countries[countryCode]['states']:
-      memcache.delete(models.MEMCACHE_VOTES + countryCode + stateCode)
+    #countryCode = self.request.get("countryCode")
+    #memcache.delete(models.genKeyForStatesInfo(countryCode))
+    #memcache.delete(models.MEMCACHE_VOTES + 'TOTAL')
+    #for stateCode in geodata.countries[countryCode]['states']:
+    #  memcache.delete(models.MEMCACHE_VOTES + countryCode + stateCode)
 
 
 class RandomAddService(webapp.RequestHandler):
