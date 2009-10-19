@@ -16,6 +16,9 @@ import geocoder
 import geodata 
 
 def addSignerToClusters(signer, extraLatLng):
+  # Put signer in PetitionSigner datastore
+  signer.put()
+
   clusterdata = {'lastname': signer.name,
                  'city': signer.city,
                  'state': signer.state,

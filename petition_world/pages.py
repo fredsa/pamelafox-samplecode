@@ -9,6 +9,7 @@ from google.appengine.ext.webapp.util import run_wsgi_app
 from google.appengine.ext.webapp import template
 from google.appengine.ext import db
 from google.appengine.api import memcache
+from google.appengine.ext import deferred
 
 from django.utils import simplejson
 
@@ -130,30 +131,40 @@ class SignerAddService(webapp.RequestHandler):
     originalNonce = self.request.cookies.get('nonce', None)
     hashedNonce = self.request.get('nonce')
     cachedVal = memcache.get(originalNonce)
-    if hashedNonce and originalNonce and cachedVal is not None and hashlib.sha1(originalNonce).hexdigest() == hashedNonce:
+    if (hashedNonce and originalNonce and cachedVal is not None and hashlib.sha1(originalNonce).hexdigest() == hashedNonce):
+      self.createSignerFromParams(self.request)
       memcache.delete(originalNonce, 0)
-      signer = models.PetitionSigner()
-      if not self.request.get('org_name') or self.request.get('org_name') == '':
-        signer.type = 'person'
-        signer.name = self.request.get('person_name')
-        signer.gfc_id = self.request.get('person_gfc_id')
-      else:
-        signer.type = 'org'
-        signer.name = self.request.get('org_name')
-        signer.org_icon = self.request.get('org_icon')
-        signer.email = self.request.get('email')
-        signer.streetinfo = self.request.get('streetinfo')
-      signer.city = self.request.get('city')
-      signer.state = self.request.get('state')
-      signer.country = self.request.get('country')
-      signer.postcode = self.request.get('postcode')
-      signer.latlng = db.GeoPt(float(self.request.get('lat')), float(self.request.get('lng')))
-      signer.put()
-      util.addSignerToClusters(signer, signer.latlng)
       self.response.headers.add_header('Set-Cookie', 'latlng=%s; expires=Fri, 31-Dec-2020 23:59:59 GMT; path=/' % (str(signer.latlng.lat) + ',' + str(signer.latlng.lon)))
       # TODO: redirect to the correct skin, check referrer?
       self.redirect('/explore?skin=mini')
     else:
       # Spam
-      # TODO: log this!
+      logging.info("Marked as spam" + self.request.get('person_name'))
       self.redirect('/')
+
+  # test with: /add/signer?person_name=Pamela&country=AU&state=NSW&postcode=2009&lat=-33.869709&lng=151.19393
+  def get(self):
+    #TODO: Check for whitelisted referrers
+    self.createSignerFromParams(self.request)
+
+  def createSignerFromParams(self, request):
+    signer = models.PetitionSigner()
+    # defaults to a person
+    if not self.request.get('org_name') or self.request.get('org_name') == '':
+      signer.type = 'person'
+      signer.name = self.request.get('person_name')
+      signer.gfc_id = self.request.get('person_gfc_id')
+    else:
+      signer.type = 'org'
+      signer.name = self.request.get('org_name')
+      signer.org_icon = self.request.get('org_icon')
+      signer.email = self.request.get('email')
+      signer.streetinfo = self.request.get('streetinfo')
+    signer.city = self.request.get('city')
+    signer.state = self.request.get('state')
+    signer.country = self.request.get('country')
+    signer.postcode = self.request.get('postcode')
+    #TODO: We used to get two lat/lngs. What happened?
+    signer.latlng = db.GeoPt(float(self.request.get('lat')), float(self.request.get('lng')))
+    deferred.defer(util.addSignerToClusters, signer, signer.latlng)
+    self.response.out.write('Queued')

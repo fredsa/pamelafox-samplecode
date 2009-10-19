@@ -20,8 +20,12 @@ handlers:
   script: handler.py
   login: admin
 
+- url: /_ah/queue/deferred
+  script: deferred/
+  login: admin
+
 - url: /.*
   script: main.py
-  
+
 
 
