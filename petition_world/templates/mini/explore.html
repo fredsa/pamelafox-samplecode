@@ -22,12 +22,12 @@
 <!--    <script type="text/javascript" src="http://jquery.malsup.com/cycle/jquery.cycle.all.js"></script> -->
 {% endblock %}
 {% block tabs %}
-<img src="/images/mini/HeaderExplore.png" width="600" height="39" border="0" usemap="#Map" />
-<map name="Map" id="Map">
+<img src="/images/mini/HeaderExplore.png" width="600" height="39" border="0" usemap="#Map" style="background-color:{{bg_color}}"/>
+<map name="Map" id="Map" >
   <area shape="rect" coords="1,1,189,39" href="http://showyourvote.org" />
-  <area shape="rect" coords="204,10,250,39" href="vote?skin=mini" />
-  <area shape="rect" coords="251,10,323,39" href="explore?skin=mini" />
-  <area shape="rect" coords="324,10,381,39" href="learn?skin=mini" />
+  <area shape="rect" coords="204,10,250,39" href="vote?skin=mini&bg_color={{bg_color}}" />
+  <area shape="rect" coords="251,10,323,39" href="explore?skin=mini&bg_color={{bg_color}}" />
+  <area shape="rect" coords="324,10,381,39" href="learn?skin=mini&bg_color={{bg_color}}" />
 </map>
 {% endblock %}
 {% block content %}
@@ -39,19 +39,19 @@
       </div>
 <br>
       <div class="right">
-           <div style="overflow: hidden; width:211px; height:25px; text-align: center; font-size: 20px; font-weight: bold; border: 1px solid #cccccc;margin-top:3px;">
+           <div style="overflow: hidden; width:211px; height:25px; text-align: center; font-size: 20px; font-weight: bold; border: 1px solid #cccccc;margin-top:3px; background-color:{{bg_color}}"">
              <!-- <span id="prev" >&#8592;</span> -->
-             <span id="stats" >
+             <span id="stats" style="background-color:{{bg_color}}" >
                 <span id="votes_span"><span id="votes"></span>&nbsp;Votes</span>
                 <span id="countries_span" style="display:none"><span id="countries"></span>&nbsp;Countries</span>
              </span>
              <!-- <span id="next" >&#8594;</span> -->
            </div>
         </div>
-		<div class="right">
-        <div id="comments_wrapper">
+		<div class="right" style="background-color:{{bg_color}}">
+        <div id="comments_wrapper" style="background-color:{{bg_color}}">
           <!-- Define the div tag where the gadget will be inserted. -->
-          <div id="div-6448190187886641253" style="width:211px;border:1px solid #cccccc;max-height:394px;margin-left:2px;"></div>
+          <div id="div-6448190187886641253" style="width:211px;border:1px solid #cccccc;max-height:394px;margin-left:2px;background-color:{{bg_color}}"></div>
         </div>
         <!-- Render the gadget into a div. -->
         <script type="text/javascript">

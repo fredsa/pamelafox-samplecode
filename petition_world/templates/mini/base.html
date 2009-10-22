@@ -30,7 +30,7 @@
     {% endblock %}
   </head>
   <body>
-<div id="show_your_vote" class="ui-tabs ui-widget ui-widget-content ui-corner-all">
+<div id="show_your_vote" class="ui-tabs ui-widget ui-widget-content ui-corner-all" style="background-color:{{bg_color}}">
   <ul class="ui-tabs-nav ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all">
     
     {% block tabs %}
@@ -62,7 +62,8 @@
   </ul>
 {% block content %}
 {% endblock %}
-  <div id="legal" style="position:absolute; left:0px; top: 485px; font-size: 9px;">
+  <div id="legal" style="position:absolute; left:0px; top: 485px; font-size: 9px; background-color:{{bg_color}}">
+
     <a href="http://www.showyourvote.org">Show the Vote on your website<a> - <a href="http://www.showyourvote.org/terms">Terms of Use<a>
   </div>
 </div>
