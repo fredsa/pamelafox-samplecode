@@ -9,7 +9,7 @@ countries =
       ],
       "name": "Andorra",
       "center": [42.5462450, 1.6015540],
-      "postcode": 999
+	  "postcode": 999
   },
   "AE": {
       "levels": [
@@ -86,7 +86,7 @@ countries =
       ],
       "name": "Albania",
       "center": [41.1533320, 20.1683310],
-	  "postcode": 9999
+	  "postcode": 0
   },
   "AM": {
       "levels": [
@@ -743,7 +743,7 @@ countries =
       ],
       "name": "Barbados",
       "center": [13.1938870, -59.5431980],
-	  "postcode": 99999
+	  "postcode": 0
   },
   "BD": {
       "levels": [
@@ -948,7 +948,7 @@ countries =
       ],
       "name": "Bolivia",
       "center": [-16.2901540, -63.5886530],
-	  "postcode": 9999
+	  "postcode": 0
   },
   "BR": {
       "levels": [
@@ -2724,7 +2724,7 @@ countries =
       ],
       "name": "Costa Rica",
       "center": [9.7489170, -83.7534280],
-	  "postcode": 99999
+	  "postcode": 0
   },
   "CU": {
       "levels": [
@@ -3144,7 +3144,7 @@ countries =
       ],
       "name": "Ethiopia",
       "center": [9.1450000, 40.4896730],
-	  "postcode": 9999
+	  "postcode": 0
   },
   "FI": {
       "levels": [
@@ -3564,7 +3564,7 @@ countries =
       ],
       "name": "Georgia",
       "center": [42.315407, 43.356892],
-	  "postcode": 9999
+	  "postcode": 0
   },
   "GF": {
       "levels": [
@@ -3597,7 +3597,7 @@ countries =
       ],
       "name": "Ghana",
       "center": [7.9465270, -1.0231940],
-	  "postcode": 99
+	  "postcode": 0
   },
   "GI": {
       "levels": [
@@ -5669,7 +5669,7 @@ countries =
       ],
       "name": "Cayman Islands",
       "center": [19.5134690, -80.5669560],
-	  "postcode": 99999
+	  "postcode": 0
   },
   "KZ": {
       "levels": [
@@ -5819,7 +5819,7 @@ countries =
       ],
       "name": "Libya",
       "center": [26.3351000, 17.2283310],
-	  "postcode": 99999
+	  "postcode": 0
   },
   "MA": {
       "levels": [
@@ -8498,7 +8498,7 @@ countries =
       ],
       "name": "Chad",
       "center": [15.4541660, 18.7322070],
-	  "postcode": 99999
+	  "postcode": 0
   },
   "TF": {
       "levels": [
@@ -8552,7 +8552,7 @@ countries =
       ],
       "name": "Togo",
       "center": [8.6195430, 0.8247820],
-	  "postcode": 99
+	  "postcode": 0
   },
   "TH": {
       "levels": [
@@ -9378,8 +9378,8 @@ countries =
       ],
       "name": "United States",
       "center": [37.0902400, -95.7128910],
-      "postcode": 99999,
-      "states": 50
+	  "postcode": 99999,
+	  "states": 50
   },
   "UY": {
       "levels": [
@@ -9738,7 +9738,7 @@ countries =
       ],
       "name": "Zambia",
       "center": [-13.1338970, 27.8493320],
-	  "postcode": 99999
+	  "postcode": 0
   },
   "ZW": {
       "levels": [
