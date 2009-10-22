@@ -8,6 +8,7 @@ form.cmxform label {
   line-height: 1.0;
   vertical-align: top;
   width: 140px;
+font-size: 12px;
 }
 
 form.cmxform fieldset ol {
@@ -34,5 +35,6 @@ form.cmxform fieldset li select {
 form.cmxform em {
   font-weight: bold;
   font-style: normal;
+  font-size: 12px;
   color: #f00;
 }
