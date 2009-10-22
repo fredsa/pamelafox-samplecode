@@ -75,7 +75,7 @@ var countriesInfo = {
         "name": "Anguilla"
     },
     "AL": {
-        "hasPostcodes": true,
+        "hasPostcodes": false,
         "hasStates": false,
         "bounds": {
             "southWest": [
@@ -280,7 +280,7 @@ var countriesInfo = {
         "name": "Bosnia and Herzegovina"
     },
     "BB": {
-        "hasPostcodes": true,
+        "hasPostcodes": false,
         "hasStates": false,
         "bounds": {
             "southWest": [
@@ -445,7 +445,7 @@ var countriesInfo = {
         "name": "Brunei"
     },
     "BO": {
-        "hasPostcodes": true,
+        "hasPostcodes": false,
         "hasStates": false,
         "bounds": {
             "southWest": [
@@ -745,7 +745,7 @@ var countriesInfo = {
         "name": "Colombia"
     },
     "CR": {
-        "hasPostcodes": true,
+        "hasPostcodes": false,
         "hasStates": false,
         "bounds": {
             "southWest": [
@@ -1015,7 +1015,7 @@ var countriesInfo = {
         "name": "Spain"
     },
     "ET": {
-        "hasPostcodes": true,
+        "hasPostcodes": false,
         "hasStates": false,
         "bounds": {
             "southWest": [
@@ -1165,7 +1165,7 @@ var countriesInfo = {
         "name": "Grenada"
     },
     "GE": {
-        "hasPostcodes": true,
+        "hasPostcodes": false,
         "hasStates": false,
         "bounds": {
             "southWest": [
@@ -1210,7 +1210,7 @@ var countriesInfo = {
         "name": "Guernsey"
     },
     "GH": {
-        "hasPostcodes": true,
+        "hasPostcodes": false,
         "hasStates": false,
         "bounds": {
             "southWest": [
@@ -1840,7 +1840,7 @@ var countriesInfo = {
         "name": "Kuwait"
     },
     "KY": {
-        "hasPostcodes": true,
+        "hasPostcodes": false,
         "hasStates": false,
         "bounds": {
             "southWest": [
@@ -2020,7 +2020,7 @@ var countriesInfo = {
         "name": "Latvia"
     },
     "LY": {
-        "hasPostcodes": true,
+        "hasPostcodes": false,
         "hasStates": false,
         "bounds": {
             "southWest": [
@@ -3175,7 +3175,7 @@ var countriesInfo = {
         "name": "Turks and Caicos Islands"
     },
     "TD": {
-        "hasPostcodes": true,
+        "hasPostcodes": false,
         "hasStates": false,
         "bounds": {
             "southWest": [
@@ -3205,7 +3205,7 @@ var countriesInfo = {
         "name": "French Southern Territories"
     },
     "TG": {
-        "hasPostcodes": true,
+        "hasPostcodes": false,
         "hasStates": false,
         "bounds": {
             "southWest": [
@@ -3724,7 +3724,7 @@ var countriesInfo = {
         "name": "South Africa"
     },
     "ZM": {
-        "hasPostcodes": true,
+        "hasPostcodes": false,
         "hasStates": false,
         "bounds": {
             "southWest": [
