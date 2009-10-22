@@ -22,9 +22,9 @@ class RootRedirect(webapp.RequestHandler):
   def get(self):
     skin = self.request.get('skin') or 'main'
     if skin == 'main':
-      self.redirect('/learn')
+      self.redirect('/vote?skin=mini')
     else:
-      self.redirect('/learn?skin=' + skin)
+      self.redirect('/vote?skin=' + skin)
 
 class BasePage(webapp.RequestHandler):
   def get(self):
@@ -33,9 +33,11 @@ class BasePage(webapp.RequestHandler):
   def getTemplateValues(self, page_title, page_num):
     skin = self.request.get('skin') or 'main'
     if not skin in ['main', 'mini']:
-      skin = 'main'
+      skin = 'main' 
 
-    template_values = {'page_title': page_title, 'page_num': page_num, 'skin': skin}
+    bg_color = self.request.get('bg_color')
+
+    template_values = {'page_title': page_title, 'page_num': page_num, 'skin': skin, 'bg_color': bg_color}
     return template_values
 
   def getTemplateFilename(self):
@@ -60,6 +62,7 @@ class VotePage(BasePage):
 
   def getTemplateFilename(self):
     return "vote.html"
+
 
 class ExplorePage(BasePage):
   def getTemplateValues(self):
@@ -138,7 +141,7 @@ class SignerAddService(webapp.RequestHandler):
       memcache.delete(originalNonce, 0)
       self.response.headers.add_header('Set-Cookie', 'latlng=%s; expires=Fri, 31-Dec-2020 23:59:59 GMT; path=/' % (str(signer.latlng.lat) + ',' + str(signer.latlng.lon)))
       # TODO: redirect to the correct skin, check referrer?
-      self.redirect('/explore?skin=mini')
+      self.redirect('/explore?skin=mini&bg_color={{bg_color}}')
     else:
       # Spam
       logging.info("Marked as spam" + self.request.get('person_name'))
