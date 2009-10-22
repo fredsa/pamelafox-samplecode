@@ -115,7 +115,7 @@ jQuery(document).ready(function() {
 
 function initVoteMap() {
   voteMap = new GMap2(jQuery("#vote_map")[0]);
-  voteMap.setCenter(new GLatLng(37.0625,-95.677068), 3);
+  voteMap.setCenter(new GLatLng(0,180), 0);
   voteMap.setUIToDefault();
 }
 
