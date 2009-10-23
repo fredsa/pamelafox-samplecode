@@ -72,6 +72,22 @@ class ExplorePage(BasePage):
   def getTemplateFilename(self):
     return "explore.html"
 
+class TermsPage(BasePage):
+  def getTemplateValues(self):
+    template_values = BasePage.getTemplateValues(self, 'Show Your Vote: Terms', 3)
+    return template_values
+
+  def getTemplateFilename(self):
+    return "terms.html"
+
+class RegisterPage(BasePage):
+  def getTemplateValues(self):
+    template_values = BasePage.getTemplateValues(self, 'Show Your Vote: Register', 4)
+    return template_values
+
+  def getTemplateFilename(self):
+    return "register.html"
+
 class DebugPage(webapp.RequestHandler):
   def get(self):
     countryCode = self.request.get('countryCode')
