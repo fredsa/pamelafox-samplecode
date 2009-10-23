@@ -153,11 +153,11 @@ class SignerAddService(webapp.RequestHandler):
     hashedNonce = self.request.get('nonce')
     cachedVal = memcache.get(originalNonce)
     if (hashedNonce and originalNonce and cachedVal is not None and hashlib.sha1(originalNonce).hexdigest() == hashedNonce):
-      self.createSignerFromParams(self.request)
+      signer = self.createSignerFromParams(self.request)
       memcache.delete(originalNonce, 0)
       self.response.headers.add_header('Set-Cookie', 'latlng=%s; expires=Fri, 31-Dec-2020 23:59:59 GMT; path=/' % (str(signer.latlng.lat) + ',' + str(signer.latlng.lon)))
       # TODO: redirect to the correct skin, check referrer?
-      self.redirect('/explore?skin=mini&bg_color={{bg_color}}')
+      self.redirect('/explore?skin=mini')
     else:
       # Spam
       logging.info("Marked as spam" + self.request.get('person_name'))
@@ -167,6 +167,7 @@ class SignerAddService(webapp.RequestHandler):
   def get(self):
     #TODO: Check for whitelisted referrers
     self.createSignerFromParams(self.request)
+    self.response.out.write('Queued')
 
   def createSignerFromParams(self, request):
     signer = models.PetitionSigner()
@@ -188,4 +189,4 @@ class SignerAddService(webapp.RequestHandler):
     #TODO: We used to get two lat/lngs. What happened?
     signer.latlng = db.GeoPt(float(self.request.get('lat')), float(self.request.get('lng')))
     deferred.defer(util.addSignerToClusters, signer, signer.latlng)
-    self.response.out.write('Queued')
+    return signer
