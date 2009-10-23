@@ -10,13 +10,15 @@ from google.appengine.ext.webapp import template
 from google.appengine.ext import db
 from google.appengine.api import memcache
 from google.appengine.ext import deferred
+from google.appengine.api import urlfetch
 
 from django.utils import simplejson
 
 import models
 import geocoder
-import util 
+import util
 import geodata
+import geodata2
 
 class RootRedirect(webapp.RequestHandler):
   def get(self):
@@ -109,17 +111,40 @@ class DebugPage(webapp.RequestHandler):
 class MemcacheClearer(webapp.RequestHandler):
   def get(self):
     memcache.flush_all()
-    #
-    #memcache.delete(models.MEMCACHE_VOTES + 'TOTAL')
-    #memcache.delete(models.genKeyForCountriesInfo())
-    #memcache.delete(models.genKeyForContinentsInfo())
 
-    #countryCode = self.request.get("countryCode")
-    #memcache.delete(models.genKeyForStatesInfo(countryCode))
-    #memcache.delete(models.MEMCACHE_VOTES + 'TOTAL')
-    #for stateCode in geodata.countries[countryCode]['states']:
-    #  memcache.delete(models.MEMCACHE_VOTES + countryCode + stateCode)
-
+class JSONImport(webapp.RequestHandler):
+  def get(self):
+    file = self.request.get('file')
+    url = "http://vote-earth-locations.hollersydney.com.au/" + file
+    result = urlfetch.fetch(url)
+    if result.status_code == 200:
+      feed = simplejson.loads(result.content)
+      locations = feed["locations"]
+      for location in locations:
+        fields = location["fields"]
+        countryName = (fields["country"]).upper()
+        if geodata2.country_id_mappings.has_key(countryName):
+          country = geodata2.country_id_mappings[(fields["country"]).upper()]
+          if country is not "US" and country is not "AU":
+            query = db.Query(models.PetitionSigner)
+            created_at = fields["created_at"]
+            query.filter('name =', created_at)
+            signer = query.get()
+            if signer is None:
+              signer = models.PetitionSigner()
+              signer.country = country
+              signer.latlng = db.GeoPt(float(fields["longitude"]), float(fields["latitude"]))
+              signer.name = created_at # using this since we need to store this somewhere, it's basically the unique ID
+              signer.state = ''
+              signer.postcode = fields["postcode"]
+              deferred.defer(util.addSignerToClusters, signer, signer.latlng)
+              self.response.out.write("Adding from: " + country + "<br>")
+            else:
+              self.response.out.write("Already saw: " + created_at + "<br>")
+          else:
+            self.response.out.write("<b>Ignoring from: </b>" + country + "<br>")
+        else:
+          self.response.out.write("<b>Could not map: </b>" + fields["country"] + "<br>")
 
 class RandomAddService(webapp.RequestHandler):
   def get(self):
