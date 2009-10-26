@@ -137,10 +137,17 @@ def getStateVotesInStore(countryCode, stateCode):
 def getTotals():
   # keep this memcached as much as possible
   # perhaps only re-calculate every 5 minutes?
+  orgsMemcache = memcache.get('ORGS_TOTAL')
+  if orgsMemcache is None:
+    numOrgs = getTotalOrgs()
+    memcache.set('ORGS_TOTAL', str(numOrgs), 300)
+  else:
+	numOrgs = int(orgsMemcache)
+	
   votesMemcache = memcache.get(models.MEMCACHE_VOTES + 'TOTAL')
   countriesMemcache = memcache.get(models.MEMCACHE_VOTES + 'COUNTRIES')
   if votesMemcache is not None and countriesMemcache is not None:
-    return int(votesMemcache), int(countriesMemcache)
+    return int(votesMemcache), int(countriesMemcache), numOrgs
   else:
     numVotesTotal = 0
     numCountries = 0
@@ -152,7 +159,7 @@ def getTotals():
 
     memcache.set(models.MEMCACHE_VOTES + 'TOTAL', str(numVotesTotal), 300)
     memcache.set(models.MEMCACHE_VOTES + 'COUNTRIES', str(numCountries), 300)
-    return numVotesTotal, numCountries
+    return numVotesTotal, numCountries, numOrgs
 
 def getContinentVotes(continentCode):
   votesMemcache = memcache.get(models.MEMCACHE_VOTES + 'CONT_' + continentCode)
@@ -212,3 +219,8 @@ def getOrgsInCountry(countryCode):
   query.filter('type = ', 'org')
   results = query.fetch(1000)
   return results
+
+def getTotalOrgs():
+  query = db.Query(models.PetitionSigner)
+  query.filter('type = ', 'org')
+  return query.count()

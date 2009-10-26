@@ -14,6 +14,7 @@ var countries;
 var loadedCountries = false;
 var loadedContinents = false;
 var locationId = "global";
+var toggler = 0;
 
 /*
 function loadVideoBar() {
@@ -72,13 +73,26 @@ jQuery(document).ready(function() {
 });
 
 function animateTotals() {
-  jQuery('#votes_span').toggle();
-  jQuery('#countries_span').toggle();
+  if (toggler == 0) {
+	jQuery('#votes_span').toggle();  //toggle off
+	jQuery('#countries_span').toggle(); //toggle on
+	toggler = 1;
+  }
+  else if (toggler == 1) {
+	jQuery('#countries_span').toggle(); //toggle off
+	jQuery('#orgs_span').toggle(); // toggle on
+	toggler = 2;
+  }
+  else if (toggler == 2) {
+	jQuery('#orgs_span').toggle(); //toggle off
+	jQuery('#votes_span').toggle();  //toggle on
+	toggler = 0;
+  }
 }
 
 function initExploreMap() {
   exploreMap = new GMap2(jQuery("#explore_map")[0]);
-  exploreMap.setCenter(new GLatLng(37.0625,-95.677068), 3, G_PHYSICAL_MAP);
+  exploreMap.setCenter(new GLatLng(0, 10), 1, G_PHYSICAL_MAP);
   exploreMap.setUIToDefault();
   var latlng = jQuery.cookie('latlng');
   if (latlng) {
@@ -137,6 +151,7 @@ function handleZoomChange() {
 function processTotals(json) {
   jQuery("#votes").html(json.total.totalVotes);
   jQuery("#countries").html(json.total.totalCountries);
+  jQuery("#orgs").html(json.total.totalOrgs);
 }
 
 function processContinents(json) {
@@ -193,17 +208,57 @@ function processPostcodes(json) {
 function processOrgs(json) {
   var orgs = json.orgs;
   var markers = [];
-  for (var i = 0; i < orgs.length; i++) {
-    var marker = createOrgMarker(orgs[i]);
-    markers.push(marker);
-  }
-  markerManager.addMarkers(markers, 6);
+  
+ 
+    for (var i = 0; i < orgs.length; i++) {
+      var marker = createSmallOrgMarker(orgs[i]);
+      markers.push(marker);
+    }
+    markerManager.addMarkers(markers, 5, 8); // 0 is the coarsest setting, full world view
+
+ 	markers = [];
+    for (var i = 0; i < orgs.length; i++) {
+      var marker = createMedOrgMarker(orgs[i]);
+      markers.push(marker);
+    }
+    markerManager.addMarkers(markers, 9, 11); // 0 is the coarsest setting, full world view
+
+ 	markers = [];
+    for (var i = 0; i < orgs.length; i++) {
+      var marker = createOrgMarker(orgs[i]);
+      markers.push(marker);
+    }
+    markerManager.addMarkers(markers, 12); // 0 is the coarsest setting, full world view
+
+
   markerManager.refresh();
 }
 
 function createOrgIcon(url) {
   var icon = new GIcon();
   icon.iconSize = new GSize(32, 32);
+  icon.image = url;
+  icon.shadow = null;
+  icon.iconAnchor = new GPoint(16, 16);
+  icon.infoWindowAnchor = new GPoint(16, 24);
+
+  return icon;
+}
+
+function createMedOrgIcon(url) {
+  var icon = new GIcon();
+  icon.iconSize = new GSize(12, 12);
+  icon.image = url;
+  icon.shadow = null;
+  icon.iconAnchor = new GPoint(16, 16);
+  icon.infoWindowAnchor = new GPoint(16, 24);
+
+  return icon;
+}
+
+function createSmallOrgIcon(url) {
+  var icon = new GIcon();
+  icon.iconSize = new GSize(6, 6);
   icon.image = url;
   icon.shadow = null;
   icon.iconAnchor = new GPoint(16, 16);
@@ -264,6 +319,22 @@ function locationString(country, state, city, postcode) {
 
 function createOrgMarker(info) {
   var marker = new GMarker(new GLatLng(info.center[0], info.center[1]), {icon: createOrgIcon(info.icon)});
+  GEvent.addListener(marker, "click", function() {
+    marker.openInfoWindowHtml("<b>" + info.name + "</b>");
+  });
+  return marker;
+}
+
+function createMedOrgMarker(info) {
+  var marker = new GMarker(new GLatLng(info.center[0], info.center[1]), {icon: createMedOrgIcon(info.icon)});
+  GEvent.addListener(marker, "click", function() {
+    marker.openInfoWindowHtml("<b>" + info.name + "</b>");
+  });
+  return marker;
+}
+
+function createSmallOrgMarker(info) {
+  var marker = new GMarker(new GLatLng(info.center[0], info.center[1]), {icon: createSmallOrgIcon(info.icon)});
   GEvent.addListener(marker, "click", function() {
     marker.openInfoWindowHtml("<b>" + info.name + "</b>");
   });

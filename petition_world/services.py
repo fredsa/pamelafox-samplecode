@@ -163,8 +163,8 @@ class TotalsInfoService(webapp.RequestHandler):
       self.response.out.write(cachedVal)
     else:
       data  = {}
-      totalVotes, totalCountries = util.getTotals()
-      data['total'] = {'totalVotes': totalVotes, 'totalCountries': totalCountries}
+      totalVotes, totalCountries, totalOrgs = util.getTotals()
+      data['total'] = {'totalVotes': totalVotes, 'totalCountries': totalCountries, 'totalOrgs': totalOrgs}
       newVal = simplejson.dumps(data)
       memcache.set(models.genKeyForTotalsInfo(), newVal, 10)
       self.response.out.write(newVal)
