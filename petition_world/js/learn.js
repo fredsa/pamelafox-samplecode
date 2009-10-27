@@ -383,7 +383,7 @@ jQuery(document).ready(function() {
   google.friendconnect.container.setParentUrl('/gfc/');
 
   google.friendconnect.container.initOpenSocialApi({
-    site: '16982815293172380621',
+    site: site_id,
     onload: function(securityToken) {
       var req = opensocial.newDataRequest();
       req.add(req.newFetchPersonRequest('VIEWER'), 'viewer');

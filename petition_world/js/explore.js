@@ -47,7 +47,7 @@ jQuery(document).ready(function() {
   initExploreMap();
 
   google.friendconnect.container.initOpenSocialApi({
-    site: '16982815293172380621',
+    site: site_id,
     onload: function(securityToken) {
       var req = opensocial.newDataRequest();
       req.add(req.newFetchPersonRequest('VIEWER'), 'viewer');
@@ -442,7 +442,7 @@ function createMarker(markerType, locationCode, latlng, icon, title, zoom) {
           skin['HEIGHT'] = '336';
           google.friendconnect.container.renderWallGadget({
             id: 'div-864264044956702366',
-            site: '16982815293172380621',
+            site: site_id,
             'view-params': {
               "disableMinMax": "true",
               "scope": "ID",
