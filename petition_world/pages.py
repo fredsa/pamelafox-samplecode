@@ -177,15 +177,28 @@ class SignerAddService(webapp.RequestHandler):
     originalNonce = self.request.cookies.get('nonce', None)
     hashedNonce = self.request.get('nonce')
     cachedVal = memcache.get(originalNonce)
+    personName = self.request.get('person_name')
     if (hashedNonce and originalNonce and cachedVal is not None and hashlib.sha1(originalNonce).hexdigest() == hashedNonce):
+      logging.info("Signature accepted: " + personName)
       signer = self.createSignerFromParams(self.request)
       memcache.delete(originalNonce, 0)
       self.response.headers.add_header('Set-Cookie', 'latlng=%s; expires=Fri, 31-Dec-2020 23:59:59 GMT; path=/' % (str(signer.latlng.lat) + ',' + str(signer.latlng.lon)))
+      # Remove the nonce cookie
+      self.response.headers.add_header('Set-Cookie', 'nonce=; expires=Fri, 31-Dec-1980 23:59:59 GMT; path=/')
       # TODO: redirect to the correct skin, check referrer?
       self.redirect('/explore?skin=mini')
     else:
       # Spam
-      logging.info("Marked as spam" + self.request.get('person_name'))
+      if not hashedNonce:
+        logging.info("Marked as spam (no hashed nonce): " + personName)
+      elif not originalNonce:
+        logging.info("Marked as spam (no original nonce): " + personName)
+      elif cachedVal is None:
+        logging.info("Marked as spam (no cached value): " + personName)
+      elif not (hashlib.sha1(originalNonce).hexdigest() == hashedNonce):
+        logging.info("Marked as spam (nonce did not match): " + personName)
+      else:
+        logging.info("Marked as spam (unknown reason): " + personName)
       self.redirect('/')
 
   # test with: /add/signer?person_name=Pamela&country=AU&state=NSW&postcode=2009&lat=-33.869709&lng=151.19393
@@ -213,5 +226,8 @@ class SignerAddService(webapp.RequestHandler):
     signer.postcode = self.request.get('postcode')
     #TODO: We used to get two lat/lngs. What happened?
     signer.latlng = db.GeoPt(float(self.request.get('lat')), float(self.request.get('lng')))
-    deferred.defer(util.addSignerToClusters, signer, signer.latlng)
+    if os.environ['SERVER_SOFTWARE'].startswith('Development'):
+      util.addSignerToClusters(signer, signer.latlng)
+    else:
+      deferred.defer(util.addSignerToClusters, signer, signer.latlng)
     return signer
