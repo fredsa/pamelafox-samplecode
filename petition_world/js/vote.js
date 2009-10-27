@@ -99,12 +99,16 @@ jQuery(document).ready(function() {
           if (nameField.val() == null || nameField.val().replace(/^\s+|\s+$/g, '') == '') {
             nameField.val(visitorName);
           }
+          var nameInfo = jQuery('#person_name_info');
+          nameInfo.html("You are signing as " + visitorName + ".");
           var gfcIdField = jQuery('#person_gfc_id');
           gfcIdField.val(visitorId);
         } else {
           // Not logged in
           visitorId = null;
           visitorName = null;
+          var nameInfo = jQuery('#person_name_info');
+          nameInfo.html("You are signing anonymously.");
         }
       });
     }
