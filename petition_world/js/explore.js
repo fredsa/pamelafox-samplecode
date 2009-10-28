@@ -437,9 +437,9 @@ function createMarker(markerType, locationCode, latlng, icon, title, zoom) {
           skin['CONTENT_SECONDARY_TEXT_COLOR'] = '#666666';
           skin['CONTENT_HEADLINE_COLOR'] = '#333333';
           skin['DEFAULT_COMMENT_TEXT'] = '- add your comment here -';
-          skin['HEADER_TEXT'] = 'Comments for ' + title;
+          skin['HEADER_TEXT'] = 'Show your support of the vote in ' + title;
           skin['POSTS_PER_PAGE'] = '4';
-          skin['HEIGHT'] = '336';
+          skin['HEIGHT'] = '330';
           google.friendconnect.container.renderWallGadget({
             id: 'div-864264044956702366',
             site: site_id,
