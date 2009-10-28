@@ -269,8 +269,8 @@ function createSmallOrgIcon(url) {
 
 function createBigIcon(label) {
   var iconOptions = {};
-  iconOptions.width = 32;
-  iconOptions.height = 32;
+  iconOptions.width = 64;
+  iconOptions.height = 26;
   iconOptions.primaryColor = "#b3e742";
   iconOptions.label = "" + label;
   iconOptions.labelSize = 20;
@@ -283,8 +283,8 @@ function createBigIcon(label) {
 
 function createMediumIcon(label) {
   var iconOptions = {};
-  iconOptions.width = 24;
-  iconOptions.height = 24;
+  iconOptions.width = 22;
+  iconOptions.height = 22;
   iconOptions.primaryColor =  "#86cb23";
   iconOptions.label = "" + label;
   iconOptions.labelSize = 16;
