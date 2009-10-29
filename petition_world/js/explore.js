@@ -294,7 +294,7 @@ function createBigIcon(label) {
   var iconOptions = {};
   iconOptions.width = 64;
   iconOptions.height = 26;
-  iconOptions.primaryColor = "#b3e742";
+  iconOptions.primaryColor = "#ff0084";
   iconOptions.label = "" + label;
   iconOptions.labelSize = 20;
   iconOptions.labelColor = "#FFFFFF";
@@ -308,7 +308,7 @@ function createMediumIcon(label) {
   var iconOptions = {};
   iconOptions.width = 22;
   iconOptions.height = 22;
-  iconOptions.primaryColor =  "#86cb23";
+  iconOptions.primaryColor =  "#0063dc";
   iconOptions.label = "" + label;
   iconOptions.labelSize = 16;
   iconOptions.labelColor = "#FFFFFF";
