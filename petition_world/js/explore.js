@@ -475,6 +475,7 @@ function createMarker(markerType, locationCode, latlng, icon, title, zoom) {
               "disableMinMax": "true",
               "scope": "ID",
               "features": "video,comment",
+              "allowAnonymousPost":"true",
               "docId": SHA1(markerType + locationCode + title),
               "startMaximized": "true",
               "useFixedHeight": "true"
