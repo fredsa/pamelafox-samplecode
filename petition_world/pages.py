@@ -176,7 +176,7 @@ class SignerAddService(webapp.RequestHandler):
   def post(self):
     originalNonce = self.request.cookies.get('nonce', None)
     hashedNonce = self.request.get('nonce')
-    cachedVal = memcache.get(originalNonce)
+    cachedVal = originalNonce and memcache.get(originalNonce)
     personName = self.request.get('person_name')
     if (hashedNonce and originalNonce and cachedVal is not None and hashlib.sha1(originalNonce).hexdigest() == hashedNonce):
       logging.info("Signature accepted: " + personName)
