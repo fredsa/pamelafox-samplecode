@@ -249,7 +249,7 @@ function toggleForm(formValue) {
     jQuery('#email').rules('remove');
     jQuery('#streetinfo').rules('remove');
     jQuery('#org_name').rules('remove');
-    jQuery('#person_name').rules('add', {required: true});
+    jQuery('#person_name').rules('add', {required: false});
     jQuery('.person').show();
   }
 }
