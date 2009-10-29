@@ -16,6 +16,29 @@ var loadedContinents = false;
 var locationId = "global";
 var toggler = 0;
 
+if (site_bg_color == "" || site_bg_color == null) {
+  switch(site_skin) {
+  case "mini":
+    site_bg_color = "#fdf7eb"
+    break;
+  case "main":
+  default:
+    site_bg_color = "#f2f2f2";
+  }
+}
+
+function getParameterByName(name) {
+  name = name.replace(/[\[]/,"\\\[").replace(/[\]]/,"\\\]");
+  var regexS = "[\\?&]"+name+"=([^&#]*)";
+  var regex = new RegExp(regexS);
+  var results = regex.exec(window.location.href);
+  if (results == null) {
+    return "";
+  } else {
+    return results[1];
+  }
+}
+
 /*
 function loadVideoBar() {
   var videoBar;
@@ -342,13 +365,17 @@ function createSmallOrgMarker(info) {
 }
 
 function createMarker(markerType, locationCode, latlng, icon, title, zoom) {
-  
+  var voteLocation = getParameterByName("location");
   var infoWindowOptions = function () {
+    var commentsWidth = 441;
+    if (site_skin == "mini") {
+      commentsWidth = 338;
+    }
     return {
       maxTitle: title,
       maxContent: '\
 <div class="map_comments">\
-  <div id="div-864264044956702366" style="width:441px;border:1px solid #cccccc;max-height:336px"></div>\
+  <div id="div-864264044956702366" style="width:' + commentsWidth + 'px;border:1px solid #cccccc;max-height:336px"></div>\
 </div>\
 '
     }
@@ -363,7 +390,7 @@ function createMarker(markerType, locationCode, latlng, icon, title, zoom) {
     exploreMap.removeOverlay(tooltip);
   });
   if (markerType != "continent") {
-    GEvent.addListener(marker, "click", function() {
+    var createInfoWindow = function() {
       jQuery.getJSON("/info/votelocal?" + markerType + "=" + locationCode, function (gfcSigners) {
         if (gfcSigners.length == 0) {
           marker.openInfoWindowHtml(
@@ -419,14 +446,15 @@ function createMarker(markerType, locationCode, latlng, icon, title, zoom) {
           }
         });
       });
-    });
+    };
+    GEvent.addListener(marker, "click", createInfoWindow);
     GEvent.addListener(marker, "infowindowopen", function() {
       var iw = exploreMap.getInfoWindow();
       GEvent.addListener(iw, "maximizeend", function() {
         window.setTimeout(function () {
           var skin = {};
           skin['BORDER_COLOR'] = '#cccccc';
-          skin['ENDCAP_BG_COLOR'] = '#f2f2f2';
+          skin['ENDCAP_BG_COLOR'] = site_bg_color;
           skin['ENDCAP_TEXT_COLOR'] = '#333333';
           skin['ENDCAP_LINK_COLOR'] = '#0000cc';
           skin['ALTERNATE_BG_COLOR'] = '#ffffff';
@@ -454,7 +482,17 @@ function createMarker(markerType, locationCode, latlng, icon, title, zoom) {
           }, skin);
         }, 5);
       });
+      window.setTimeout(function () {
+        iw.maximize();
+      }, 5);
     });
+    if (voteLocation == locationCode) {
+      jQuery(window).load(function() {
+        // Open this marker immediately if this is where the voter is
+        // For the sake of GFC, needs to be in onload
+        createInfoWindow();
+      });
+    }
   }
   return marker;
 }

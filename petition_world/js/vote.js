@@ -9,6 +9,17 @@ var visitorName = null;
 var locationId = "global";
 var voteMap;
 
+if (site_bg_color == "" || site_bg_color == null) {
+  switch(site_skin) {
+  case "mini":
+    site_bg_color = "#fdf7eb"
+    break;
+  case "main":
+  default:
+    site_bg_color = "#f2f2f2";
+  }
+}
+
 function cmxform() {
   // Hide forms
   jQuery('form.cmxform').hide().end();

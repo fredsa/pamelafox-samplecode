@@ -15,6 +15,17 @@ var loadingOverlay = null;
 var appPath = document.location.protocol + '//' +
               document.location.host + document.location.pathname;
 
+if (site_bg_color == "" || site_bg_color == null) {
+  switch(site_skin) {
+  case "mini":
+    site_bg_color = "#fdf7eb"
+    break;
+  case "main":
+  default:
+    site_bg_color = "#f2f2f2";
+  }
+}
+
 /**
  * Init function called when the DOM is ready.
  */

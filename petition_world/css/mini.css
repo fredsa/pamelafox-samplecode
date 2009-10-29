@@ -126,6 +126,12 @@ form.cmxform {
   clear: both;
 }
 
+.map_comments {
+  margin: 15px 0 15px 0;
+  width: 336px;
+  height: 337px;
+}
+
 .picture_set {
   list-style-type: none;
   width: 200px;
