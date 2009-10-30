@@ -98,6 +98,9 @@
 <UserPref name="randomize_words"
           display_name="Randomize words?"
           default_value="false" datatype="bool" required="false"/>
+<UserPref name="image_size"
+          display_name="Image Size"
+          default_value="60" datatype="string" required="false"/>
 <Content type="html"><![CDATA[
 <style type="text/css">
 body {
@@ -453,7 +456,8 @@ function addHintForWordFromImageSearch(word) {
     _gel("hint").innerHTML = "";
     for (var i = 0; i < searcher.results.length; i++) {
       var result = searcher.results[i];
-      var scaled = GSearch.scaleImage(result.tbWidth, result.tbHeight, {width:68,height:51});      
+      var size = parseInt(prefs.getString("image_size"));
+      var scaled = GSearch.scaleImage(result.tbWidth, result.tbHeight, {width:size, height:size});      
       var img = document.createElement("img");
       img.setAttribute("src", result.tbUrl);
       img.setAttribute("width", scaled.width);
