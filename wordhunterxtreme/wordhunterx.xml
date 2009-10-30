@@ -1,0 +1,405 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Module>
+<ModulePrefs title="WordHunter Xtreme" 
+	height="275" scaling="false"
+	description="This game of word hunting has been (XX)Xtended with the UrbanDictionary and WordNet APIs. Now you can guess slang, proper nouns, and more! Plus, read the definitions of every word you guess correctly. Change prefs to prefer UrbanDictionary over WordNet definitions."
+	author="Pamela Fox"
+	author_email="pammyla.fox+coolgadget@gmail.com"
+	screenshot="http://imagine-it.org/google/wordhunterx_screenshot.png"
+	thumbnail="http://imagine-it.org/google/wordhunterx_thumbnail.png"
+	author_location="Los Angeles,CA"
+	author_affiliation="University of Southern California"
+	title_url="http://imagine-it.org"
+	>
+<Require feature="setprefs" />
+<Require feature="analytics" />
+</ModulePrefs>
+<UserPref name="dictorder" display_name="What dictionary should we check first?" default_value="UrbanDictionary" datatype="enum">
+	<EnumValue value="WordNet" />
+	<EnumValue value="WordNetONLY" />
+	<EnumValue value="UrbanDictionary" />
+</UserPref>
+<UserPref name ="highscore" default_value="0" datatype="hidden"/>
+<Content type="html">
+<![CDATA[
+<script type="text/javascript">
+
+var currentColor = "even";
+var gridXHit = new Array();
+var gridYHit = new Array();
+var lettersArray = new Array("A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z");
+var curTime = 120;
+var currentWords = new Array();
+var currentScore = 0;
+var timer;
+var gameEnabled = false; 
+var wordDefDefault = "<em>Mouse over words that aren't italicized (still being checked) or striken out (wrong!) to see meaning.</em>";
+var dictOrder = 1;
+
+// preload images
+if(document.images){ // for older browsers
+var pic_cell = new Image(20,20);
+pic_cell.src = "http://imagine-it.org/google/CELL_g.gif";
+var pic_cellDown = new Image(20,20);
+pic_cellDown.src = "http://imagine-it.org/google/CELLDOWN_g.gif";
+}
+
+var prefs = new _IG_Prefs(__MODULE_ID__);
+_IG_Analytics("UA-964209-1", "/wordhunter/" + prefs.getString("dictorder"));
+
+// fills grid with random letters
+function populateGrid(){
+for(var i=0; i<5; i++){
+    for(var j=0; j<5; j++){
+        var idName = "grid" + i + j;
+        document.getElementById(idName).value= lettersArray[ (rand(26)-1)];
+    }
+  }
+  _gel("highScoreDIV").innerHTML = "<strong>High Score: " + prefs.getInt("highscore") + "</strong>";   
+
+}
+
+// Does the rand stuff to generate 1-n integer
+function rand ( n )
+{
+  return ( Math.floor ( Math.random ( ) * n + 1 ) );
+}
+
+// Check is a grid square was already hit
+function alreadyHit(x,y){
+    var xyFound=false;
+    for (var i=0; i<gridXHit.length; i++){
+        if(gridXHit[i]==x && gridYHit[i]==y) xyFound=true;
+    }
+    return xyFound;
+}
+
+// Function that's called when clock is running
+// Determines when time's out and performs game-over functions
+function startClock(){
+   curTime--;
+   _gel("timerDIV").innerHTML = "Time Left: " + curTime;
+   if(curTime==0){
+      gameEnabled = false;
+      _gel("timerDIV").innerHTML = "<strong>Game Over!</strong>";	
+      if(prefs.getInt("highscore") < currentScore){
+	prefs.set("highscore",currentScore);
+        _gel("highScoreDIV").innerHTML = "<strong>High Score: " + currentScore + "</strong>";   
+      }
+      curTime = 120;
+   } else {
+   timer = setTimeout("startClock()",1000);
+  }
+}
+
+// Output current letters entered to display
+function outputLetters(){
+    var letters = "";
+    for (var i=0; i<gridXHit.length; i++){
+        gridName = "grid" + gridXHit[i] + gridYHit[i];
+        letters += document.getElementById(gridName).value + "";
+    }
+    currentWord = letters;
+    if(letters=="") letters="...";
+    document.getElementById("lettersOutDIV").innerHTML = letters;
+}   
+
+// Clear grid of any selected squares, clear arrays
+function resetGrid(){
+    // reset images
+    for(var i=0; i<gridXHit.length; i++){
+	 gridName = "grid" + gridXHit[i] + gridYHit[i];
+        document.getElementById(gridName).className = "gridSquare";
+   }
+
+    gridXHit.length=0;
+    gridYHit.length=0;
+    started=false;
+    currentWord="";
+}    
+
+// Function called when grid square is clicked
+// Check if it legal (within x+/-1, y+/-1)
+function squareClicked(x,y){
+    if(gameEnabled==true && gridXHit.length<6){
+    var canGo = false;
+    var lastGridX = gridXHit[gridXHit.length-1];
+    var lastGridY = gridYHit[gridYHit.length-1];
+
+    if(gridXHit.length==0) started=false;
+    if(started && lastGridX==x && lastGridY==y){ // toggglin off
+        gridName = "grid" + x + y;
+        document.getElementById(gridName).className = "gridSquare";
+        gridXHit.pop();
+        gridYHit.pop();
+    } else {
+    if(started && !alreadyHit(x,y) ){
+        if( Math.abs(x - lastGridX) < 2 && Math.abs(y - lastGridY) < 2 ){
+            canGo = true;
+        }
+    }
+    if(!started || canGo){
+    gridName = "grid" + x + y;
+    document.getElementById(gridName).className = "gridSquareOn";
+    gridXHit.push(x);
+    gridYHit.push(y);
+    
+    started=true;
+    }
+    }
+    outputLetters();
+    }
+  }
+
+// submit word to table
+// calls PHP scripts to check validity of word
+function submitWord() {
+    if(gameEnabled==true && currentWord.length>1){      
+    var found=false;
+    for(var i=0; i<currentWords.length;i++){
+	if(currentWords[i]==currentWord) found=true;
+    }
+    if(!found){
+    var wordsTableBody = _gel("boggleWordsTableBody");
+    var newWordTR = document.createElement("TR");
+    var newWordTD1 = document.createElement("TD");
+    var newWordA = document.createElement("A");
+    newWordTR.id = currentWord + "TR";
+    newWordTR.className = "even";
+    newWordTR.style.fontStyle = "italic";
+    newWordA.id = currentWord + "A";
+    newWordA.appendChild(document.createTextNode(currentWord));
+    newWordTD1.appendChild(newWordA);
+    newWordTR.appendChild(newWordTD1);
+    wordsTableBody.insertBefore(newWordTR, wordsTableBody.firstChild);
+    if (prefs.getString("dictorder")=="WordNet") {
+      dictOrder = 1;
+    } else if (prefs.getString("dictorder") == "UrbanDictionary") {
+      dictOrder = 2;
+    } else {
+      dictOrder = 3;
+    }
+    _IG_FetchContent(("http://imagine-it.org/google/getdefinition_both.php?rand=5&order="+ dictOrder + "&word="+currentWord + "&slang=Spanish-English"),updateWord);
+    currentWords.push(currentWord);
+    resetGrid();
+    outputLetters();
+    _gel("wordDefDiv").innerHTML = wordDefDefault;
+    }
+    }
+}
+
+
+function updateWord(response) { 
+    var responseArray = response.split("\n");
+    var word = responseArray[0];
+    
+    var wordTR = word + "TR";
+    var wordA = word + "A";
+    _gel(wordA).href = "#";
+    if(responseArray[1]=="no"){
+	currentScore-=1;
+    	_gel(wordTR).style.textDecoration = "line-through";
+	_gel(wordTR).className = "odd";
+   } else {
+       	_gel(wordTR).style.fontStyle = "normal";
+       	currentScore+= word.length;
+       	var wordDef = responseArray[2].substring(0,80);
+	var dictUsed = responseArray[3];
+	if(dictUsed != "UrbanDictionary")  _gel(wordA).href = "http://services.aonaware.com/DictService/Default.aspx?action=define&dict=wn&query="+word;
+	else  _gel(wordA).href = "http://www.urbandictionary.com/define.php?term="+word;
+	_gel(wordA).target = "_blank";
+	_gel(wordA).onmouseover = function() {
+	       	_gel("wordDefDiv").innerHTML = word + " : " + wordDef + "..." + "(" + dictUsed + ")"; }
+   }
+   updateScore();
+}
+
+function updateScore(){
+   _gel("scoreDIV").innerHTML = "Score: " + currentScore;   
+}
+
+_IG_RegisterOnloadHandler(function() { populateGrid(); });
+
+function startNewGame(){
+   resetGrid();
+   populateGrid();
+ 
+   clearTimeout(timer);
+   curTime=120;
+   startClock();
+
+   currentScore=0;
+   updateScore();
+
+   currentWords.length = 0;
+
+    var wordsTableBody = _gel("boggleWordsTableBody");
+   while(wordsTableBody.firstChild){
+     wordsTableBody.removeChild(wordsTableBody.firstChild);
+   }   
+   gameEnabled=true;
+}
+
+function showHighScore(){
+  alert("Your high score is: " + prefs.getInt("highscore"));
+}
+
+</script>
+<style type="text/css">
+A {
+  color:#000000;
+}
+A:visited {
+  color:#000000;
+}
+
+A:active {
+  color:#cd8eb6;
+}
+
+#gridTable {
+   width: 130px;
+   height: 150px;
+}
+
+.gridSquare {
+   width: 24px;
+   height: 22px;
+   margin:0px;
+   padding:0px;
+   margin-bottom:1px;
+   background:url("http://imagine-it.org/google/CELL_g.gif");
+}
+
+.gridSquareOn {
+   width: 24px;
+   height: 22px;
+   margin:0px;
+   padding:0px;
+   margin-bottom:1px;
+   background:url("http://imagine-it.org/google/CELLDOWN_g.gif");
+}
+   
+.gridRow {
+cursor:crosshair;
+}
+.noDef {
+  text-decoration: line-through;
+}
+
+#boggleWordsDIV {
+  //overflow: hidden;
+  border: 2px solid #000000;
+  margin: 2px;
+  height:140px;
+  //overflow: auto:
+  //overflow-y: auto;
+  text-align:center;
+  overflow:-moz-scrollbars-vertical;
+  overflow-y: scroll;
+  max-height:180px;
+  font-size:10pt;
+}
+
+
+tr {
+  text-align: center;
+}
+
+tr.odd {
+  font-size:8pt;
+  background-color: #f2e0e5;
+}
+tr.even {
+ font-size:8pt;
+ background-color: #b6d79f;
+}
+
+input.btn {
+ background: url("http://imagine-it.org/google/SUBMITWORD.gif");
+ width:136px;
+ height:28px;
+}
+
+input.btnNewGame {
+ background: url("http://imagine-it.org/google/NEWGAME.gif");
+ width:95px;
+ height:28px;
+}
+
+input.btnHighScore {
+ background: url("http://imagine-it.org/google/HIGHSCORE.gif");
+ width:122px;
+ height:28px;
+}
+
+#wordDefDIV {
+ border: 2px solid #000000;
+ background-color: #f2e0e5;
+ font-size: 10pt;
+ //height: 60px;
+}
+</style>
+<div style="margin-top: 10px;">
+ <div style="margin-bottom:10px;">
+  <div style="float:left;">
+   <a href="#" onclick="startNewGame();"> <img src="http://imagine-it.org/google/NEWGAME.gif" /></a>
+  </div>
+  <div id="highScoreDIV" style="padding-top: 5px; height:28px; float:right; font-size:10pt;">
+  </div>
+ </div>
+<br clear="all"/>
+ <div id="timerDIV" style="height: 20px; float:left;">
+ </div>
+<div id="scoreDIV" style="height: 20px; float:right;">
+</div>
+<br clear="all" />
+<div id="boggleBoard" style="float:left;">
+<input id="grid00" type="button" class="gridSquare" onclick="squareClicked(0,0);" value="" />
+<input id="grid01" type="button" class="gridSquare" onclick="squareClicked(0,1);" value="" />
+<input id="grid02" type="button" class="gridSquare" onclick="squareClicked(0,2);" value="" />
+<input id="grid03" type="button" class="gridSquare" onclick="squareClicked(0,3);" value="" />
+<input id="grid04" type="button" class="gridSquare" onclick="squareClicked(0,4);" value="" />
+<br clear="all" />
+<input id="grid10" type="button" class="gridSquare" onclick="squareClicked(1,0);" value="" />
+<input id="grid11" type="button" class="gridSquare" onclick="squareClicked(1,1);" value="" />
+<input id="grid12" type="button" class="gridSquare" onclick="squareClicked(1,2);" value="" />
+<input id="grid13" type="button" class="gridSquare" onclick="squareClicked(1,3);" value="" />
+<input id="grid14" type="button" class="gridSquare" onclick="squareClicked(1,4);" value="" />
+<br clear="all" />
+<input id="grid20" type="button" class="gridSquare" onclick="squareClicked(2,0);" value="" />
+<input id="grid21" type="button" class="gridSquare" onclick="squareClicked(2,1);" value="" />
+<input id="grid22" type="button" class="gridSquare" onclick="squareClicked(2,2);" value="" />
+<input id="grid23" type="button" class="gridSquare" onclick="squareClicked(2,3);" value="" />
+<input id="grid24" type="button" class="gridSquare" onclick="squareClicked(2,4);" value="" />
+<br clear="all" />
+<input id="grid30" type="button" class="gridSquare" onclick="squareClicked(3,0);" value="" />
+<input id="grid31" type="button" class="gridSquare" onclick="squareClicked(3,1);" value="" />
+<input id="grid32" type="button" class="gridSquare" onclick="squareClicked(3,2);" value="" />
+<input id="grid33" type="button" class="gridSquare" onclick="squareClicked(3,3);" value="" />
+<input id="grid34" type="button" class="gridSquare" onclick="squareClicked(3,4);" value="" />
+<br clear="all" />
+<input id="grid40" type="button" class="gridSquare" onclick="squareClicked(4,0);" value="" />
+<input id="grid41" type="button" class="gridSquare" onclick="squareClicked(4,1);" value="" />
+<input id="grid42" type="button" class="gridSquare" onclick="squareClicked(4,2);" value="" />
+<input id="grid43" type="button" class="gridSquare" onclick="squareClicked(4,3);" value="" />
+<input id="grid44" type="button" class="gridSquare" onclick="squareClicked(4,4);" value="" />
+<br clear="all" />
+<a href="#" onclick="submitWord();"><img src="http://imagine-it.org/google/SUBMITWORD.gif"></a>
+
+</div>
+
+<div id="boggleWordsDIV">
+<div id="lettersOutDIV">...</div>
+
+ <TABLE id="boggleWordsTable" width="100%">
+    <TBODY id="boggleWordsTableBody">
+    </TBODY>
+ </TABLE>
+</div>
+
+<div id="wordDefDiv" style="clear:both;">Rules: Find words by chaining together letters. Words must be 2-6 letters long. Click "NEW GAME" to get started.</div>
+</div>
+]]>
+</Content>
+</Module>
