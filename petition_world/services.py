@@ -7,25 +7,26 @@ from google.appengine.ext import webapp
 from google.appengine.api import memcache
 from google.appengine.ext import db
 
-from django.utils import simplejson
-
 import models
 import util
 import geodata
 
 class CryptographicNonceService(webapp.RequestHandler):
   def get(self):
+    # Don't cache this value
     self.response.headers.add_header('Cache-Control', 'no-cache, must-revalidate')
-    self.response.headers.add_header('Expires', 'Sat, 26 Jul 1997 05:00:00 GMT')
+    self.response.headers.add_header('Expires', 'Thu, 01 Jan 1970 08:00:00 GMT')
     # Produces 160 bits of randomness to send back to the user
     randomVal = ''.join(["%02x" % ord(x) for x in os.urandom(20)])
     # No value is required, we only need to be able to verify that we've
     # issued this nonce in the recent past.
-    memcache.set(randomVal, '', 900)
+    memcache.set(randomVal, '', 3600)
+    # Spam bots generally don't maintain cookie stores
     self.response.headers.add_header(
       'Set-Cookie', 'nonce=%s; path=/' % randomVal
     )
-    self.response.out.write(simplejson.dumps({'nonce': randomVal}))
+    # Simple format string is faster than a JSON dump
+    self.response.out.write("{\"nonce\": \"%s\"}" % randomVal)
 
 class VotesInLocationService(webapp.RequestHandler):
   def get(self):
