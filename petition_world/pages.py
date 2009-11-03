@@ -8,8 +8,8 @@ from google.appengine.ext import webapp
 from google.appengine.ext.webapp.util import run_wsgi_app
 from google.appengine.ext.webapp import template
 from google.appengine.ext import db
-from google.appengine.api import memcache
 from google.appengine.ext import deferred
+from google.appengine.api import memcache
 from google.appengine.api import urlfetch
 
 from django.utils import simplejson
@@ -38,8 +38,18 @@ class BasePage(webapp.RequestHandler):
       skin = 'main' 
 
     bg_color = self.request.get('bg_color')
+    website = self.request.get('website')
 
-    template_values = {'page_title': page_title, 'page_num': page_num, 'skin': skin, 'bg_color': bg_color}
+    template_values = {
+      'page_title': page_title,
+      'page_num': page_num,
+      'skin': skin,
+      'bg_color': bg_color,
+      'website': website,
+      'vote_href': "/vote?skin=%s&amp;bg_color=%s&amp;website=%s" % (skin, bg_color, website),
+      'explore_href': "/explore?skin=%s&amp;bg_color=%s&amp;website=%s" % (skin, bg_color, website),
+      'learn_href': "/learn?skin=%s&amp;bg_color=%s&amp;website=%s" % (skin, bg_color, website)
+    }
     return template_values
 
   def getTemplateFilename(self):
@@ -90,6 +100,14 @@ class RegisterPage(BasePage):
   def getTemplateFilename(self):
     return "register.html"
 
+class EmbedPage(BasePage):
+  def getTemplateValues(self):
+    template_values = BasePage.getTemplateValues(self, 'Show Your Vote: Embed', 5)
+    return template_values
+
+  def getTemplateFilename(self):
+    return "embed.html"
+
 class HostAddService(webapp.RequestHandler):
   def post(self):
     host = models.PetitionHost()
@@ -97,7 +115,20 @@ class HostAddService(webapp.RequestHandler):
     host.host_email = self.request.get('host_email')
     host.host_website = self.request.get('host_website')
     host.host_bgcolor = self.request.get('host_bgcolor')
+    if os.environ['SERVER_SOFTWARE'].startswith('Development'):
+      util.sendEmbedMail(
+        host.host_email, host.host_bgcolor, host.host_website
+      )
+    else:
+      deferred.defer(util.sendEmbedMail,
+        host.host_email, host.host_bgcolor, host.host_website
+      )
     host.put()
+    self.redirect(
+      "/embed?skin=%s&bg_color=%s&website=%s" % (
+        self.request.get('skin'), host.host_bgcolor, host.host_website
+      )
+    )
 
 class DebugPage(webapp.RequestHandler):
   def get(self):
@@ -233,6 +264,7 @@ class SignerAddService(webapp.RequestHandler):
     signer.state = self.request.get('state')
     signer.country = self.request.get('country')
     signer.postcode = self.request.get('postcode')
+    signer.host_website = self.request.get('website')
     #TODO: We used to get two lat/lngs. What happened?
     signer.latlng = db.GeoPt(float(self.request.get('lat')), float(self.request.get('lng')))
     if os.environ['SERVER_SOFTWARE'].startswith('Development'):

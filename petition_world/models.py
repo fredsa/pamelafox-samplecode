@@ -40,6 +40,7 @@ class PetitionSigner(db.Model):
   latlng = db.GeoPtProperty()
   media = db.StringProperty()
   freetext = db.StringProperty()
+  host_website = db.StringProperty()
 
 class PetitionHost(db.Model):
   host_name = db.StringProperty()

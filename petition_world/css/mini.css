@@ -148,3 +148,13 @@ form.cmxform {
   width: 45px;
   height: 45px;
 }
+
+#embed {
+  font-size: 1.8em;
+  padding: 60px;
+}
+
+#embed pre {
+  overflow: auto;
+  border: 1px solid black;
+}

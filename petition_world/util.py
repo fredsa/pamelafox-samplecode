@@ -8,12 +8,30 @@ from google.appengine.ext.webapp import template
 from google.appengine.ext.webapp import template
 from google.appengine.ext import db
 from google.appengine.api import memcache
+from google.appengine.api import mail
 
 from django.utils import simplejson
 
 import models
 import geocoder
 import geodata 
+
+def sendEmbedMail(to, bgColor, website):
+  message = mail.EmailMessage(
+    sender="Show Your Vote <noreply@show-your-vote.appspot.com>",
+    subject="Embed code for Show Your Vote"
+  )
+  message.to = to
+  message.body = """
+You can embed the Show Your Vote petition in your site with the
+following code:
+
+<iframe src="http://show-your-vote.appspot.com/vote?skin=mini&bg_color=%s&website=%s"
+  frameborder="0" width="625" height="510">
+  <p>Your browser does not support iframes.</p>
+</iframe>
+  """ % (bgColor, website)
+  message.send()
 
 def addSignerToClusters(signer, extraLatLng):
   # Put signer in PetitionSigner datastore

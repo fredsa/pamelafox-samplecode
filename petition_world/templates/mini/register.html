@@ -8,7 +8,7 @@
 {% block tabs %}
 <img src="/images/mini/HeaderTerms.png" width="600" height="39" border="0" usemap="#Map" style="background-color:{{bg_color}}" />
 <map name="Map" id="Map">
-  <area shape="rect" coords="1,1,189,39" href="vote?skin=mini&bg_color={{bg_color}}" />
+  <area shape="rect" coords="1,1,189,39" href="vote?skin=mini&amp;bg_color={{bg_color}}" />
 </map>
 {% endblock %}
 {% block content %}
@@ -28,6 +28,7 @@ Google agrees to provide you certain information from the Application regarding 
 <p style="font-size: 10px; margin-left: 10px"><b>Fill out the details below, click 'Create URL' and place the resulting link onto your website:</b></p>
 <br>
  <form name="sign" id="sign" action="/add/host" method="post" class="cmxform">
+   <input type="hidden" name="skin" value="{{ skin }}" />
 <div id="host_form" style="width: 600px; height: 250px; overflow:hidden; border: none">
   <fieldset style="border: 0px solid #000000; margin-left: 45 px; font-size: 12px">
     <ol>

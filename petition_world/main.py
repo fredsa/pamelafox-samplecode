@@ -15,6 +15,7 @@ def main():
                                       ('/explore', pages.ExplorePage),
                                       ('/terms', pages.TermsPage),
                                       ('/register', pages.RegisterPage),
+                                      ('/embed', pages.EmbedPage),
                                       ('/debug', pages.DebugPage),
                                       ('/add/random', pages.RandomAddService),
                                       ('/add/signer', pages.SignerAddService),
