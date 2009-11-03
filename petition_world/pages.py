@@ -90,6 +90,15 @@ class RegisterPage(BasePage):
   def getTemplateFilename(self):
     return "register.html"
 
+class HostAddService(webapp.RequestHandler):
+  def post(self):
+    host = models.PetitionHost()
+    host.host_name = self.request.get('host_name')
+    host.host_email = self.request.get('host_email')
+    host.host_website = self.request.get('host_website')
+    host.host_bgcolor = self.request.get('host_bgcolor')
+    host.put()
+
 class DebugPage(webapp.RequestHandler):
   def get(self):
     countryCode = self.request.get('countryCode')
@@ -231,3 +240,4 @@ class SignerAddService(webapp.RequestHandler):
     else:
       deferred.defer(util.addSignerToClusters, signer, signer.latlng)
     return signer
+

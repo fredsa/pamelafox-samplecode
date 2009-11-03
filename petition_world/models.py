@@ -41,6 +41,12 @@ class PetitionSigner(db.Model):
   media = db.StringProperty()
   freetext = db.StringProperty()
 
+class PetitionHost(db.Model):
+  host_name = db.StringProperty()
+  host_email = db.StringProperty()
+  host_website = db.StringProperty()
+  host_bgcolor = db.StringProperty()
+
 class Postcode(db.Model):
   postcode = db.StringProperty()
   counter = db.IntegerProperty(default=0)
