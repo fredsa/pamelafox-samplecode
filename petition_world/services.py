@@ -7,6 +7,8 @@ from google.appengine.ext import webapp
 from google.appengine.api import memcache
 from google.appengine.ext import db
 
+from django.utils import simplejson
+
 import models
 import util
 import geodata
@@ -14,6 +16,7 @@ import geodata
 class CryptographicNonceService(webapp.RequestHandler):
   def get(self):
     # Don't cache this value
+    self.response.headers['Content-Type'] = 'application/json; charset=utf-8'
     self.response.headers.add_header('Cache-Control', 'no-cache, must-revalidate')
     self.response.headers.add_header('Expires', 'Thu, 01 Jan 1970 08:00:00 GMT')
     # Produces 160 bits of randomness to send back to the user
