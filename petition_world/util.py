@@ -18,7 +18,7 @@ import geodata
 
 def sendEmbedMail(to, bgColor, website):
   message = mail.EmailMessage(
-    sender="Show Your Vote <noreply@show-your-vote.appspot.com>",
+    sender="Show Your Vote <admin@showyourvote.org>",
     subject="Embed code for Show Your Vote"
   )
   message.to = to
@@ -26,7 +26,7 @@ def sendEmbedMail(to, bgColor, website):
 You can embed the Show Your Vote petition in your site with the
 following code:
 
-<iframe src="http://show-your-vote.appspot.com/vote?skin=mini&bg_color=%s&website=%s"
+<iframe src="http://showyourvote.org/vote?skin=mini&bg_color=%s&website=%s"
   frameborder="0" width="625" height="510">
   <p>Your browser does not support iframes.</p>
 </iframe>

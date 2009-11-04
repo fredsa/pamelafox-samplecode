@@ -115,14 +115,12 @@ class HostAddService(webapp.RequestHandler):
     host.host_email = self.request.get('host_email')
     host.host_website = self.request.get('host_website')
     host.host_bgcolor = self.request.get('host_bgcolor')
-    if os.environ['SERVER_SOFTWARE'].startswith('Development'):
-      util.sendEmbedMail(
-        host.host_email, host.host_bgcolor, host.host_website
-      )
-    else:
-      deferred.defer(util.sendEmbedMail,
-        host.host_email, host.host_bgcolor, host.host_website
-      )
+#    if os.environ['SERVER_SOFTWARE'].startswith('Development'):
+    util.sendEmbedMail(host.host_email, host.host_bgcolor, host.host_website)
+#    else:
+#      deferred.defer(util.sendEmbedMail,
+#        host.host_email, host.host_bgcolor, host.host_website
+#      )
     host.put()
     self.redirect(
       "/embed?skin=%s&bg_color=%s&website=%s" % (
