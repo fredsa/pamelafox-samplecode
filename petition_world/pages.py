@@ -263,8 +263,9 @@ class SignerAddService(webapp.RequestHandler):
     signer.country = self.request.get('country')
     signer.postcode = self.request.get('postcode')
     signer.host_website = self.request.get('website')
-    #TODO: We used to get two lat/lngs. What happened?
-    signer.latlng = db.GeoPt(float(self.request.get('lat')), float(self.request.get('lng')))
+    if self.request.get('lat') and self.request.get('lng'):
+      #TODO: We used to get two lat/lngs. What happened?
+      signer.latlng = db.GeoPt(float(self.request.get('lat')), float(self.request.get('lng')))
     if os.environ['SERVER_SOFTWARE'].startswith('Development'):
       util.addSignerToClusters(signer, signer.latlng)
     else:
