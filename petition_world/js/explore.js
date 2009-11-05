@@ -68,7 +68,7 @@ jQuery(document).ready(function() {
   //loadVideoBar();
 
   initExploreMap();
-
+  
   google.friendconnect.container.initOpenSocialApi({
     site: site_id,
     onload: function(securityToken) {
@@ -128,6 +128,7 @@ function initExploreMap() {
   handleZoomChange();
   handleBoundsChange();
   jQuery.getJSON("/info/totals", processTotals);
+  exploreMap.enableGoogleBar();
 }
 
 function handleBoundsChange() {
@@ -294,7 +295,7 @@ function createBigIcon(label) {
   var iconOptions = {};
   iconOptions.width = 64;
   iconOptions.height = 26;
-  iconOptions.primaryColor = "#ff0084";
+  iconOptions.primaryColor = "#ca6618";
   iconOptions.label = "" + label;
   iconOptions.labelSize = 20;
   iconOptions.labelColor = "#FFFFFF";
@@ -306,9 +307,9 @@ function createBigIcon(label) {
 
 function createMediumIcon(label) {
   var iconOptions = {};
-  iconOptions.width = 22;
+  iconOptions.width = 48;
   iconOptions.height = 22;
-  iconOptions.primaryColor =  "#0063dc";
+  iconOptions.primaryColor =  "#0097c4";
   iconOptions.label = "" + label;
   iconOptions.labelSize = 16;
   iconOptions.labelColor = "#FFFFFF";
@@ -320,9 +321,9 @@ function createMediumIcon(label) {
 
 function createSmallIcon(label) {
   var iconOptions = {};
-  iconOptions.width = 18;
+  iconOptions.width = 24;
   iconOptions.height = 18;
-  iconOptions.primaryColor = "#5fa612";
+  iconOptions.primaryColor = "#85a20a";
   iconOptions.label = "" + label;
   iconOptions.labelSize = 12;
   iconOptions.labelColor = "#FFFFFF";

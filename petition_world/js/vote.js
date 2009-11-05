@@ -119,7 +119,7 @@ jQuery(document).ready(function() {
           visitorId = null;
           visitorName = null;
           var nameInfo = jQuery('#person_name_info');
-          nameInfo.html("You are signing anonymously.");
+          nameInfo.html("<div style='margin-left:120px;margin-top:-10px;'>Vote with your name using Friend Connect,<br>or keep your vote anonymous here.</div>");
         }
       });
     }
