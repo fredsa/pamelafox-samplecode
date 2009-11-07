@@ -1,0 +1,91 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>Markers Layer Example</title>
+    <link rel="stylesheet" href="../theme/default/style.css" type="text/css" />
+    <link rel="stylesheet" href="style.css" type="text/css" />
+	<script src="../lib/OpenLayers.js"></script>
+    <script type="text/javascript">
+        var map, markers, icon;
+		
+        function init(){
+            OpenLayers.ProxyHost="/proxy/?url=";
+            map = new OpenLayers.Map('map');
+            
+			var layer = new OpenLayers.Layer.WMS( "NASA WMS",
+					"http://wms.jpl.nasa.gov/wms.cgi?", {layers: 'BMNG',
+						format: 'image/png'},
+					{isBaseLayer: true});
+                
+            map.addLayer(layer);
+			
+            map.setCenter(new OpenLayers.LonLat(47.608941, -122.340145), 12);
+
+			var size = new OpenLayers.Size(32,32);
+            var offset = new OpenLayers.Pixel(-(size.w/2), -size.h);
+			
+            map.addControl(new OpenLayers.Control.LayerSwitcher());
+          
+			icon = new OpenLayers.Icon('http://chart.apis.google.com/chart?cht=mm&chs=32x32&chco=FFDF00FF,FFFF00FF,000000FF&ext=.png',size,offset);
+            markers = new OpenLayers.Layer.Markers( "Markers" );
+			loadSpreadsheet();
+        }
+		
+		function getColumnVal(entry, columnName) {
+          var columnVal = '';
+          if (entry["gsx$" + columnName]) {
+            columnVal = entry["gsx$" + columnName].$t;
+          }
+          return columnVal;
+        }
+		
+
+		function onSpreadsheetLoad(json) {
+		  bounds = new OpenLayers.Bounds();
+		  for (var i = 0; i < json.feed.entry.length; i++) {
+            var entry = json.feed.entry[i]; 
+            var latitude = parseFloat(getColumnVal(entry, "bglat"));
+			var longitude = parseFloat(getColumnVal(entry, "bglong"));
+			var lonlat = new OpenLayers.LonLat(longitude, latitude);
+            bounds.extend(lonlat);
+			var title = getColumnVal(entry, "title");
+			createMarker(i, title, lonlat);
+		  }
+		   
+           map.addLayer(markers);
+		   map.zoomToExtent(bounds);
+		}
+		
+		function createMarker(num, title, lonlat) {
+           var marker = new OpenLayers.Marker(lonlat, icon.clone());
+		   
+		   var markerClick = function (evt) {
+             popup = new OpenLayers.Popup("markerId" + num,
+               lonlat,
+               new OpenLayers.Size(200,100),
+               title,
+               true);
+              map.addPopup(popup);
+            };
+			
+            marker.events.register("mousedown", marker, markerClick);
+			
+			markers.addMarker(marker);
+		}
+		
+		function loadSpreadsheet() {
+		  var script = document.createElement("script");
+		  script.src = "http://spreadsheets.google.com/feeds/list/tXZknzPlrLpmIKTPr0CSuMg/od6/public/values?alt=json-in-script&callback=onSpreadsheetLoad";
+		  document.body.appendChild(script);
+		 }
+    </script>
+  </head>
+  <body onload="init()">
+    <div id="title">Markers Layer Example</div>
+    <div id="tags"></div>
+    <div id="shortdesc">Show markers layer with different markers</div>
+    <div id="map" class="smallmap"></div>
+    <div id="docs">
+        This is an example of an OpenLayers.Layers.Markers layer that shows some examples of adding markers.  Also demonstrated is registering a mousedown effect on a marker.
+    </div>
+  </body>
+</html>
