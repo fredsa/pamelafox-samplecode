@@ -41,8 +41,8 @@
 		  bounds = new OpenLayers.Bounds();
 		  for (var i = 0; i < json.feed.entry.length; i++) {
             var entry = json.feed.entry[i]; 
-            var latitude = parseFloat(getColumnVal(entry, "latitude"));
-			var longitude = parseFloat(getColumnVal(entry, "longitude"));
+            var latitude = parseFloat(getColumnVal(entry, "bglat"));
+			var longitude = parseFloat(getColumnVal(entry, "bglong"));
 			var lonlat = new OpenLayers.LonLat(longitude, latitude);
             bounds.extend(lonlat);
 			var title = getColumnVal(entry, "title");
@@ -72,7 +72,7 @@
 		
 		function loadSpreadsheet() {
 		  var script = document.createElement("script");
-		  script.src = "http://spreadsheets.google.com/feeds/list/o16162288751915453340.4402783830945175750/od6/public/values?alt=json-in-script&callback=onSpreadsheetLoad";
+		  script.src = "http://spreadsheets.google.com/feeds/list/tXZknzPlrLpmIKTPr0CSuMg/od6/public/values?alt=json-in-script&callback=onSpreadsheetLoad";
 		  document.body.appendChild(script);
 		 }
     </script>
