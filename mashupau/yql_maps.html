@@ -1,0 +1,50 @@
+<!DOCTYPE html "-//W3C//DTD XHTML 1.0 Strict//EN" 
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"> 
+<html xmlns="http://www.w3.org/1999/xhtml"> 
+  <head> 
+    <meta http-equiv="content-type" content="text/html; charset=utf-8"/> 
+    <title>Google Maps JavaScript API Example</title> 
+    <script src="http://maps.google.com/maps?file=api&amp;v=2&amp;key=ABQIAAAA-O3c-Om9OcvXMOJXreXHAxQGj0PqsCtxKvarsoS-iqLdqZSKfxS27kJqGZajBjvuzOBLizi931BUow&sensor=false"
+            type="text/javascript"></script> 
+    <script type="text/javascript"> 
+    var map, places;
+	 
+    function initialize() {
+        map = new GMap2(document.getElementById("map_canvas"));
+        map.setCenter(new GLatLng(-33.77508, 151.115827), 15);
+        map.setUIToDefault();
+        map.enableGoogleBar();
+		loadQuery();
+    }
+
+    function createMarker(latlng, name) {
+	    var marker = new GMarker(latlng, {title: name});
+		GEvent.addListener(marker, 'click', function() {
+		  marker.openInfoWindow(name);
+		});
+	    return marker;
+    }
+	
+	function loadQuery() {
+	  var script = document.createElement("script");
+	  script.src = "http://query.yahooapis.com/v1/public/yql?q=select%20name%2Ccentroid%20from%20geo.places.children%20where%20parent_woeid%20in%20(select%20woeid%20from%20geo.places%20where%20text%3D%22pyrmont%22%20limit%201)&format=json&callback=loadPlaceData";
+	  document.body.appendChild(script);
+	}
+	
+	function loadPlaceData(json) {
+	    places = json.query.results.place;
+		var bounds = new GLatLngBounds();
+        for (var i = 0; i < places.length; i++) {
+	        var place = places[i];
+	        var latlng = new GLatLng(place.centroid.latitude, place.centroid.longitude);
+	        map.addOverlay(createMarker(latlng, place.name));
+			bounds.extend(latlng);
+     	}
+		map.setCenter(bounds.getCenter(), map.getBoundsZoomLevel(bounds));
+    }
+    </script> 
+  </head> 
+  <body onload="initialize()" onunload="GUnload()"> 
+    <div id="map_canvas" style="width: 500px; height: 300px"></div> 
+  </body> 
+</html> 
