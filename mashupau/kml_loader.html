@@ -1,0 +1,87 @@
+<!DOCTYPE html> 
+<html> 
+<!--
+ Copyright 2008 Google Inc. 
+ Licensed under the Apache License, Version 2.0: 
+ http://www.apache.org/licenses/LICENSE-2.0 
+ --> 
+<head> 
+  <title>Google Earth API Samples - Fetch KML (Interactive)</title> 
+  <meta http-equiv="content-type" content="text/html; charset=utf-8"/> 
+  <!-- Change the key below to your own Maps API key --> 
+  <script type="text/javascript" src="http://www.google.com/jsapi?hl=en&amp;key=ABQIAAAA-O3c-Om9OcvXMOJXreXHAxQGj0PqsCtxKvarsoS-iqLdqZSKfxS27kJqGZajBjvuzOBLizi931BUow"></script> 
+  <script type="text/javascript"> 
+  /* <![CDATA[ */
+  var ge;
+  google.load("earth", "1");
+  
+ var layers = {
+ "awm": 
+ {"url": "http://api.flickr.com/services/feeds/geo/?id=30115723@N02&lang=en-us&format=kml_nl",
+  "name": "Australian War Memorial"},
+ "statelibrarynsw": 
+ {"url": "http://api.flickr.com/services/feeds/geo/?id=29454428@N08&lang=en-us&format=kml_nl",
+  "name": "State Library of NSW"},
+ "powerhousemuseum": 
+ {"url" : "http://api.flickr.com/services/feeds/geo/?id=24785917@N03&lang=en-us&format=kml_nl",
+   "name": "Powerhouse Museum"}
+};
+
+  function init() {
+    google.earth.createInstance('map3d', initCB, failureCB);
+  }
+  
+  function initCB(instance) {
+    ge = instance;
+    ge.getWindow().setVisibility(true);
+    
+    // add a navigation control
+    ge.getNavigationControl().setVisibility(ge.VISIBILITY_AUTO);
+    
+    // add some layers
+    ge.getLayerRoot().enableLayerById(ge.LAYER_BORDERS, true);
+    ge.getLayerRoot().enableLayerById(ge.LAYER_ROADS, true);
+ 
+    // fly to Santa Cruz
+    var la = ge.createLookAt('');
+    la.set(-33.867139, 151.207114,
+      0, // altitude
+      ge.ALTITUDE_RELATIVE_TO_GROUND,
+      0, // heading
+      0, // straight-down tilt
+      5000 // range (inverse of zoom)
+      );
+    ge.getView().setAbstractView(la);
+	fetchKmls();
+  }
+  
+  function failureCB(errorCode) {
+  }
+  
+  function fetchKmls() {
+    for (layerID in layers) {
+      google.earth.fetchKml(ge, layers[layerID].url, finishFetchKml);
+	}
+  }
+  
+  function finishFetchKml(kmlObject) {
+    // check if the KML was fetched properly
+    if (kmlObject) {
+      // add the fetched KML to Earth
+      ge.getFeatures().appendChild(kmlObject);
+    } else {
+      // wrap alerts in API callbacks and event handlers
+      // in a setTimeout to prevent deadlock in some browsers
+      setTimeout(function() {
+        alert('Bad or null KML.');
+      }, 0);
+    }
+  }
+  
+  /* ]]> */
+  </script> 
+</head> 
+<body onload="if(window.prettyPrint)prettyPrint();init();"> 
+    <div id="map3d" style="border: 1px solid silver; width: 800px; height: 800px;"></div> 
+</body> 
+</html> 
