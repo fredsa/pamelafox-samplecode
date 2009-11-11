@@ -159,3 +159,7 @@ form.cmxform {
   width: 590px;
   font-size: 0.8em;
 }
+
+#fc-opensocial-api {
+  display: none;
+}
