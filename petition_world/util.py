@@ -92,11 +92,22 @@ def addSignerToClusters(signer, extraLatLng):
       postcodecluster.put()
 
 def countryHasPostcodes(countryCode):
-  #todo: log if country doesn't exit
-  return geodata.countries[countryCode]['postcode'] >= 0
+  if countryCode and geodata.countries.get(countryCode):
+    return geodata.countries[countryCode].get('postcode') >= 0
+  elif countryCode:
+    logging.warn("Country code does not exist: %s" % countryCode)
+    return False
+  else:
+    return False
 
 def countryHasStates(countryCode):
-  return geodata.countries[countryCode].has_key('states')
+  if countryCode and geodata.countries.get(countryCode):
+    return geodata.countries[countryCode].has_key('states')
+  elif countryCode:
+    logging.warn("Country code does not exist: %s" % countryCode)
+    return False
+  else:
+    return False
 
 def getCountryVotesInStore(countryCode):
   query = db.Query(models.Country)
