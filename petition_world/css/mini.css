@@ -161,4 +161,6 @@ form.cmxform {
 
 #fc-opensocial-api, #fc-opensocial-api iframe, #fc-opensocial-api div {
   display: none !important;
+  height: 0px !important;
+  width: 0px !important;
 }
