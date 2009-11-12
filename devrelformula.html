@@ -1,0 +1,40 @@
+<html>
+<head>
+<title>
+Developer Relations: A Formula
+</title>
+<script src="http://www.google.com/jsapi"></script>
+<script>
+  // Load jQuery
+  google.load("jquery", "1");
+
+  // on page load complete, fire off a jQuery json-p query
+  // against Google web search
+  var apis = ["Y", "Android", "Blogger Data API (Labs)", "Chromium", "Closure Tools", "DoubleClick In-Stream (Labs)", "Feedburner APIs (Labs)", "Gadgets API", "Gears (Labs)", "Google AJAX APIs", "Google AJAX Feed API", "Google AJAX Language API", "Google AJAX Search API", "Google Account Authentication", "Google AdSense API", "Google AdWords API", "Google Analytics", "Google App Engine", "Google Apps APIs", "Google Apps Developer Tools", "Google Base Data API (Labs)", "Google Book Search APIs (Labs)", "Google Calendar APIs and Tools", "Google Chart API", "Google Checkout", "Google Chrome Frame", "Google Code Search Data API (Labs)", "Google Contacts APIs", "Google Coupon Feeds (Labs)", "Google Custom Search API", "Google Data Protocol", "Google Desktop APIs (Labs)", "Google Documents List Data API", "Google Earth API", "Google Finance Data API (Labs)", "Google Friend Connect APIs (Labs)", "Google Health API", "Google Mapplets", "Google Maps API", "Google Maps API For Flash", "Google Plugin for Eclipse", "Google Safe Browsing APIs (Labs)", "Google Secure Data Connector", "Google Sidewiki API", "Google Sites Data API", "Google SketchUp Ruby API", "Google Spreadsheets Data API (Labs)", "Google Static Maps API", "Google Talk for Developers (Labs)", "Google Transit Feed Specification", "Google Visualization API", "Google Wave API", "Google Web Elements", "Google Web Toolkit", "Google Webmaster Tools Data API (Labs)", "iGoogle Developer Home (Labs)", "iGoogle Themes API (Labs)", "KML", "O3D API (Labs)", "OpenSocial", "Orkut Developer Home", "Picasa APIs (Labs)", "Picasa Web Albums Data API", "Project Hosting", "PubSubHubbub", "Social Graph API (Labs)", "V8", "YouTube APIs"];
+  var devs = ["X", "high-touch partners", "long tail developers", "paying/enterprise customers", "internal developers"];
+  
+  google.setOnLoadCallback(function() {
+    for (var i = 0, api; api = apis[i]; i++) {
+      $('#apis').append("<option>" + api.replace('(Labs)', '') + "</option>"); 
+	}
+	for (var i = 0, dev; dev = devs[i]; i++) {
+      $('#devs').append("<option>" + dev + "</option>"); 
+	}
+	fillText();
+  });
+  
+  function fillText() {
+    $('.dev').text($('#devs').val());
+	$('.api').text($('#apis').val());
+  }
+</script>
+</head>
+<body style="font-family:arial, sans serif">
+Type of developer: <select id="devs" onchange="fillText()"></select> <br/>
+Developer product: <select id="apis" onchange="fillText()"></select> <br/>
+<br/>
+Support <span class="dev"></span> using <span class="api"></span> <br/>
+Get more <span class="dev"></span> using <span class="api"></span> <br/>
+Advocate to <span class="api"></span> team on behalf of <span class="dev"></span> <br/>
+ </body>
+ </html>
