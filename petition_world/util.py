@@ -65,7 +65,7 @@ def addSignerToClusters(signer, extraLatLng):
     else:
       countryCounter = result
       countryCounter.counter = countryCounter.counter + 1
-      data = simplejson.loads(postcodecluster.data)
+      data = simplejson.loads(countryCounter.data)
       data.append(clusterdata)
       countryCounter.data = simplejson.dumps(data)
       countryCounter.put()
