@@ -160,6 +160,6 @@ form.cmxform {
   font-size: 0.8em;
 }
 
-#fc-opensocial-api {
-  display: none;
+#fc-opensocial-api, #fc-opensocial-api iframe, #fc-opensocial-api div {
+  display: none !important;
 }

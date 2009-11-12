@@ -159,6 +159,6 @@ form.cmxform {
   border: 1px solid black;
 }
 
-#fc-opensocial-api {
-  display: none;
+#fc-opensocial-api, #fc-opensocial-api iframe, #fc-opensocial-api div {
+  display: none !important;
 }
