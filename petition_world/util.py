@@ -57,7 +57,7 @@ def addSignerToClusters(signer, extraLatLng):
     query.filter('country =', countryCode)
     result = query.get()
     if result is None:
-      countryCounter = models.Country
+      countryCounter = models.Country()
       countryCounter.country = countryCode
       countryCounter.counter = 1
       countryCounter.data = simplejson.dumps([clusterdata])
