@@ -136,9 +136,7 @@ def getCountryVotesPerStateInStore(countryCode):
       results = query.fetch(1000)
       numVotesInState = 0
       for result in results:
-        logging.info(result.state)
         numVotesInState += result.counter
-      logging.info("Adding " + str(numVotesInState))
       memcache.set(models.MEMCACHE_VOTES + countryCode + stateCode, str(numVotesInState))
       numVotesInCountry += numVotesInState
   return numVotesInCountry
