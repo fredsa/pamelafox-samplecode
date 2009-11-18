@@ -23,16 +23,20 @@ def sendEmbedMail(to, bgColor, website):
     subject="Embed code for Show Your Vote"
   )
   normalizedBgColor = re.sub("#", "", bgColor.lower())
+  embedURL = (
+    "http://showyourvote.org/vote" +
+    "?skin=mini&amp;bg_color=%s&amp;website=%s"
+  ) % (normalizedBgColor, website)
   message.to = to
   message.body = """
 You can embed the Show Your Vote petition in your site with the
 following code:
 
-<iframe src="http://showyourvote.org/vote?skin=mini&bg_color=%s&website=%s"
+<iframe src="%s"
   frameborder="0" width="625" height="510">
   <p>Your browser does not support iframes.</p>
 </iframe>
-  """ % (normalizedBgColor, website)
+  """ % embedURL
   logging.info(bgColor)
   logging.info(normalizedBgColor)
   message.send()
