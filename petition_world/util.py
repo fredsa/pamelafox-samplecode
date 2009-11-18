@@ -24,7 +24,7 @@ def sendEmbedMail(to, bgColor, website):
   )
   normalizedBgColor = re.sub("#", "", bgColor.lower())
   embedURL = (
-    "http://showyourvote.org/vote" +
+    "http://www.showyourvote.org/vote" +
     "?skin=mini&amp;bg_color=%s&amp;website=%s"
   ) % (normalizedBgColor, website)
   message.to = to
