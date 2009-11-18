@@ -124,7 +124,8 @@ class HostAddService(webapp.RequestHandler):
     host.put()
     self.redirect(
       "/embed?skin=%s&bg_color=%s&website=%s" % (
-        self.request.get('skin'), host.host_bgcolor, host.host_website
+        self.request.get('skin'), self.request.get('bg_color'),
+        host.host_website
       )
     )
 

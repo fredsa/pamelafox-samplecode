@@ -1,6 +1,7 @@
 import cgi
 import os
 import logging
+import re
 
 from google.appengine.ext import webapp
 from google.appengine.ext.webapp.util import run_wsgi_app
@@ -21,6 +22,7 @@ def sendEmbedMail(to, bgColor, website):
     sender="Show Your Vote <admin@showyourvote.org>",
     subject="Embed code for Show Your Vote"
   )
+  normalizedBgColor = re.sub("#", "", bgColor.lower())
   message.to = to
   message.body = """
 You can embed the Show Your Vote petition in your site with the
@@ -30,7 +32,9 @@ following code:
   frameborder="0" width="625" height="510">
   <p>Your browser does not support iframes.</p>
 </iframe>
-  """ % (bgColor, website)
+  """ % (normalizedBgColor, website)
+  logging.info(bgColor)
+  logging.info(normalizedBgColor)
   message.send()
 
 def addSignerToClusters(signer, extraLatLng):
