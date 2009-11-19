@@ -6,8 +6,10 @@ from google.appengine.ext.webapp.util import run_wsgi_app
 
 import pages
 import services
+import logging
 
 def main():
+  logging.getLogger().setLevel(logging.WARNING)
   application = webapp.WSGIApplication([
                                       ('/', pages.RootRedirect),
                                       ('/learn', pages.LearnPage),

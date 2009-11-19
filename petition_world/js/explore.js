@@ -15,6 +15,7 @@ var loadedCountries = false;
 var loadedContinents = false;
 var locationId = "global";
 var toggler = 0;
+var currentMarker;
 
 if (site_bg_color == "" || site_bg_color == null) {
   switch(site_skin) {
@@ -129,6 +130,45 @@ function initExploreMap() {
   handleBoundsChange();
   jQuery.getJSON("/info/totals", processTotals);
   exploreMap.enableGoogleBar();
+  GEvent.addListener(exploreMap, "infowindowopen", function() {
+    var iw = exploreMap.getInfoWindow();
+    console.log('MONKEYMONKEYMONKEY')
+    window.setTimeout(function () {
+      iw.maximize();
+    }, 5);
+    GEvent.addListener(iw, "maximizeend", function() {
+      console.log('banananabananan')
+      var skin = {};
+      skin['BORDER_COLOR'] = '#cccccc';
+      skin['ENDCAP_BG_COLOR'] = site_bg_color;
+      skin['ENDCAP_TEXT_COLOR'] = '#333333';
+      skin['ENDCAP_LINK_COLOR'] = '#0000cc';
+      skin['ALTERNATE_BG_COLOR'] = '#ffffff';
+      skin['CONTENT_BG_COLOR'] = '#ffffff';
+      skin['CONTENT_LINK_COLOR'] = '#0000cc';
+      skin['CONTENT_TEXT_COLOR'] = '#333333';
+      skin['CONTENT_SECONDARY_LINK_COLOR'] = '#7777cc';
+      skin['CONTENT_SECONDARY_TEXT_COLOR'] = '#666666';
+      skin['CONTENT_HEADLINE_COLOR'] = '#333333';
+      skin['DEFAULT_COMMENT_TEXT'] = '- add your comment here -';
+      skin['HEADER_TEXT'] = 'Show your support of the vote in ' + currentMarker.title;
+      skin['POSTS_PER_PAGE'] = '4';
+      skin['HEIGHT'] = '330';
+      google.friendconnect.container.renderWallGadget({
+            id: 'div-864264044956702366',
+            site: site_id,
+            'view-params': {
+              "disableMinMax": "true",
+              "scope": "ID",
+              "features": "video,comment",
+              "allowAnonymousPost":"true",
+              "docId": SHA1(currentMarker.markerType + currentMarker.locationCode + currentMarker.title),
+              "startMaximized": "true",
+              "useFixedHeight": "true"
+            }
+          }, skin);
+      });
+   });
 }
 
 function handleBoundsChange() {
@@ -344,7 +384,7 @@ function locationString(country, state, city, postcode) {
 function createOrgMarker(info) {
   var marker = new GMarker(new GLatLng(info.center[0], info.center[1]), {icon: createOrgIcon(info.icon)});
   GEvent.addListener(marker, "click", function() {
-    marker.openInfoWindowHtml("<b>" + info.name + "</b>");
+    exploreMap.openInfoWindowHtml(marker.getPoint(), "<b>" + info.name + "</b>",{pixelOffset: new GSize(16, -16)});
   });
   return marker;
 }
@@ -383,6 +423,10 @@ function createMarker(markerType, locationCode, latlng, icon, title, zoom) {
   }
 
   var marker = new GMarker(latlng, {icon: icon});
+  marker.markerType = markerType;
+  marker.locationCode = locationCode;
+  marker.title = title;
+
   var tooltip = new MapTooltip(marker, title, {offsetX: icon.iconOptions.width - 6, backgroundColor: icon.iconOptions.primaryColor});
   GEvent.addListener(marker, "mouseover", function() {
     exploreMap.addOverlay(tooltip);
@@ -392,6 +436,7 @@ function createMarker(markerType, locationCode, latlng, icon, title, zoom) {
   });
   if (markerType != "continent") {
     var createInfoWindow = function() {
+      currentMarker = marker;
       jQuery.getJSON("/info/votelocal?" + markerType + "=" + locationCode, function (gfcSigners) {
         if (gfcSigners.length == 0) {
           marker.openInfoWindowHtml(
@@ -449,45 +494,6 @@ function createMarker(markerType, locationCode, latlng, icon, title, zoom) {
       });
     };
     GEvent.addListener(marker, "click", createInfoWindow);
-    GEvent.addListener(marker, "infowindowopen", function() {
-      var iw = exploreMap.getInfoWindow();
-      GEvent.addListener(iw, "maximizeend", function() {
-        window.setTimeout(function () {
-          var skin = {};
-          skin['BORDER_COLOR'] = '#cccccc';
-          skin['ENDCAP_BG_COLOR'] = site_bg_color;
-          skin['ENDCAP_TEXT_COLOR'] = '#333333';
-          skin['ENDCAP_LINK_COLOR'] = '#0000cc';
-          skin['ALTERNATE_BG_COLOR'] = '#ffffff';
-          skin['CONTENT_BG_COLOR'] = '#ffffff';
-          skin['CONTENT_LINK_COLOR'] = '#0000cc';
-          skin['CONTENT_TEXT_COLOR'] = '#333333';
-          skin['CONTENT_SECONDARY_LINK_COLOR'] = '#7777cc';
-          skin['CONTENT_SECONDARY_TEXT_COLOR'] = '#666666';
-          skin['CONTENT_HEADLINE_COLOR'] = '#333333';
-          skin['DEFAULT_COMMENT_TEXT'] = '- add your comment here -';
-          skin['HEADER_TEXT'] = 'Show your support of the vote in ' + title;
-          skin['POSTS_PER_PAGE'] = '4';
-          skin['HEIGHT'] = '330';
-          google.friendconnect.container.renderWallGadget({
-            id: 'div-864264044956702366',
-            site: site_id,
-            'view-params': {
-              "disableMinMax": "true",
-              "scope": "ID",
-              "features": "video,comment",
-              "allowAnonymousPost":"true",
-              "docId": SHA1(markerType + locationCode + title),
-              "startMaximized": "true",
-              "useFixedHeight": "true"
-            }
-          }, skin);
-        }, 5);
-      });
-      window.setTimeout(function () {
-        iw.maximize();
-      }, 5);
-    });
     if (voteLocation == locationCode) {
       jQuery(window).load(function() {
         // Open this marker immediately if this is where the voter is
