@@ -175,7 +175,7 @@ def getTotals():
   orgsMemcache = memcache.get('ORGS_TOTAL')
   if orgsMemcache is None:
     numOrgs = getTotalOrgs()
-    memcache.set('ORGS_TOTAL', str(numOrgs), 5)
+    memcache.set('ORGS_TOTAL', str(numOrgs), 300)
   else:
     numOrgs = int(orgsMemcache)
 
