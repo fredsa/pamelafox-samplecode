@@ -175,10 +175,10 @@ def getTotals():
   orgsMemcache = memcache.get('ORGS_TOTAL')
   if orgsMemcache is None:
     numOrgs = getTotalOrgs()
-    memcache.set('ORGS_TOTAL', str(numOrgs), 300)
+    memcache.set('ORGS_TOTAL', str(numOrgs), 5)
   else:
-	numOrgs = int(orgsMemcache)
-	
+    numOrgs = int(orgsMemcache)
+
   votesMemcache = memcache.get(models.MEMCACHE_VOTES + 'TOTAL')
   countriesMemcache = memcache.get(models.MEMCACHE_VOTES + 'COUNTRIES')
   if votesMemcache is not None and countriesMemcache is not None:
@@ -258,4 +258,4 @@ def getOrgsInCountry(countryCode):
 def getTotalOrgs():
   query = db.Query(models.PetitionSigner)
   query.filter('type = ', 'org')
-  return query.count()
+  return len(list(query._get_query()._Run(prefetch_count=1000, next_count=1000)))

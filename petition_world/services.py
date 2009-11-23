@@ -170,5 +170,5 @@ class TotalsInfoService(webapp.RequestHandler):
       totalVotes, totalCountries, totalOrgs = util.getTotals()
       data['total'] = {'totalVotes': totalVotes, 'totalCountries': totalCountries, 'totalOrgs': totalOrgs}
       newVal = simplejson.dumps(data)
-      memcache.set(models.genKeyForTotalsInfo(), newVal, 10)
+      memcache.set(models.genKeyForTotalsInfo(), newVal, 30)
       self.response.out.write(newVal)
