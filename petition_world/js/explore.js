@@ -227,7 +227,7 @@ function processContinents(json) {
     var marker = createMarker("continent", continentCode, new GLatLng(continent.center[0], continent.center[1]), createBigIcon(continent.count), continent.name, 3);
     markers.push(marker);
   }
-  markerManager.addMarkers(markers, 0, 2);
+  markerManager.addMarkers(markers, 0, 6);
   markerManager.refresh();
 }
 
@@ -239,7 +239,7 @@ function processCountries(json) {
     var marker = createMarker("country", countryCode, new GLatLng(country.center[0], country.center[1]), createBigIcon(country.count), country.name, 6);
     markers.push(marker);
   }
-  markerManager.addMarkers(markers, 3, 5);
+  markerManager.addMarkers(markers, 7, 10);
   markerManager.refresh();
 }
 
@@ -252,7 +252,7 @@ function processStates(json) {
     markers.push(marker);
   }
 
-  markerManager.addMarkers(markers, 3, 5);
+  markerManager.addMarkers(markers, 7, 10);
   markerManager.refresh();
 }
 
@@ -265,7 +265,7 @@ function processPostcodes(json) {
     markers.push(marker);
   }
 
-  markerManager.addMarkers(markers, 6);
+  markerManager.addMarkers(markers, 11);
   markerManager.refresh();
 }
 
@@ -274,25 +274,25 @@ function processOrgs(json) {
   var markers = [];
   
  
-    for (var i = 0; i < orgs.length; i++) {
+/*    for (var i = 0; i < orgs.length; i++) {
       var marker = createSmallOrgMarker(orgs[i]);
       markers.push(marker);
     }
     markerManager.addMarkers(markers, 5, 8); // 0 is the coarsest setting, full world view
-
- 	markers = [];
+*/
+/* 	markers = [];
     for (var i = 0; i < orgs.length; i++) {
       var marker = createMedOrgMarker(orgs[i]);
       markers.push(marker);
     }
     markerManager.addMarkers(markers, 9, 11); // 0 is the coarsest setting, full world view
-
+*/
  	markers = [];
     for (var i = 0; i < orgs.length; i++) {
       var marker = createOrgMarker(orgs[i]);
       markers.push(marker);
     }
-    markerManager.addMarkers(markers, 12); // 0 is the coarsest setting, full world view
+    markerManager.addMarkers(markers, 11); // 0 is the coarsest setting, full world view
 
 
   markerManager.refresh();
