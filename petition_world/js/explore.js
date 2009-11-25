@@ -132,12 +132,10 @@ function initExploreMap() {
   exploreMap.enableGoogleBar();
   GEvent.addListener(exploreMap, "infowindowopen", function() {
     var iw = exploreMap.getInfoWindow();
-    console.log('MONKEYMONKEYMONKEY')
     window.setTimeout(function () {
       iw.maximize();
     }, 5);
     GEvent.addListener(iw, "maximizeend", function() {
-      console.log('banananabananan')
       var skin = {};
       skin['BORDER_COLOR'] = '#cccccc';
       skin['ENDCAP_BG_COLOR'] = site_bg_color;
