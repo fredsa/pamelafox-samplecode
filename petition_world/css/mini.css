@@ -52,11 +52,14 @@ p { margin: 10px 0; }
   margin: 3px 3px 3px 3px;
 }
 #comments_wrapper {
+  position: fixed;
+  left: 382px;
+  top: 79px;
   background-color: #fdf7eb;
   margin: 3px 3px 3px 3px;
-  height:395px;
-  width:211px;
-  padding:1px;
+  height: 395px;
+  width: 211px;
+  padding: 1px;
 }
 
 .ui-tabs .ui-tabs-panel {
