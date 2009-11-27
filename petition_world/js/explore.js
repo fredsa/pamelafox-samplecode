@@ -270,105 +270,81 @@ function processPostcodes(json) {
 function processOrgs(json) {
   var orgs = json.orgs;
   var markers = [];
-  
- 
-/*    for (var i = 0; i < orgs.length; i++) {
+
+/*
+  for (var i = 0; i < orgs.length; i++) {
       var marker = createSmallOrgMarker(orgs[i]);
       markers.push(marker);
     }
     markerManager.addMarkers(markers, 5, 8); // 0 is the coarsest setting, full world view
-*/
-/* 	markers = [];
-    for (var i = 0; i < orgs.length; i++) {
-      var marker = createMedOrgMarker(orgs[i]);
-      markers.push(marker);
-    }
-    markerManager.addMarkers(markers, 9, 11); // 0 is the coarsest setting, full world view
-*/
- 	markers = [];
-    for (var i = 0; i < orgs.length; i++) {
-      var marker = createOrgMarker(orgs[i]);
-      markers.push(marker);
-    }
-    markerManager.addMarkers(markers, 11); // 0 is the coarsest setting, full world view
+  */
+ markers = [];
+ for (var i = 0; i < orgs.length; i++) {
+   if (orgs[i].icon.length > 20) {
+     var marker = createMedOrgMarker(orgs[i]);
+     markers.push(marker);
+   }
+ }
+ markerManager.addMarkers(markers, 9, 11); // 0 is the coarsest setting, full world view
 
+ markers = [];
+ for (var i = 0; i < orgs.length; i++) {
+   if (orgs[i].icon.length > 20) {
+     var marker = createOrgMarker(orgs[i]);
+     markers.push(marker);
+   }
+  }
+  markerManager.addMarkers(markers, 12); // 0 is the coarsest setting, full world view
 
   markerManager.refresh();
 }
 
 function createOrgIcon(url) {
-  var icon = new GIcon();
-  icon.iconSize = new GSize(32, 32);
-  icon.image = url;
-  icon.shadow = null;
-  icon.iconAnchor = new GPoint(16, 16);
-  icon.infoWindowAnchor = new GPoint(16, 24);
-
-  return icon;
+  var opts = {};
+  opts.useImg = true;
+  opts.image = url;
+  opts.size = new GSize(32, 32);
+  return opts;
 }
 
 function createMedOrgIcon(url) {
-  var icon = new GIcon();
-  icon.iconSize = new GSize(12, 12);
-  icon.image = url;
-  icon.shadow = null;
-  icon.iconAnchor = new GPoint(16, 16);
-  icon.infoWindowAnchor = new GPoint(16, 24);
-
-  return icon;
+  var opts = {}
+  opts.useImg = true;
+  opts.image = url;
+  opts.size = new GSize(16, 16);
+  return opts;
 }
 
 function createSmallOrgIcon(url) {
-  var icon = new GIcon();
-  icon.iconSize = new GSize(6, 6);
-  icon.image = url;
-  icon.shadow = null;
-  icon.iconAnchor = new GPoint(16, 16);
-  icon.infoWindowAnchor = new GPoint(16, 24);
-
-  return icon;
+  var opts = {}
+  opts.useImg = true;
+  opts.image = url;
+  opts.size = new GSize(6, 6);
+  return opts;
 }
 
 function createBigIcon(label) {
   var iconOptions = {};
-  iconOptions.width = 64;
-  iconOptions.height = 26;
-  iconOptions.primaryColor = "#ca6618";
+  iconOptions.size = new GSize(64, 26);
+  iconOptions.backgroundColor = "#ca6618";
   iconOptions.label = "" + label;
-  iconOptions.labelSize = 20;
-  iconOptions.labelColor = "#FFFFFF";
-  iconOptions.shape = "roundrect";
-  var icon = MapIconMaker.createFlatIcon(iconOptions);
-  icon.iconOptions = iconOptions;
-  return icon;
+  return iconOptions;
 }
 
 function createMediumIcon(label) {
   var iconOptions = {};
-  iconOptions.width = 48;
-  iconOptions.height = 22;
-  iconOptions.primaryColor =  "#0097c4";
+  iconOptions.size = new GSize(48, 22);
+  iconOptions.backgroundColor =  "#0097c4";
   iconOptions.label = "" + label;
-  iconOptions.labelSize = 16;
-  iconOptions.labelColor = "#FFFFFF";
-  iconOptions.shape = "roundrect";
-  var icon = MapIconMaker.createFlatIcon(iconOptions);
-  icon.iconOptions = iconOptions;
-  return icon;
+  return iconOptions;
 }
 
 function createSmallIcon(label) {
   var iconOptions = {};
-  iconOptions.width = 24;
-  iconOptions.height = 18;
-  iconOptions.primaryColor = "#85a20a";
+  iconOptions.size = new GSize(24, 18);
+  iconOptions.backgroundColor = "#85a20a";
   iconOptions.label = "" + label;
-  iconOptions.labelSize = 12;
-  iconOptions.labelColor = "#FFFFFF";
-  iconOptions.shape = "roundrect";
-  var icon = MapIconMaker.createFlatIcon(iconOptions);
-  icon.iconOptions = iconOptions;
-  return icon;
+  return iconOptions;
 }
 
 function locationString(country, state, city, postcode) {
@@ -380,25 +356,25 @@ function locationString(country, state, city, postcode) {
 }
 
 function createOrgMarker(info) {
-  var marker = new GMarker(new GLatLng(info.center[0], info.center[1]), {icon: createOrgIcon(info.icon)});
+  var marker = new MarkerLight(new GLatLng(info.center[0], info.center[1]), createOrgIcon(info.icon));
   GEvent.addListener(marker, "click", function() {
-    exploreMap.openInfoWindowHtml(marker.getPoint(), "<b>" + info.name + "</b>",{pixelOffset: new GSize(16, -16)});
+    exploreMap.openInfoWindowHtml(marker.getPoint(), "<b>" + info.name + "</b>", {pixelOffset: new GSize(16, -16)});
   });
   return marker;
 }
 
 function createMedOrgMarker(info) {
-  var marker = new GMarker(new GLatLng(info.center[0], info.center[1]), {icon: createMedOrgIcon(info.icon)});
+  var marker = new MarkerLight(new GLatLng(info.center[0], info.center[1]), createMedOrgIcon(info.icon));
   GEvent.addListener(marker, "click", function() {
-    marker.openInfoWindowHtml("<b>" + info.name + "</b>");
+    exploreMap.openInfoWindowHtml(marker.getPoint(), "<b>" + info.name + "</b>", {pixelOffset: new GSize(8,-8)});
   });
   return marker;
 }
 
 function createSmallOrgMarker(info) {
-  var marker = new GMarker(new GLatLng(info.center[0], info.center[1]), {icon: createSmallOrgIcon(info.icon)});
+  var marker = new MarkerLight(new GLatLng(info.center[0], info.center[1]), createSmallOrgIcon(info.icon));
   GEvent.addListener(marker, "click", function() {
-    marker.openInfoWindowHtml("<b>" + info.name + "</b>");
+    exploreMap.openInfoWindowHtml(marker.getPoint(), "<b>" + info.name + "</b>", {pixelOffset: new GSize(4, -4)});
   });
   return marker;
 }
@@ -419,13 +395,12 @@ function createMarker(markerType, locationCode, latlng, icon, title, zoom) {
 '
     }
   }
-
-  var marker = new GMarker(latlng, {icon: icon});
+  var marker = new MarkerLight(latlng, icon);
   marker.markerType = markerType;
   marker.locationCode = locationCode;
   marker.title = title;
 
-  var tooltip = new MapTooltip(marker, title, {offsetX: icon.iconOptions.width - 6, backgroundColor: icon.iconOptions.primaryColor});
+  var tooltip = new MapTooltip(latlng, title, {offsetX: icon.size.width + 6});
   GEvent.addListener(marker, "mouseover", function() {
     exploreMap.addOverlay(tooltip);
   });
@@ -437,7 +412,7 @@ function createMarker(markerType, locationCode, latlng, icon, title, zoom) {
       currentMarker = marker;
       jQuery.getJSON("/info/votelocal?" + markerType + "=" + locationCode, function (gfcSigners) {
         if (gfcSigners.length == 0) {
-          marker.openInfoWindowHtml(
+          exploreMap.openInfoWindowHtml(latlng,
             '<p>' +
               icon.iconOptions.label + ' signed the petition here.' +
             '</p>',
@@ -475,7 +450,7 @@ function createMarker(markerType, locationCode, latlng, icon, title, zoom) {
               }
             });
             gfcImageList = gfcImageList + '</ul>';
-            marker.openInfoWindowHtml(
+            exploreMap.openInfoWindowHtml(latlng,
               gfcImageList +
               '<p>' +
                 icon.iconOptions.label + ' signed the petition here.' +

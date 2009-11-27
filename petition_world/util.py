@@ -258,4 +258,4 @@ def getOrgsInCountry(countryCode):
 def getTotalOrgs():
   query = db.Query(models.PetitionSigner)
   query.filter('type = ', 'org')
-  return len(list(query._get_query()._Run(prefetch_count=1000, next_count=1000)))
+  return len(list(query._get_query()._Run(prefetch_count=1000, next_count=1000, limit=10000)))
