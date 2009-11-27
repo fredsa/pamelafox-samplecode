@@ -414,7 +414,7 @@ function createMarker(markerType, locationCode, latlng, icon, title, zoom) {
         if (gfcSigners.length == 0) {
           exploreMap.openInfoWindowHtml(latlng,
             '<p>' +
-              icon.iconOptions.label + ' signed the petition here.' +
+              icon.label + ' signed the petition here.' +
             '</p>',
             infoWindowOptions()
           );
@@ -453,7 +453,7 @@ function createMarker(markerType, locationCode, latlng, icon, title, zoom) {
             exploreMap.openInfoWindowHtml(latlng,
               gfcImageList +
               '<p>' +
-                icon.iconOptions.label + ' signed the petition here.' +
+                icon.label + ' signed the petition here.' +
               '</p>' +
               '<p>' +
               '<a href="javascript:exploreMap.getInfoWindow().maximize()">Discuss</a>' +
