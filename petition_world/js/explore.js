@@ -225,7 +225,7 @@ function processContinents(json) {
     var marker = createMarker("continent", continentCode, new GLatLng(continent.center[0], continent.center[1]), createBigIcon(continent.count), continent.name, 3);
     markers.push(marker);
   }
-  markerManager.addMarkers(markers, 0, 6);
+  markerManager.addMarkers(markers, 0, 3);
   markerManager.refresh();
 }
 
@@ -237,7 +237,7 @@ function processCountries(json) {
     var marker = createMarker("country", countryCode, new GLatLng(country.center[0], country.center[1]), createBigIcon(country.count), country.name, 6);
     markers.push(marker);
   }
-  markerManager.addMarkers(markers, 7, 10);
+  markerManager.addMarkers(markers, 4, 7);
   markerManager.refresh();
 }
 
@@ -250,7 +250,7 @@ function processStates(json) {
     markers.push(marker);
   }
 
-  markerManager.addMarkers(markers, 7, 10);
+  markerManager.addMarkers(markers, 4, 7);
   markerManager.refresh();
 }
 
@@ -263,7 +263,7 @@ function processPostcodes(json) {
     markers.push(marker);
   }
 
-  markerManager.addMarkers(markers, 11);
+  markerManager.addMarkers(markers, 8);
   markerManager.refresh();
 }
 
@@ -285,7 +285,7 @@ function processOrgs(json) {
      markers.push(marker);
    }
  }
- markerManager.addMarkers(markers, 9, 11); // 0 is the coarsest setting, full world view
+ markerManager.addMarkers(markers, 10, 13); // 0 is the coarsest setting, full world view
 
  markers = [];
  for (var i = 0; i < orgs.length; i++) {
@@ -294,7 +294,7 @@ function processOrgs(json) {
      markers.push(marker);
    }
   }
-  markerManager.addMarkers(markers, 12); // 0 is the coarsest setting, full world view
+  markerManager.addMarkers(markers, 14); // 0 is the coarsest setting, full world view
 
   markerManager.refresh();
 }
