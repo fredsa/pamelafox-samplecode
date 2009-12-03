@@ -155,35 +155,37 @@ class JSONImport(webapp.RequestHandler):
   def get(self):
     file = self.request.get('file')
     url = "http://vote-earth-locations.hollersydney.com.au/" + file
+    self.response.out.write("URL: " + url)
     result = urlfetch.fetch(url)
     if result.status_code == 200:
       feed = simplejson.loads(result.content)
       locations = feed["locations"]
       for location in locations:
         fields = location["fields"]
-        countryName = (fields["country"]).upper()
-        if geodata2.country_id_mappings.has_key(countryName):
-          country = geodata2.country_id_mappings[(fields["country"]).upper()]
+        country = (fields["country"]).upper()
+        query = db.Query(models.PetitionSigner)
+        created_at = fields["created_at"]
+        query.filter('name =', created_at)
+        signer = query.get()
+        if signer is None:
+          signer = models.PetitionSigner()
+          signer.country = country
+          signer.latlng = db.GeoPt(float(fields["longitude"]), float(fields["latitude"]))
+          signer.name = created_at # using this since we need to store this somewhere, it's basically the unique ID
           if country is not "US" and country is not "AU":
-            query = db.Query(models.PetitionSigner)
-            created_at = fields["created_at"]
-            query.filter('name =', created_at)
-            signer = query.get()
-            if signer is None:
-              signer = models.PetitionSigner()
-              signer.country = country
-              signer.latlng = db.GeoPt(float(fields["longitude"]), float(fields["latitude"]))
-              signer.name = created_at # using this since we need to store this somewhere, it's basically the unique ID
-              signer.state = ''
-              signer.postcode = fields["postcode"]
-              deferred.defer(util.addSignerToClusters, signer, signer.latlng)
-              self.response.out.write("Adding from: " + country + "<br>")
-            else:
-              self.response.out.write("Already saw: " + created_at + "<br>")
+            signer.state = ''
+            signer.postcode = fields["postcode"]
+            deferred.defer(util.addSignerToClusters, signer, signer.latlng)
+            self.response.out.write("Adding from: " + country + "<br>")
+          elif "state" in fields:
+            signer.state = fields["state"]
+            signer.postcode = fields["postcode"]
+            deferred.defer(util.addSignerToClusters, signer, signer.latlng)
+            self.response.out.write("Adding from: " + country + "<br>")
           else:
-            self.response.out.write("<b>Ignoring from: </b>" + country + "<br>")
+            self.response.out.write("No state: " + country + "<br>")
         else:
-          self.response.out.write("<b>Could not map: </b>" + fields["country"] + "<br>")
+          self.response.out.write("Already saw: " + created_at + "<br>")
 
 class RandomAddService(webapp.RequestHandler):
   def get(self):
@@ -272,4 +274,3 @@ class SignerAddService(webapp.RequestHandler):
     else:
       deferred.defer(util.addSignerToClusters, signer, signer.latlng)
     return signer
-
