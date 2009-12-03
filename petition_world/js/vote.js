@@ -154,7 +154,7 @@ function populateCountries() {
   for (var countryCode in countriesInfo) {
     var countryOption = jQuery(document.createElement('option'));
     countryOption.val(countryCode);
-    countryOption.text(countryCode + " - " + countriesInfo[countryCode].name);
+    countryOption.text(countriesInfo[countryCode].name);
     countrySelect.append(countryOption);
   }
 }
