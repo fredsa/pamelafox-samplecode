@@ -6,6 +6,7 @@ import copy
 from google.appengine.ext import webapp
 from google.appengine.api import memcache
 from google.appengine.ext import db
+from google.appengine.api import images
 
 from django.utils import simplejson
 
@@ -164,6 +165,7 @@ class TotalsInfoService(webapp.RequestHandler):
     self.response.headers.add_header('Expires', 'Sat, 26 Jul 1997 05:00:00 GMT')
     cachedVal = memcache.get(models.genKeyForTotalsInfo())
     if cachedVal is not None:
+      logging.info("Memcache hit: %s" % (cachedVal))
       self.response.out.write(cachedVal)
     else:
       data  = {}
@@ -172,3 +174,69 @@ class TotalsInfoService(webapp.RequestHandler):
       newVal = simplejson.dumps(data)
       memcache.set(models.genKeyForTotalsInfo(), newVal, 30)
       self.response.out.write(newVal)
+
+
+class GetBoundedOrgs(webapp.RequestHandler):
+  def get(self):
+    self.response.headers.add_header('Cache-Control', 'no-cache, must-revalidate')
+    self.response.headers.add_header('Expires', 'Sat, 26 Jul 1997 05:00:00 GMT')
+    cachedVal = memcache.get(models.genKeyForBoundedOrgs())
+    if cachedVal is not None:
+       self.response.out.write(cachedVal)
+    else:
+    #countryCodes = self.request.get('countryCode').split('|')
+        name = self.request.get('name')
+        #bounds = self.request.get('bounds')
+        results = []
+        for code in geodata.countries.keys():
+          results.extend(util.getOrgsInCountryForName(code,name))
+    
+        ret = lambda x : ((x.latlng.lat,x.latlng.lon),x.name , x.org_icon,)
+        display = {}
+        # this could be O(n) but this allows for easier changes to the retun object while i 
+        # develop and test the search feature 
+        #dict with unique locations
+        totalResults = util.getUniqueWithCount(results,lambda y: str(y.latlng.lat) + str(y.latlng.lon),ret)
+        #dict with unique countrys
+        countryResults = util.getUniqueWithCount(results,lambda y: y.country ,lambda x : (geodata.countries[x.country]['center'],x.name,x.org_icon))
+        display['zoomed'] = totalResults
+        display['countryLevel'] = countryResults
+        response = simplejson.dumps(display)
+        #5 mins seems to be the defacto
+        memcache.set(models.genKeyForBoundedOrgs(), newVal, 300)
+        self.response.out.write(response)
+      
+    
+class GetUniqueOrgs(webapp.RequestHandler):
+  def get(self):
+    cachedVal = memcache.get(models.genKeyForAllOrgsInfo())
+    if cachedVal is not None:
+      self.response.out.write(cachedVal)
+    else:
+      allOrgNames = []
+      #with out an org table this really is not optimal
+      for countryCode in geodata.countries.keys():
+         allOrgNames.extend(map(lambda x: x.name,util.getOrgsInCountry(countryCode)))
+      jsonDump = simplejson.dumps(util.getUnique(allOrgNames))
+      memcache.set(models.genKeyForAllOrgsInfo(), jsonDump, 300)
+      self.response.out.write(jsonDump)
+      
+      
+#get logos
+#TODO: memcache, browser cache should save most of this
+#especially since its being round tripped
+class LogoForOrg(webapp.RequestHandler):
+  def get(self):
+     orgName = self.request.get('orgName')
+     logging.info(orgName)
+     query = db.Query(models.PetitionSigner)
+     result = query.filter('name =',orgName).get()
+     if result is not None:
+       if result.org_icon_hosted is not None:
+          self.response.headers['Content-Type'] = "image/png"
+          image = result.org_icon_hosted
+          self.response.out.write(image)
+          
+        
+     
+    

@@ -4,6 +4,7 @@ import random
 import logging
 import hashlib
 
+
 from google.appengine.ext import webapp
 from google.appengine.ext.webapp.util import run_wsgi_app
 from google.appengine.ext.webapp import template
@@ -34,17 +35,19 @@ class BasePage(webapp.RequestHandler):
 
   def getTemplateValues(self, page_title, page_num):
     skin = self.request.get('skin') or 'main'
-    if not skin in ['main', 'mini']:
+    if not skin in ['main', 'mini','large']:
       skin = 'main' 
 
     bg_color = self.request.get('bg_color')
     website = self.request.get('website')
-
+    tab_bgcolor = self.request.get('tab_background')
+    
     template_values = {
       'page_title': page_title,
       'page_num': page_num,
       'skin': skin,
       'bg_color': bg_color,
+      'tab_background': tab_bgcolor,
       'website': website,
       'vote_href': "/vote?skin=%s&amp;bg_color=%s&amp;website=%s" % (skin, bg_color, website),
       'explore_href': "/explore?skin=%s&amp;bg_color=%s&amp;website=%s" % (skin, bg_color, website),
@@ -155,37 +158,35 @@ class JSONImport(webapp.RequestHandler):
   def get(self):
     file = self.request.get('file')
     url = "http://vote-earth-locations.hollersydney.com.au/" + file
-    self.response.out.write("URL: " + url)
     result = urlfetch.fetch(url)
     if result.status_code == 200:
       feed = simplejson.loads(result.content)
       locations = feed["locations"]
       for location in locations:
         fields = location["fields"]
-        country = (fields["country"]).upper()
-        query = db.Query(models.PetitionSigner)
-        created_at = fields["created_at"]
-        query.filter('name =', created_at)
-        signer = query.get()
-        if signer is None:
-          signer = models.PetitionSigner()
-          signer.country = country
-          signer.latlng = db.GeoPt(float(fields["longitude"]), float(fields["latitude"]))
-          signer.name = created_at # using this since we need to store this somewhere, it's basically the unique ID
+        countryName = (fields["country"]).upper()
+        if geodata2.country_id_mappings.has_key(countryName):
+          country = geodata2.country_id_mappings[(fields["country"]).upper()]
           if country is not "US" and country is not "AU":
-            signer.state = ''
-            signer.postcode = fields["postcode"]
-            deferred.defer(util.addSignerToClusters, signer, signer.latlng)
-            self.response.out.write("Adding from: " + country + "<br>")
-          elif "state" in fields:
-            signer.state = fields["state"]
-            signer.postcode = fields["postcode"]
-            deferred.defer(util.addSignerToClusters, signer, signer.latlng)
-            self.response.out.write("Adding from: " + country + "<br>")
+            query = db.Query(models.PetitionSigner)
+            created_at = fields["created_at"]
+            query.filter('name =', created_at)
+            signer = query.get()
+            if signer is None:
+              signer = models.PetitionSigner()
+              signer.country = country
+              signer.latlng = db.GeoPt(float(fields["longitude"]), float(fields["latitude"]))
+              signer.name = created_at # using this since we need to store this somewhere, it's basically the unique ID
+              signer.state = ''
+              signer.postcode = fields["postcode"]
+              deferred.defer(util.addSignerToClusters, signer, signer.latlng)
+              self.response.out.write("Adding from: " + country + "<br>")
+            else:
+              self.response.out.write("Already saw: " + created_at + "<br>")
           else:
-            self.response.out.write("No state: " + country + "<br>")
+            self.response.out.write("<b>Ignoring from: </b>" + country + "<br>")
         else:
-          self.response.out.write("Already saw: " + created_at + "<br>")
+          self.response.out.write("<b>Could not map: </b>" + fields["country"] + "<br>")
 
 class RandomAddService(webapp.RequestHandler):
   def get(self):
@@ -214,7 +215,11 @@ class RandomAddService(webapp.RequestHandler):
     util.addSignerToClusters(signer)
 
 class SignerAddService(webapp.RequestHandler):
-  def post(self):
+  def post(self):    
+    skin = 'mini'
+    if self.request.get('skin') != '':
+      skin = self.request.get('skin') 
+        
     originalNonce = self.request.cookies.get('nonce', None)
     hashedNonce = self.request.get('nonce')
     cachedVal = originalNonce and memcache.get(originalNonce)
@@ -226,8 +231,8 @@ class SignerAddService(webapp.RequestHandler):
       self.response.headers.add_header('Set-Cookie', 'latlng=%s; expires=Fri, 31-Dec-2020 23:59:59 GMT; path=/' % (str(signer.latlng.lat) + ',' + str(signer.latlng.lon)))
       # Remove the nonce cookie
       self.response.headers.add_header('Set-Cookie', 'nonce=; expires=Fri, 31-Dec-1980 23:59:59 GMT; path=/')
-      # TODO: redirect to the correct skin, check referrer?
-      self.redirect('/explore?location=%s&skin=mini' % self.request.get('postcode'))
+      #not set so chanes are it was not set  
+      self.redirect('/explore?location=%s&skin=%s' % (self.request.get('postcode'),skin))
     else:
       # Spam
       if not hashedNonce:
@@ -240,7 +245,8 @@ class SignerAddService(webapp.RequestHandler):
         logging.info("Marked as spam (nonce did not match): " + personName)
       else:
         logging.info("Marked as spam (unknown reason): " + personName)
-      self.redirect('/')
+     
+        self.redirect('/')
 
   # test with: /add/signer?person_name=Pamela&country=AU&state=NSW&postcode=2009&lat=-33.869709&lng=151.19393
   def get(self):
@@ -258,9 +264,20 @@ class SignerAddService(webapp.RequestHandler):
     else:
       signer.type = 'org'
       signer.name = self.request.get('org_name')
-      signer.org_icon = self.request.get('org_icon')
       signer.email = self.request.get('email')
       signer.streetinfo = self.request.get('streetinfo')
+      #keeps the javascript failing
+      logo = self.request.get("org_icon")
+      logging.info(logo)
+      #something some what sane for an image
+      if len(logo) > 10:
+        signer.org_icon_hosted = db.Blob(images.resize(logo,32,32))
+        signer.org_icon = 'info/logo?orgName=%s' % signer.name
+      else:
+        logging.info("no image added")
+        #put an empty string in to stop it falling over
+        signer.org_icon = str('')
+  
     signer.city = self.request.get('city')
     signer.state = self.request.get('state')
     signer.country = self.request.get('country')
@@ -274,3 +291,4 @@ class SignerAddService(webapp.RequestHandler):
     else:
       deferred.defer(util.addSignerToClusters, signer, signer.latlng)
     return signer
+

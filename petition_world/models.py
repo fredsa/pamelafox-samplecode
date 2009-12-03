@@ -25,6 +25,12 @@ def genKeyForOrgsInfo(countryCode):
 
 def genKeyForTotalsInfo():
   return 'INFO_TOTALS'
+  
+def genKeyForAllOrgsInfo():
+  return 'ALL_ORGS'
+  
+def genKeyForBoundedOrgs():
+    return 'BOUNDED_ORGS'
 
 class PetitionSigner(db.Model):
   type = db.StringProperty()
@@ -32,6 +38,7 @@ class PetitionSigner(db.Model):
   name = db.StringProperty()
   email = db.StringProperty()
   org_icon = db.StringProperty()
+  org_icon_hosted = db.BlobProperty()
   state = db.StringProperty()
   city = db.StringProperty()
   postcode = db.StringProperty()
@@ -41,6 +48,7 @@ class PetitionSigner(db.Model):
   media = db.StringProperty()
   freetext = db.StringProperty()
   host_website = db.StringProperty()
+  
 
 class PetitionHost(db.Model):
   host_name = db.StringProperty()
@@ -61,3 +69,4 @@ class Country(db.Model):
   counter = db.IntegerProperty(default=0)
   data = db.TextProperty()
   latlng = db.GeoPtProperty()
+

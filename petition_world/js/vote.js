@@ -76,7 +76,20 @@ jQuery(document).ready(function() {
   jQuery('#show_your_vote').tabs('option', 'selected', 1);
   loadNonce();
   jQuery('.org').hide();
-  jQuery('#sign').validate();
+  jQuery('#sign').validate({
+      //overwrite to change the way errors are reported
+      //the extra space was kinda hard to fit in the new forms 
+    showErrors: function(errorMap, errorList) {
+            if (errorList.length > 0) {
+                $(errorList).each(function() {
+                    $("[for='" +this.element.name + "']").addClass(" Error");
+                });
+            } else {
+                $(this.lastElement).each(function() {
+                    $("[for='" + this.id + "']").removeClass("Error");
+                });
+            }           
+  }});
   /* location of rpc_relay.html and canvas.html */
   google.friendconnect.container.setParentUrl('/gfc/');
 

@@ -9,13 +9,18 @@ var appPath = document.location.protocol + '//' +
 
 var exploreMap;
 var markerManager;
+var markerManagerSearch;
 var maxZoomSeen = 0;
 var countries;
+var orgs;
+var searchedOrgs;
 var loadedCountries = false;
 var loadedContinents = false;
 var locationId = "global";
 var toggler = 0;
 var currentMarker;
+var mapWidth;
+
 
 if (site_bg_color == "" || site_bg_color == null) {
   switch(site_skin) {
@@ -63,13 +68,12 @@ function loadVideoBar() {
 
 jQuery(document).ready(function() {
   window.setInterval(animateTotals, 4000);
-
   /* location of rpc_relay.html and canvas.html */
   google.friendconnect.container.setParentUrl('/gfc/');
   //loadVideoBar();
-
   initExploreMap();
-  
+  initSearch();
+  jQuery("#closeBar").click(closeBar);
   google.friendconnect.container.initOpenSocialApi({
     site: site_id,
     onload: function(securityToken) {
@@ -96,6 +100,22 @@ jQuery(document).ready(function() {
   });
 });
 
+
+function closeBar(e)
+{
+  jQuery("#rightCol").hide();
+  jQuery("#explore_map").width(570);
+}
+
+function initSearch() {
+  jQuery("#explore_map").append(jQuery('#searchBar').show());
+  jQuery.getJSON("/info/orgName", function(data,text)
+  {
+     orgs = data; 
+  });
+  jQuery("#searchButton").click(searchnNearOrgs);
+}
+
 function animateTotals() {
   if (toggler == 0) {
 	jQuery('#votes_span').toggle();  //toggle off
@@ -115,26 +135,36 @@ function animateTotals() {
 }
 
 function initExploreMap() {
+ 
   exploreMap = new GMap2(jQuery("#explore_map")[0]);
   exploreMap.setCenter(new GLatLng(0, 10), 1, G_PHYSICAL_MAP);
   exploreMap.setUIToDefault();
+
+ 
+  
+  
   var latlng = jQuery.cookie('latlng');
   if (latlng) {
     var point = new GLatLng(latlng.split(',')[0], latlng.split(',')[1]);
     exploreMap.setCenter(point, 8);
   }
+  
+
   markerManager = new MarkerManager(exploreMap);
+  markerManagerSearch = new MarkerManager(exploreMap);
   GEvent.addListener(exploreMap, "zoomend", handleZoomChange);
   GEvent.addListener(exploreMap, "moveend", handleBoundsChange);
   handleZoomChange();
   handleBoundsChange();
   jQuery.getJSON("/info/totals", processTotals);
-  exploreMap.enableGoogleBar();
+  
   GEvent.addListener(exploreMap, "infowindowopen", function() {
     var iw = exploreMap.getInfoWindow();
     window.setTimeout(function () {
       iw.maximize();
     }, 5);
+
+
     GEvent.addListener(iw, "maximizeend", function() {
       var skin = {};
       skin['BORDER_COLOR'] = '#cccccc';
@@ -170,6 +200,7 @@ function initExploreMap() {
 }
 
 function handleBoundsChange() {
+ 
   var bounds = exploreMap.getBounds();
   for (countryCode in countriesInfo) {
     var countryInfo = countriesInfo[countryCode];
@@ -315,7 +346,7 @@ function createMedOrgIcon(url) {
   return opts;
 }
 
-function createSmallOrgIcon(url) {
+function createSmallOrgIcon(url) {F
   var opts = {}
   opts.useImg = true;
   opts.image = url;
@@ -354,6 +385,142 @@ function locationString(country, state, city, postcode) {
     return city + ", " + postcode + ", " + country;
   }
 }
+
+function resetMarkers() {
+  loadedCountries = false;
+  loadedContinents = false;
+  //reset them all
+  //could avoid this by doing a bounds check on the markers. 
+  for (countryCode in countriesInfo) {
+     countriesInfo[countryCode].loadedPostcodes = false;
+     countriesInfo[countryCode].loadedStates = false;
+  }
+}
+
+function createItem(val)
+{
+  return {'center': val['item'][0], //lat lng
+           'name': val['item'][1], //name
+           'icon' :val['item'][2],
+           'count': val.count};
+}
+
+
+function searchnNearOrgs(name) {
+  var orgName = jQuery("#searchInput").val();
+  
+  if($("#searchButton").val() == "Search")
+  {
+
+    if(jQuery.inArray(orgName, orgs) > -1)
+    {
+      var bounds = exploreMap.getBounds();
+       /*
+       this is not longer needed, but may be useful code if the search does not function as desired
+       So going to leave it in, for at least one check in
+      var countryCodes = [];
+      for (countryCode in countriesInfo) {
+        var countryInfo = countriesInfo[countryCode];
+        var countryBounds = new GLatLngBounds(new GLatLng(countryInfo.bounds.southWest[0], countryInfo.bounds.southWest[1]), new GLatLng(countryInfo.bounds.northEast[0], countryInfo.bounds.northEast[1]));
+        if (bounds.intersects(countryBounds)) {
+           countryCodes.push(countryCode);
+        }
+      }
+      */
+      var arguments = {}
+      //name to search for
+      arguments.name = orgName;
+      //current view, get center use haversine to poll based on radius rather than bounds
+      //arguments.bounds =  exploreMap.getBounds();
+      //country codes we are looking at
+      //more app enginy way to do this? rpc? or encode a json string and use djangos simplejson lib
+      //arguments.countryCode = countryCodes.join('|');
+      jQuery.getJSON('/info/search',arguments,function(data,status)
+      {
+          $("#searchButton").val("Cancel");
+           var bounds = new google.maps.LatLngBounds();
+           bounds.extend(exploreMap.getCenter())
+           searchedOrgs = data;
+           markerManager.hide();
+           markerManagerSearch.clearMarkers()
+           markerManagerSearch.show()
+           //zoom level 0 3 for country
+           var markers = [];
+           jQuery.each(searchedOrgs['zoomed'],  function(i, val)
+           {
+             markers.push(createOrgMarkerWithCount(createItem(val))); //image
+             if(exploreMap.getZoom() > 5)
+             {
+                bounds.extend(new GLatLng(val['item'][0][0],val['item'][0][1]));
+             }
+           });
+         
+          exploreMap.setCenter(bounds.getCenter(),exploreMap.getBoundsZoomLevel(bounds))
+          markerManagerSearch.addMarkers(markers, 5);
+  
+          markers.length = 0;
+          jQuery.each(searchedOrgs['countryLevel'],  function(i, val)
+           {
+              markers.push(createOrgMarkerWithCount(createItem(val)));
+           });
+           //all markers
+            markerManagerSearch.addMarkers(markers, 0, 5);
+            markerManagerSearch.refresh();
+      });
+    }
+    else
+    {
+      var geocoder = new GClientGeocoder();
+      geocoder.getLatLng(
+      orgName,
+      function(point) {
+        if (!point) {
+          //todo figure out what we do in this case
+        } else {
+          exploreMap.setCenter(point, 13);
+          var marker = new GMarker(point);
+          exploreMap.addOverlay(marker);
+          //marker.openInfoWindowHtml() incase i want to add info of total votes around this area
+        }
+      }
+    );
+      
+    }
+  }
+  else
+  {
+        markerManager.show();
+        markerManagerSearch.clearMarkers()
+        markerManagerSearch.hide()
+        $("#searchButton").val("Search");
+        jQuery("#searchInput").val('');
+  }
+}
+
+
+
+function createOrgMarkerWithCount(info) {
+
+  if(info.icon.length == 0)
+  {
+    //default image for orgs with no image attached to them
+    info.icon = 'http://www.google.com/intl/en_us/mapfiles/ms/micons/blue-dot.png';
+  }
+  
+  if(!info.icon.match(/http/i))
+  {
+    info.icon = document.location.protocol + '//' +
+              document.location.host + "/" + info.icon;
+  }
+  
+  
+  var marker = new MarkerLight(new GLatLng(info.center[0], info.center[1]), createOrgIcon(info.icon));
+  GEvent.addListener(marker, "click", function() {
+    exploreMap.openInfoWindowHtml(marker.getPoint(), "<b>" + info.name + "</b><br />Total Votes: " + info.count, {pixelOffset: new GSize(16, -16)});
+  });
+  return marker;
+}
+
 
 function createOrgMarker(info) {
   var marker = new MarkerLight(new GLatLng(info.center[0], info.center[1]), createOrgIcon(info.icon));
@@ -471,6 +638,7 @@ function createMarker(markerType, locationCode, latlng, icon, title, zoom) {
       jQuery(window).load(function() {
         // Open this marker immediately if this is where the voter is
         // For the sake of GFC, needs to be in onload
+         
         createInfoWindow();
       });
     }

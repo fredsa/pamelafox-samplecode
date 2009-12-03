@@ -82,7 +82,8 @@ def addSignerToClusters(signer, extraLatLng):
     query.filter('country =', countryCode)
     query.filter('postcode =', postcode)
     result = query.get()
-    if result is None:
+    #this extra check will avoid us adding up 'empty' postcodes from the bulk upload only viewed at country level
+    if result is None and postcode != '':
       postcodecluster = models.Postcode()
       postcodecluster.postcode = postcode
       postcodecluster.state = stateCode
@@ -110,7 +111,7 @@ def countryHasPostcodes(countryCode):
 
 def countryHasStates(countryCode):
   if countryCode and geodata.countries.get(countryCode):
-    return geodata.countries[countryCode].has_key('states')
+    return geodata.countries[cosuntryCode].has_key('states')
   elif countryCode:
     logging.warn("Country code does not exist: %s" % countryCode)
     return False
@@ -169,6 +170,8 @@ def getStateVotesInStore(countryCode, stateCode):
     numVotesInState += result.counter
   return numVotesInState
 
+
+#this function will catch country votes via the getCountryVotes call
 def getTotals():
   # keep this memcached as much as possible
   # perhaps only re-calculate every 5 minutes?
@@ -182,6 +185,7 @@ def getTotals():
   votesMemcache = memcache.get(models.MEMCACHE_VOTES + 'TOTAL')
   countriesMemcache = memcache.get(models.MEMCACHE_VOTES + 'COUNTRIES')
   if votesMemcache is not None and countriesMemcache is not None:
+    logging.info("Memcache total hit: votes: %s countries: %s Orgs: %s" % (votesMemcache, countriesMemcache,numOrgs))
     return int(votesMemcache), int(countriesMemcache), numOrgs
   else:
     numVotesTotal = 0
@@ -192,8 +196,9 @@ def getTotals():
         numCountries += 1
         numVotesTotal += numVotesInCountry
 
-    memcache.set(models.MEMCACHE_VOTES + 'TOTAL', str(numVotesTotal), 300)
-    memcache.set(models.MEMCACHE_VOTES + 'COUNTRIES', str(numCountries), 300)
+    memcache.set(models.MEMCACHE_VOTES + 'TOTAL', str(numVotesTotal), time=300)
+    memcache.set(models.MEMCACHE_VOTES + 'COUNTRIES', str(numCountries), time=300)
+    logging.info("Memcache total miss: votes: %s countries: %s Orgs: %s" % (numVotesTotal, numCountries,numOrgs))
     return numVotesTotal, numCountries, numOrgs
 
 def getContinentVotes(continentCode):
@@ -255,7 +260,125 @@ def getOrgsInCountry(countryCode):
   results = query.fetch(1000)
   return results
 
+
+def getUniqueWithCount(elements,keyFunc=None,storeFunc=None):
+  results = {}
+  if keyFunc is None:
+      keyFunc = lambda x: x
+  if storeFunc is None:
+     storeFunc = lambda x: x
+  for elem in elements:
+      marker = keyFunc(elem)
+      if marker not in results:
+          results[marker] = {}
+          results[marker]['item'] = storeFunc(elem)
+          results[marker]['count'] = 1
+      else:
+          results[marker]['count'] += 1
+  return results
+  
+  
+def getUnique(elements,keyFunc=None):
+  results = []
+  uniq = {}
+  if keyFunc is None:
+      keyFunc = lambda x: x
+  for elem in elements:
+      marker = keyFunc(elem)
+      if marker not in uniq:
+        uniq[marker] = 1
+        results.append(elem)
+      
+  return results
+
+def getOrgsInCountryForName(countryCode,name):
+    orgs = memcache.get(models.MEMCACHE_VOTES + countryCode + name)
+    if orgs is not None:
+      return orgs
+    else:
+        query = db.Query(models.PetitionSigner)
+        query.filter('country = ', countryCode)
+        query.filter('type = ', 'org')
+        query.filter('name = ', name)
+        #have to query few times around if these ever exceed 1000
+        #can probably change the way the orgs are stored to improve this code
+        results = query.fetch(1000)
+        memcache.set(models.MEMCACHE_VOTES + countryCode + name,results)
+        return results
+
+
+#TODO: remove 
+def getOrgsForName(name):
+    orgs = memcache.get(models.MEMCACHE_VOTES  + name)
+    if orgs is not None:
+      return orgs
+    else:
+        query = db.Query(models.PetitionSigner)
+        
+        query.filter('country = ', countryCode)
+        query.filter('type = ', 'org')
+        query.filter('name = ', name)
+        #have to query few times around if these ever exceed 1000
+        results = query.fetch(1000)
+        memcache.set(models.MEMCACHE_VOTES + countryCode + name,results)
+        return results
+
+
+
 def getTotalOrgs():
   query = db.Query(models.PetitionSigner)
   query.filter('type = ', 'org')
   return len(list(query._get_query()._Run(prefetch_count=1000, next_count=1000, limit=10000)))
+
+
+
+def addSignerFromDict(info):
+  #since this is defered there is no real way to ensure this information 
+  #gets added with out logging and checking 
+  #its a long process with the images and geocoding so need a way to provide feedback def createSignerFromParams(info):
+   signer = models.PetitionSigner()
+   latLng = ('invalid','invalid')
+   #the parser will have validated the data so either an indv or org from here
+   if info['type'] == 'ind':
+     #person
+     signer.type = 'person'
+     signer.name = info['name']
+     if info['city'] == '':
+        latLng = geodata.countries[info['countryCode'].upper()]["center"]
+     else:
+        latLng = getLatLong('%s %s %s' % (info['city'],info['postcode'],info['countryCode']))
+     #if this ever becomes a feature of the vote upload?
+     #signer.gfc_id = self.request.get('person_gfc_id')
+   else:
+     signer.type = 'org'
+     signer.name = info['name']
+     signer.email = info['email']
+     signer.streetinfo = info['location']
+     #keeps the javascript failing
+     signer.org_icon = 'info/logo?orgName=%s' % signer.name
+     latLng = getLatLong('%s %s %s %s' % (info['location'],info['city'],info['postcode'],info['countryCode']))
+
+   signer.city =  info['city']
+   signer.state = info['postcode']
+   signer.country = info['countryCode']
+   signer.postcode = self.request.get('postcode')
+   signer.host_website = self.request.get('website')
+
+   if latLng[0] != 'invalid':
+     #TODO: We used to get two lat/lngs. What happened?
+     signer.latlng = db.GeoPt(float(latLng[0]), float(latLng[1]))
+
+   #no need to defer this should be run from a queue anyway
+   util.addSignerToClusters(signer, signer.latlng)
+   return signer
+
+def getLatLong(location):
+    key = ''
+    location = urllib.quote_plus(location)
+    request = "http://maps.google.com/maps/geo?q=%s&output=%s&key=%s"% (location, 'csv', key)
+    data = urllib.urlopen(request).read()
+    result = data.split(',')
+    if result[0] == '200':
+        return (result[2], result[3])
+    else:
+        return 'invalid','invalid'
