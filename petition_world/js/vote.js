@@ -43,7 +43,7 @@ function cmxform() {
 
 
 function performFormsGeoCode() {
-  var country = jQuery('#country').val();
+  var country = jQuery('#country option:selected').text();
   if (country != null && country.replace(/^\s+|\s+$/g, '') != '') {
     // They've set their country, we can geocode something.
     // TODO: Do fewer geocodes.
