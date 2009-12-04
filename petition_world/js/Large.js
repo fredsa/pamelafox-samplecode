@@ -11,7 +11,7 @@ var voteMap;
 var toggler = 0;
 var maxZoomSeen = 1;
 var countries;
-var orgs;
+var orgs = {};
 var searchedOrgs;
 var loadedCountries = false;
 var loadedContinents = false;

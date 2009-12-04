@@ -12,7 +12,7 @@ var markerManager;
 var markerManagerSearch;
 var maxZoomSeen = 0;
 var countries;
-var orgs;
+var orgs = {};
 var searchedOrgs;
 var loadedCountries = false;
 var loadedContinents = false;
