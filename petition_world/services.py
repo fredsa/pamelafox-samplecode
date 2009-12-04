@@ -217,7 +217,7 @@ class GetUniqueOrgs(webapp.RequestHandler):
       allOrgNames = []
       #with out an org table this really is not optimal
       for countryCode in geodata.countries.keys():
-         allOrgNames.extend(map(lambda x: x.name,util.getOrgsInCountry(countryCode)))
+         allOrgNames.extend(map(lambda x: x.name.upper().strip(),util.getOrgsInCountry(countryCode)))
       jsonDump = simplejson.dumps(util.getUnique(allOrgNames))
       memcache.set(models.genKeyForAllOrgsInfo(), jsonDump, 300)
       self.response.out.write(jsonDump)
