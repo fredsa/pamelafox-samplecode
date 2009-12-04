@@ -45,3 +45,9 @@ indexes:
   - name: type
   - name: count
     direction: desc
+
+- kind: PetitionSigner
+    properties:
+    - name: type
+    - name: name
+      direction: desc
