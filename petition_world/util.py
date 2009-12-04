@@ -82,8 +82,7 @@ def addSignerToClusters(signer, extraLatLng):
     query.filter('country =', countryCode)
     query.filter('postcode =', postcode)
     result = query.get()
-    #this extra check will avoid us adding up 'empty' postcodes from the bulk upload only viewed at country level
-    if result is None and postcode != '':
+    if result is None:
       postcodecluster = models.Postcode()
       postcodecluster.postcode = postcode
       postcodecluster.state = stateCode
@@ -111,7 +110,7 @@ def countryHasPostcodes(countryCode):
 
 def countryHasStates(countryCode):
   if countryCode and geodata.countries.get(countryCode):
-    return geodata.countries[cosuntryCode].has_key('states')
+    return geodata.countries[countryCode].has_key('states')
   elif countryCode:
     logging.warn("Country code does not exist: %s" % countryCode)
     return False
@@ -126,6 +125,13 @@ def getCountryVotesInStore(countryCode):
     return result.counter
   else:
     return -1
+    
+    
+def getCountryMassVotes(countryCode):
+    query = db.Query(models.MassVotes)
+    query.filter('country =',countryCode)
+    result = query.get()
+    
 
 def getCountryVotesPerStateInStore(countryCode):
   numVotesInCountry = 0
@@ -170,8 +176,6 @@ def getStateVotesInStore(countryCode, stateCode):
     numVotesInState += result.counter
   return numVotesInState
 
-
-#this function will catch country votes via the getCountryVotes call
 def getTotals():
   # keep this memcached as much as possible
   # perhaps only re-calculate every 5 minutes?

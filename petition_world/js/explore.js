@@ -101,10 +101,17 @@ jQuery(document).ready(function() {
 });
 
 
+function expandBar(e)
+{
+  
+  
+}
+
 function closeBar(e)
 {
   jQuery("#rightCol").hide();
   jQuery("#explore_map").width(570);
+  exploreMap.checkResize();
 }
 
 function initSearch() {
@@ -114,6 +121,21 @@ function initSearch() {
      orgs = data; 
   });
   jQuery("#searchButton").click(searchnNearOrgs);
+  
+  jQuery('#searchInput').click(function()
+   {
+       if(jQuery('#searchInput').val() == 'search the map')
+         jQuery('#searchInput').val('')
+   });
+   
+   jQuery('#searchInput').keydown(function()
+   {
+        if($("#searchButton").val() == "Cancel")
+        {
+              $("#searchButton").val("Search");
+        }
+    });
+    
 }
 
 function animateTotals() {
@@ -408,12 +430,13 @@ function createItem(val)
 
 function searchnNearOrgs(name) {
   var orgName = jQuery("#searchInput").val();
-  
+
   if($("#searchButton").val() == "Search")
   {
 
     if(jQuery.inArray(orgName, orgs) > -1)
     {
+        ;
       var bounds = exploreMap.getBounds();
        /*
        this is not longer needed, but may be useful code if the search does not function as desired

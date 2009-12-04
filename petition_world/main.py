@@ -19,6 +19,7 @@ def main():
                                       ('/register', pages.RegisterPage),
                                       ('/embed', pages.EmbedPage),
                                       ('/debug', pages.DebugPage),
+                                      ('/upload', pages.UploadPage),
                                       ('/add/random', pages.RandomAddService),
                                       ('/add/signer', pages.SignerAddService),
 									  ('/add/host', pages.HostAddService),
@@ -35,7 +36,6 @@ def main():
                                       ('/info/search', services.GetBoundedOrgs),
                                       ('/clearcache', pages.MemcacheClearer),
                                       ('/jsonimport', pages.JSONImport)
-
                                       ],
                                      debug=True)
   run_wsgi_app(application)

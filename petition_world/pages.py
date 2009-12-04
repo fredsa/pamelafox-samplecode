@@ -3,7 +3,7 @@ import os
 import random
 import logging
 import hashlib
-
+import csv
 
 from google.appengine.ext import webapp
 from google.appengine.ext.webapp.util import run_wsgi_app
@@ -12,6 +12,7 @@ from google.appengine.ext import db
 from google.appengine.ext import deferred
 from google.appengine.api import memcache
 from google.appengine.api import urlfetch
+from google.appengine.api import images
 
 from django.utils import simplejson
 
@@ -131,7 +132,21 @@ class HostAddService(webapp.RequestHandler):
         host.host_website
       )
     )
-
+    
+class UploadPage(webapp.RequestHandler):
+  def get(self):
+      self.response.out.write('<form enctype="multipart/form-data" method="post" action="/upload">')
+      self.response.out.write('<input type="file" name="csv" />')
+      self.response.out.write('<input type="submit" />')
+      self.response.out.write('</form>')
+  def post(self):
+      csv = self.request.get("csv")
+      reader = csv.reader(csv)
+      for line in reader:
+          countryCode = line[0]
+          countryVote = line[1]
+          self.response.out.write('uploaded %s votes for %s' % (countryCode, countryVote))
+    
 class DebugPage(webapp.RequestHandler):
   def get(self):
     countryCode = self.request.get('countryCode')
@@ -142,7 +157,7 @@ class DebugPage(webapp.RequestHandler):
     self.write("getCountryVotesInStore", util.getCountryVotesInStore(countryCode))
     self.write("getCountryVotesPerPostcodeInStore", util.getCountryVotesPerPostcodeInStore(countryCode))
     self.write("getCountryVotes", util.getCountryVotes(countryCode))
-    self.write("getTotalVotes", util.getTotalVotes())
+    self.write("getTotalVotes", util.getTotals())
     self.response.out.write("</table>")
     self.response.out.write("<form action=/addrandom?countryCode=AU method=get><input type=submit value=RandomAU></form>")
     self.response.out.write("<form action=/clearcache?countryCode=AU method=get><input type=submit value=ClearMemcacheAU></form>")
@@ -268,7 +283,6 @@ class SignerAddService(webapp.RequestHandler):
       signer.streetinfo = self.request.get('streetinfo')
       #keeps the javascript failing
       logo = self.request.get("org_icon")
-      logging.info(logo)
       #something some what sane for an image
       if len(logo) > 10:
         signer.org_icon_hosted = db.Blob(images.resize(logo,32,32))

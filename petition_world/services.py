@@ -191,7 +191,8 @@ class GetBoundedOrgs(webapp.RequestHandler):
         for code in geodata.countries.keys():
           results.extend(util.getOrgsInCountryForName(code,name))
     
-        ret = lambda x : ((x.latlng.lat,x.latlng.lon),x.name , x.org_icon,)
+        logging.info(results)
+        ret = lambda x : ((x.latlng.lat,x.latlng.lon),x.name , x.org_icon)
         display = {}
         # this could be O(n) but this allows for easier changes to the retun object while i 
         # develop and test the search feature 
@@ -203,7 +204,7 @@ class GetBoundedOrgs(webapp.RequestHandler):
         display['countryLevel'] = countryResults
         response = simplejson.dumps(display)
         #5 mins seems to be the defacto
-        memcache.set(models.genKeyForBoundedOrgs(), newVal, 300)
+        memcache.set(models.genKeyForBoundedOrgs(), response, 300)
         self.response.out.write(response)
       
     
