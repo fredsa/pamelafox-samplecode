@@ -70,7 +70,6 @@ function cmxform() {
 
 function performFormsGeoCode() {
   var country = jQuery('#country option:selected').text();
-  alert(country);
   if (country != null && country.replace(/^\s+|\s+$/g, '') != '') {
     // They've set their country, we can geocode something.
     // TODO: Do fewer geocodes.
@@ -708,7 +707,7 @@ function processTotals(json) {
 /* TODO: hook up the cancel button */
 function searchnNearOrgs(name) {
   var orgName = jQuery("#searchInput").val();
-  if(jQuery.inArray(orgName, orgs) > -1)
+  if(jQuery.inArray(orgName.toUpperCase(), orgs) > -1)
   {
     var bounds = voteMap.getBounds();
      /*
@@ -729,7 +728,6 @@ function searchnNearOrgs(name) {
     //country codes we are looking at
     //more app enginy way to do this? rpc? or encode a json string and use djangos simplejson lib
     //arguments.countryCode = countryCodes.join('|');
-    alert('searching');
     jQuery.getJSON('/info/search',arguments,function(data,status)
     {
          var bounds = new google.maps.LatLngBounds();

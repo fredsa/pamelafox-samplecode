@@ -438,7 +438,7 @@ function searchnNearOrgs(name) {
   if($("#searchButton").val() == "Search")
   {
 
-    if(jQuery.inArray(orgName, orgs) > -1)
+    if(jQuery.inArray(orgName.toUpperCase(), orgs) > -1)
     {
         ;
       var bounds = exploreMap.getBounds();
