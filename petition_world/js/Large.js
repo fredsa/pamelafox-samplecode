@@ -772,6 +772,10 @@ function searchnNearOrgs(name) {
         voteMap.setCenter(point, 13);
         var marker = new GMarker(point);
         voteMap.addOverlay(marker);
+        marker.openInfoWindowHtml(htmlString);
+        GEvent.addListener(marker, "infowindowclose", function(){
+                     exploreMap.removeOverlay(marker)
+                   });
         //marker.openInfoWindowHtml() incase i want to add info of total votes around this area
       }
     }

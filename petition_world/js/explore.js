@@ -75,6 +75,9 @@ jQuery(document).ready(function() {
   initSearch();
   jQuery("#closeBar").click(closeBar);
   jQuery("#expandButton").click(expandBar);
+ 
+  
+  
   google.friendconnect.container.initOpenSocialApi({
     site: site_id,
     onload: function(securityToken) {
@@ -507,7 +510,11 @@ function searchnNearOrgs(name) {
           exploreMap.setCenter(point, 13);
           var marker = new GMarker(point);
           exploreMap.addOverlay(marker);
-          //marker.openInfoWindowHtml() incase i want to add info of total votes around this area
+          var htmlString = "<p>"+ orgName +"</p>";
+          marker.openInfoWindowHtml(htmlString);
+         GEvent.addListener(marker, "infowindowclose", function(){
+                     exploreMap.removeOverlay(marker)
+                   });
         }
       }
     );
