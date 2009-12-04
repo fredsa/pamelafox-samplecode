@@ -74,6 +74,7 @@ jQuery(document).ready(function() {
   initExploreMap();
   initSearch();
   jQuery("#closeBar").click(closeBar);
+  jQuery("#expandButton").click(expandBar);
   google.friendconnect.container.initOpenSocialApi({
     site: site_id,
     onload: function(securityToken) {
@@ -103,14 +104,17 @@ jQuery(document).ready(function() {
 
 function expandBar(e)
 {
-  
-  
+    jQuery("#rightCol").show();
+    jQuery("#expandButton").hide();
+    jQuery("#explore_map").width(380);
+    exploreMap.checkResize();
 }
 
 function closeBar(e)
 {
   jQuery("#rightCol").hide();
   jQuery("#explore_map").width(570);
+  jQuery("#expandButton").show();
   exploreMap.checkResize();
 }
 
