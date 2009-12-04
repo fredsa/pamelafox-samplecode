@@ -4,6 +4,7 @@ import random
 import logging
 import hashlib
 import csv
+import re
 
 from google.appengine.ext import webapp
 from google.appengine.ext.webapp.util import run_wsgi_app
@@ -140,13 +141,24 @@ class UploadPage(webapp.RequestHandler):
       self.response.out.write('<input type="submit" />')
       self.response.out.write('</form>')
   def post(self):
-      csv = self.request.get("csv")
-      reader = csv.reader(csv)
+      csvFile = self.request.get("csv")
+      logging.info(csvFile)
+      #for some reason app engine has no os.linesep?
+      #i am assuming something some where is taking care of line endings
+      reader = csv.reader(csvFile.split('\n'))
+      
       for line in reader:
-          countryCode = line[0]
-          countryVote = line[1]
-          self.response.out.write('uploaded %s votes for %s' % (countryCode, countryVote))
-    
+         if len(line) > 1: 
+           logging.info(line)
+           countryCode = line[0]
+           countryVote = re.sub("\D",'',line[0])
+           if countryCode in geodata.countries:
+              self.response.out.write('uploaded %s votes for %s<br />' % ( countryVote,countryCode))
+           else:
+              self.response.out.write('invalid country code %s' % (countryCode))
+              #add some where
+              
+
 class DebugPage(webapp.RequestHandler):
   def get(self):
     countryCode = self.request.get('countryCode')
