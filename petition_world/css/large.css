@@ -15,7 +15,7 @@ p { margin: 10px 0; }
   overflow: hidden;
   width: 965px;
   height: 442px;
-  border: 1px solid #cccccc;
+  border: none;
   background-color: #F8EDD5;
 }
 .logo {
@@ -90,7 +90,7 @@ p { margin: 10px 0; }
 {
   width: 620px;
   height: 446px;
-  background-color: #EFDCAC;
+  background-color: #F8EDD5;
   padding-top: 2px;
   padding-left: 12px;
   padding-right: 12px;
