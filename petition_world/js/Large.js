@@ -151,6 +151,8 @@ jQuery(document).ready(function() {
 });
 
 function initVoteMap() {
+if(!voteMap)
+{
   voteMap = new GMap2(jQuery("#vote_map")[0]);
   //ensures this loads when the vote is submitted  
   var latlng = jQuery.cookie('latlng');
@@ -163,6 +165,8 @@ function initVoteMap() {
       voteMap.setCenter(new GLatLng(0,180), 1);
   }
   voteMap.setUIToDefault();
+  
+  }
 }
 
 function populateCountries() {
@@ -774,7 +778,7 @@ function searchnNearOrgs(name) {
         voteMap.setCenter(point, 13);
         var marker = new GMarker(point);
         voteMap.addOverlay(marker);
-        marker.openInfoWindowHtml(htmlString);
+        marker.openInfoWindowHtml(orgName);
         GEvent.addListener(marker, "infowindowclose", function(){
                      exploreMap.removeOverlay(marker)
                    });

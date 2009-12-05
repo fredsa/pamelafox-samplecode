@@ -164,27 +164,25 @@ function animateTotals() {
 }
 
 function initExploreMap() {
- 
-  exploreMap = new GMap2(jQuery("#explore_map")[0]);
-  exploreMap.setCenter(new GLatLng(0, 10), 1, G_PHYSICAL_MAP);
-  exploreMap.setUIToDefault();
-
- 
+  if(!exploreMap)
+  {
+      exploreMap = new GMap2(jQuery("#explore_map")[0]);
+      exploreMap.setCenter(new GLatLng(0, 10), 1, G_PHYSICAL_MAP);
+      exploreMap.setUIToDefault();
+      var latlng = jQuery.cookie('latlng');
+      if (latlng) {
+        var point = new GLatLng(latlng.split(',')[0], latlng.split(',')[1]);
+        exploreMap.setCenter(point, 8);
+      }
   
-  
-  var latlng = jQuery.cookie('latlng');
-  if (latlng) {
-    var point = new GLatLng(latlng.split(',')[0], latlng.split(',')[1]);
-    exploreMap.setCenter(point, 8);
+      markerManager = new MarkerManager(exploreMap);
+     
+      GEvent.addListener(exploreMap, "zoomend", handleZoomChange);
+      GEvent.addListener(exploreMap, "moveend", handleBoundsChange);
+      handleZoomChange();
+      handleBoundsChange();
   }
-  
-
-  markerManager = new MarkerManager(exploreMap);
   markerManagerSearch = new MarkerManager(exploreMap);
-  GEvent.addListener(exploreMap, "zoomend", handleZoomChange);
-  GEvent.addListener(exploreMap, "moveend", handleBoundsChange);
-  handleZoomChange();
-  handleBoundsChange();
   jQuery.getJSON("/info/totals", processTotals);
   
   GEvent.addListener(exploreMap, "infowindowopen", function() {

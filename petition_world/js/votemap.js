@@ -230,14 +230,14 @@ var VOTEMAP = function() {
         html.push('</div>');
         return html.join('');
     }
-    function hideAllMarkers() {
-        for (var i=0; i<markers.length; i++) {
-            markers[i].hide();
-        }
-    }
     function showAllMarkers() {
         for (var i=0; i<markers.length; i++) {
             markers[i].show();
+        }
+    }
+    function hideAllMarkers() {
+        for (var i=0; i<markers.length; i++) {
+            markers[i].hide();
         }
     }
     function initScanner() {
@@ -328,6 +328,7 @@ var VOTEMAP = function() {
             }
         },
         stopScan: function() {
+            jQuery(map).trigger("scanStopped");
             if (scanner != null) {
                 clearInterval(scanner);
                 scanner = null;
@@ -348,8 +349,7 @@ var VOTEMAP = function() {
         {
                 voteControl = new earthHourVoteControl();
                 map.addControl(voteControl);  
-                init();
-            
+                init(); 
         },
         closeVote: function()
         {
