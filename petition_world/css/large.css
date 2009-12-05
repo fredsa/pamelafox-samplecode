@@ -249,7 +249,7 @@ form.cmxform fieldset {
   margin-bottom: 10px;
   border: none;
   color: #F8EDD5;
-
+  font-size: 12px !important;
 }
 form.cmxform fieldset p b {
   color: #F8EDD5;
