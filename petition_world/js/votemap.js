@@ -349,7 +349,10 @@ var VOTEMAP = function() {
         {
                 voteControl = new earthHourVoteControl();
                 map.addControl(voteControl);  
-                init(); 
+                if(typeof(init) == 'function')
+                {
+                    init(); 
+                }
         },
         closeVote: function()
         {

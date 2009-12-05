@@ -13,6 +13,9 @@ jQuery(document).ready(function() {
        if (location.pathname.toLowerCase().indexOf("vote") != -1){
           map = "vote_map";
        }
+       if (location.pathname.toLowerCase().indexOf("visual") != -1){
+                map = "vote_map_wrapper";
+        }
         var language = 'en_us';
         maps = VOTEMAP.initialize(map, new GLatLng(55.6763, 12.5681), G_HYBRID_MAP, language);
         voteMap = maps;
@@ -26,4 +29,3 @@ jQuery(document).ready(function() {
             GEvent.addListener(maps, "moveend", handleBoundsChange);
             });
         });
-
