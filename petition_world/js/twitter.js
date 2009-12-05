@@ -42,7 +42,6 @@ function initVoteMap() {
 
 function updateTwitter()
 {
- 
     jQuery.getJSON('http://search.twitter.com/search.json?q=earthhour&callback=?',function(data,status)
       {
     
