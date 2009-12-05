@@ -1,0 +1,132 @@
+    td,div {
+        font-family: Helvetica,Arial;
+        font-size:12px;
+    }
+    a {
+        text-decoration:none;
+    }
+    a:hover {
+        text-decoration:underline;
+    }
+    #map_canvas {
+        width:100%;
+        height:95%;
+        color:#333333;
+    }
+    #vote_map_header {
+        height:25px;
+        width:100%;
+        font-family: Helvetica,Arial;
+    }
+    .header_counts {
+        color:#008736;
+    }
+    #counts_display {
+        float:left;
+        font-size:18px;
+        color:#666666;
+    }
+    #vote_map_header a {
+        float:right;
+        font-size:14px;
+    }
+    #infowin_question_text {
+        font-size:13px;
+        line-height:130%;
+        margin:5px 0;
+    }
+    #infowin_footer {
+        height:40px;
+        width:100%;
+    }
+    a#vote_button:hover {
+        text-decoration:none;
+    }
+    .smaller_text {
+        font-size:12px;
+        line-height:110%;
+        color:#666666;
+    }
+    #infowin_thumb {
+        height:96px;
+        width:126px;
+        border:3px double #999999;
+        cursor:pointer;
+        margin:0 5px 5px 0;
+    }
+    #vote_graphs {
+        float:right;
+    }
+    .cop15_sprite {
+        background: transparent url(../images/cop15map_sprite.gif) no-repeat 0 0;
+    }
+    #vote_button {
+        background-position: 0 0;
+        height:34px;
+        width:127px;
+        text-align:center;
+        float:left;
+        margin:12px 5px;
+    }
+    #vote_button:hover {
+        background-position: 0 -34px;
+    }
+    #vote_button_text {
+        font-family:Arial,sans-serif;
+        font-size:18px;
+        color:white;
+        font-weight:bold;
+        margin-top:5px;
+    }
+    .vote_bar {
+        height:11px;
+        width:100px;
+    }
+    .vote_bar_background {
+        height:100%;
+        background-color:#f2f2f2;
+    }
+    #startScan, #stopScan {
+        float:left;
+        height:44px;
+        text-align:center;
+        display:block;
+    }
+    #stopScan {
+        background-position:0 -68px;
+        width:57px;
+    }
+    #startScan {
+        background-position:-57px -68px;
+        width:53px;
+    }
+    #stopScan:hover {
+        background-position:0 -112px;
+    }
+    #startScan:hover {
+        background-position:-57px -112px;
+    }
+    #stopScan.selected {
+        background-position:0 -156px;
+    }
+    #startScan.selected {
+        background-position:-57px -156px;
+    }
+    #thumb_up_image, #thumb_down_image, .filler {
+        width:16px;
+        height:18px;
+        display:block;
+    }
+    #thumb_up_image {
+        background-position:-127px -36px;
+    }
+    #thumb_up_image:hover {
+        background-position:-127px -54px;
+    }
+    #thumb_down_image {
+        background-position:-127px -18px;
+    }
+    #thumb_down_image:hover {
+        background-position:-127px 0;
+    }
+

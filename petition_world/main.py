@@ -18,6 +18,7 @@ def main():
                                       ('/terms', pages.TermsPage),
                                       ('/register', pages.RegisterPage),
                                       ('/embed', pages.EmbedPage),
+                                      ('/visualisation', pages.VisulisationPage),
                                       ('/debug', pages.DebugPage),
                                       ('/upload', pages.UploadPage),
                                       ('/twitter', pages.TwitterPage),

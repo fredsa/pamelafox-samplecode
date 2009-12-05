@@ -1,0 +1,23 @@
+<!DOCTYPE html "-//W3C//DTD XHTML 1.0 Strict//EN" 
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+    <title>COP15 Vote Map</title>
+	<link rel="stylesheet" href="css/votemap.css" type="text/css">
+  </head>
+  <body onunload="GUnload()">
+    <div id="vote_map_wrapper" style="height:600px; width:960px;">
+    </div>
+    <script src="http://maps.google.com/maps?file=api&amp;v=2&amp;key=ABQIAAAAQoYxGIO09ml1k4AMvrELDxSOQ2O55SDH0yhPvzd2nCWL5tIhmRSZhqhoepEkIruyCC4B5as9leK03g&sensor=false"
+            type="text/javascript"></script>
+    <script type="text/javascript" src=js/votemap.js></script>
+    <script type="text/javascript" src=js/ScanNPanControl.js></script>
+    <script type="text/javascript">
+        var language = 'en_us';
+        var votemap = VOTEMAP.initialize("vote_map_wrapper", new GLatLng(55.6763, 12.5681), G_HYBRID_MAP, language);
+        VOTEMAP.startScan();
+    </script>
+  </body>
+</html>
+

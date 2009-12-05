@@ -92,6 +92,16 @@ class LearnPage(BasePage):
 
   def getTemplateFilename(self):
     return "learn.html"
+    
+    
+    
+class VisulisationPage(BasePage):
+    def getTemplateValues(self):
+        template_values = BasePage.getTemplateValues(self, 'Show Your Vote: Learn', 0)
+        return template_values
+
+    def getTemplateFilename(self):
+        return "visual.html"
 
 class VotePage(BasePage):
   def getTemplateValues(self):
