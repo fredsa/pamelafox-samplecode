@@ -6,10 +6,6 @@
 **/
 
 function SHA1 (msg) {
-  if (!msg) {
-    return null;
-  }
-
   function rotate_left(n,s) {
     var t4 = ( n<<s ) | (n>>>(32-s));
     return t4;
@@ -43,7 +39,7 @@ function SHA1 (msg) {
  
  
   function Utf8Encode(string) {
-    string = string.replace(/\r\n/g,"\n");
+    string = (string || "").replace(/\r\n/g,"\n");
     var utftext = "";
  
     for (var n = 0; n < string.length; n++) {
