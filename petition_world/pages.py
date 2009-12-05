@@ -109,7 +109,10 @@ class VotePage(BasePage):
     return template_values
 
   def getTemplateFilename(self):
-    return "vote.html"
+    version = self.request.get('version')
+    if len(version) == 0:
+        return "vote.html"
+    return "voteVisual.html"
 
 
 class ExplorePage(BasePage):
@@ -118,8 +121,8 @@ class ExplorePage(BasePage):
     return template_values
 
   def getTemplateFilename(self):
-    explore = self.request.get('version')
-    if len(explore) == 0:
+    version = self.request.get('version')
+    if len(version) == 0:
         return "explore.html"
     else:
         return "exploreVisual.html"
@@ -297,22 +300,25 @@ class TwitterPage(BasePage):
 class UpdateTwitter(webapp.RequestHandler):
     def get(self):
          try:
-             request = 'http://search.twitter.com/search.json?q=earthhour' 
+             query = db.Query(models.TwitterFeed)
+             result = query.get()
+             if result is None:
+                refreshURL = '?q=earthhour'
+                result = models.TwitterFeed()
+             else:
+                refreshURL = result.twitterRefresh
+            
+             request = 'http://search.twitter.com/search.json%s&rrp=100' % refreshURL 
              twitterReponse = urllib2.urlopen(request).read()
              if len(twitterResponse) > 0:
                 memcache.delete('twitter',0)
-                query = db.Query(models.TwitterFeed)
-                result = query.get()
-                logging.info(twitterResponse)
-                if result is None:
-                     mass = models.TwitterFeed()
-                     mass.twitterJson = twitterReponse
-                     result = mass;
-                else:
-                    result.twitterJson = twitterReponse;
-              
+                tweets = simplejson.loads(twitterResponse)
+                result.twitterJson = twitterReponse;
+                result.twitterRefresh = tweets['refresh_url']
+                result.twitterLocationFeedJson = util.GetGeoTweets(result.twitterLocationFeedJson,tweets['results'])
                 result.put()   
-                memcache.add('twitter',result,600)
+                memcache.add('twitterFeed',twitterResponse,600)
+                memcache.add('geoTweets',result.twitterLocationFeedJson)
          except urllib2.URLError, e:
             logging.error('twitter update failed')
             
