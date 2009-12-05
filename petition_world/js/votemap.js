@@ -48,6 +48,7 @@ var VOTEMAP = function() {
     var show_totals = true;
     var cube_version = false;
     var content_type = "Recent";
+    var voteControl;
     var ryv_icon = new GIcon();
     ryv_icon.image = "images/pin_raiseyourvoice2.png";
     ryv_icon.iconSize = new GSize(24,28);
@@ -248,7 +249,7 @@ var VOTEMAP = function() {
             });
     }
     return {
-        initialize: function(mapElem, initCentre, initType, language, mapContentType, cube) {
+        initialize: function(mapElem, initCentre, initType, language, mapContentType, cube,allowVote) {
             // is this for the cube?
             if (cube) cube_version = cube;  // default is false
 
@@ -284,10 +285,16 @@ var VOTEMAP = function() {
                 map = mapElem;
                 show_totals = false;
             }
+            if(allowVote)
+            {
+                  map.addControl(new earthHourVote());
+            }
+            
             // don't need controls for the cube
             if (!cube_version) {
                 // add the scan'n'pan control
                 map.addControl(new ScanNPanControl());
+              
 
                 // stop the scanning when zoom is changed
                 GEvent.addListener(map, "zoomend", function(oz, nz) {   // funny--looks like Australia and New Zealand but is actually short for old-zoom and new-zoom 
@@ -336,6 +343,15 @@ var VOTEMAP = function() {
                 document.getElementById("stopScan").className += " selected";
             }
         },
+        showVote: function() 
+        {
+                voteControl = new earthHourVoteControl();
+                map.addControl(voteControl);  
+        },
+        removeVote: function()
+        {
+             map.removeControl(voteControl);
+        },
         startScan: function() {
             hideAllMarkers();
             // reset zoom to scan level
@@ -374,5 +390,8 @@ var VOTEMAP = function() {
         }
     }
 }();
+
+
+
 
     

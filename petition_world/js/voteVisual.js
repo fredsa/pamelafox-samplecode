@@ -43,6 +43,7 @@ function cmxform() {
 
 
 function performFormsGeoCode() {
+    debugger;
   var country = jQuery('#country option:selected').text();
   if (country != null && country.replace(/^\s+|\s+$/g, '') != '') {
     // They've set their country, we can geocode something.
@@ -77,6 +78,9 @@ function loadNonce() {
 }
 
 jQuery(document).ready(function() {
+    var language = 'en_us';
+    votemap = VOTEMAP.initialize("vote_map_wrapper", new GLatLng(55.6763, 12.5681), G_HYBRID_MAP, language,"Recent",false,true);
+    VOTEMAP.startScan();
   loadNonce();
   jQuery('.org').hide();
   jQuery('#sign').validate({
@@ -93,14 +97,15 @@ jQuery(document).ready(function() {
                 });
             }           
   }});
-  /* location of rpc_relay.html and canvas.html */
-  google.friendconnect.container.setParentUrl('/gfc/');
 
-  initVoteMap();
+  jQuery("#close").click(function()
+  {
+      VOTEMAP.removeVote();
+  });
   if (geo_position_js.init()) {
     geo_position_js.getCurrentPosition(geoSuccess, geoError);
   } else {
-    geoError();
+   
   }
 
   // Do a geocode for any events that might fire if the form has changed.
@@ -111,44 +116,9 @@ jQuery(document).ready(function() {
   jQuery('#streetinfo').change(performFormsGeoCode);
   jQuery('#city').keypress(performFormsGeoCode);
   jQuery('#postcode').keypress(performFormsGeoCode);
-
-  google.friendconnect.container.initOpenSocialApi({
-    site: site_id,
-    onload: function(securityToken) {
-      var req = opensocial.newDataRequest();
-      req.add(req.newFetchPersonRequest('VIEWER'), 'viewer');
-      req.send(function(response) {
-        var data = response.get('viewer').getData();
-        if (data) {
-          visitorId = data.getId();
-          visitorName = data.getDisplayName();
-          var nameField = jQuery('#person_name');
-          if (nameField.val() == null || nameField.val().replace(/^\s+|\s+$/g, '') == '') {
-            nameField.val(visitorName);
-          }
-          var nameInfo = jQuery('#person_name_info');
-          nameInfo.html("You are signing as " + visitorName + ".");
-          var gfcIdField = jQuery('#person_gfc_id');
-          gfcIdField.val(visitorId);
-        } else {
-          // Not logged in
-          visitorId = null;
-          visitorName = null;
-          var nameInfo = jQuery('#person_name_info');
-          nameInfo.html("<div style='margin-left:120px;margin-top:-10px;'>Vote with your name using Friend Connect,<br>or keep your vote anonymous here.</div>");
-        }
-      });
-    }
-  });
-
   populateCountries();
 });
 
-function initVoteMap() {
-  voteMap = new GMap2(jQuery("#vote_map")[0]);
-  voteMap.setCenter(new GLatLng(0,180), 1);
-  voteMap.setUIToDefault();
-}
 
 function populateCountries() {
   jQuery('.state').hide();
@@ -207,7 +177,6 @@ function locationString(country, state, city, postcode) {
 
 function addressHandler(response) {
   if (!response || response.Status.code != 200) {
-    geoError();
   } else {
     var place = response.Placemark[0];
     var country = place.AddressDetails.Country.CountryNameCode;
@@ -248,9 +217,6 @@ function latLngHandler(point) {
   }
 }
 
-function geoError() {
-  // jQuery('.loc').show();
-}
 
 function toggleForm(formValue) {
   if (formValue == 'org') {
