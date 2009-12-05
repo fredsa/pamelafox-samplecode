@@ -1,0 +1,126 @@
+{% extends "base.html" %}
+{% block includes %}
+    <link type="text/css" href="/css/syv.css" rel="stylesheet" />
+    
+    
+    <script src="http://dev.jquery.com/view/trunk/plugins/validate/jquery.validate.js"></script>
+        <script type="text/javascript">
+      document.write(
+        '<script src="http://maps.google.com/maps?file=api&amp;v=2&amp;sensor=true&amp;key=' +
+        {
+          'localhost:8080': 'ABQIAAAAD8M9IMy5hGBBbqIohA4R4hTwM0brOpm-All5BF6PoaKBxRWWERQKBKqDm80in1RTu5PkBiNU5rC6TQ',
+          'www.corp.google.com': 'ABQIAAAAD8M9IMy5hGBBbqIohA4R4hRCgqPHFwXE2zePYmMJxuu4uk_b2xT9IjfnJgIf53UIW67eDyEQGkZn7w',
+          'showyourvote.org': 'ABQIAAAAD8M9IMy5hGBBbqIohA4R4hQ8ELJusaStVeLp-McODOsiHrSWGhTwoDA6OSVhixqIn2IyFPsBBWLRlA',
+          'www.showyourvote.org': 'ABQIAAAAD8M9IMy5hGBBbqIohA4R4hQ8ELJusaStVeLp-McODOsiHrSWGhTwoDA6OSVhixqIn2IyFPsBBWLRlA',
+          'show-your-vote.appspot.com': 'ABQIAAAA-O3c-Om9OcvXMOJXreXHAxRlOb26qSyU154aZeLwOrF4C7-DphSw7JoLuXrcDjUb_7h-S1txkSCY7A',
+          'syv-test.appspot.com': 'ABQIAAAALrtqAVfQq7mfTTl0EBb7vBT0h0tJ-bKGUcjUByQY52vcgVjYfBTGUDVuRrptlbTJqV8QJhQ1sQgxDQ',
+          '12.latest.show-your-vote.appspot.com': 'ABQIAAAAR4dJSBii5YOC7_avESB3UhS00szMXHqURiJ46Lk4zS5qD3CHuhTqdMURnOffX9b61UC_HwdFfMHkBw'
+
+        }[location.host] +
+        '" type="text/javascript"><\/script>'
+      );
+    </script>
+    <script src="/js/Large.js"></script>
+    <script src="/js/markermanager.js"></script>
+    <script src="/js/maptooltip.js"></script>
+    <script src="/js/mapiconmaker.js"></script>
+    <script type="text/javascript" src=js/votemap.js></script>
+    <script type="text/javascript" src=js/ScanNPanControl.js></script>
+    <script type="text/javascript" src=js/exploreVisual.js></script>
+    <!-- <script src="/js/explore.js"></script> -->
+
+
+{% endblock %}
+
+
+{% block content %}
+ <!-- map -->
+ <div id="MapContainer" class="left" style="background-color:{{bg_color}}">
+  <div id="MapTop">
+       <div class="Search left" style="width:350px">
+         <input type="text" id="searchInput" name="search" style="float: left; margin-right: 10px;">
+           <div class="imageHolder" style="width:40px; float: left margin-bottom:10spx" >
+             <input type="Image" id="searchButton" SRC="images/Large/search.png">
+           </div>
+       </div>
+       <div class="Totals right">
+           <span id="votes_span"><span id="votes"></span>&nbsp;Votes</span>
+            <span id="countries_span" style="display:none"><span id="countries"></span>&nbsp;Countries</span>
+        </div>
+    </div>
+   <div id="vote_map" style="width: 620px; height: 395px; overflow:hidden;">
+        <!-- map element -->
+    </div>
+ 
+  </div>
+  <div id="vote" class="left">
+  <h1> Show your vote </h1>
+    <form name="sign" id="sign" enctype="multipart/form-data" action="/add/signer" method="post" class="cmxform">
+      <input type="hidden" name="website" value="{{ website }}" />
+     
+      <fieldset id="VoteForm">
+      <legend>
+        <p><b>Your vote will be presented to world leaders at the COP15 UN climate summit in Copenhagen, telling them to seal a fair and effective climate deal.</b></p>
+      </legend>
+        <ol>
+          <li>
+            <label for="form_toggle"><em>*</em> Are You An </label>
+            <select id="form_toggle" onchange="toggleForm(jQuery(this).val())">
+              <option value="person">Individual</option>
+              <option value="org">Organization</option>
+            </select>
+          </li>
+          <li class="org">
+            <label for="org_name"> <em>*</em> Organization</label>
+            <input name="org_name" id="org_name" />
+          </li>
+          <li class="org">
+            <label for="email"><em>*</em> Email </label>
+            <input name="email" id="email" class="email"/>
+          </li>
+          <li class="org">
+            <label for="org_icon">Icon:</label>
+            <input type="file" name="org_icon">
+          </li>
+          <li class="loc country">
+            <label for="country"><em>*</em> Country</label>
+            <select name="country" id="country" class="required">
+              <option value="">- Select Your Country -</option>
+            </select>
+          </li>
+          <li class="loc state">
+            <label for="state"><em>*</em> State</label>
+            <select name="state" id="state">
+              <option value="">- Select Your State -</option>
+            </select>
+          </li>
+          <li class="loc org">
+            <label for="streetinfo"> <em>*</em> Street Address</label>
+            <input type="text" name="streetinfo" id="streetinfo"/>
+          </li>
+          <li class="loc">
+            <label for="city">City</label>
+            <input type="text" name="city" id="city"/>
+          </li>
+          <li class="loc postcode">
+            <label for="postcode"><em>*</em> Postcode </label>
+            <input type="text" name="postcode" id="postcode"/>
+          </li>
+          <li>
+             <p style="font-size: 12px">Required fields marked <em>*</em>
+          </li>
+        </ol>
+        <input type="hidden" id="nonce" name="nonce" />
+        <input type="hidden" id="person_gfc_id" name="person_gfc_id" />
+        <input type="hidden" id="lat" name="lat" />
+        <input type="hidden" id="lng" name="lng" />
+        <input type="hidden" id="skin" name="skin" value="large" />
+      </fieldset>
+      
+      <!--TODO: position this button -->
+      <input TYPE="image" id="Submit" SRC="images/SubmitButton.png" ALT="Submit Form" />
+      <div id="errmsg" style="color:#ff0000"></div>
+    </form>
+  </div>
+ 
+{% endblock %}
