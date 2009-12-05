@@ -414,7 +414,7 @@ def addMassVotes(countryCode,countryVote):
   if result is None:
      mass = models.MassVotes()
      mass.country = countryCode
-     mass.counter = countryVote
+     mass.counter = long(countryVote)
      mass.put()
   else:
     result.counter += long(countryVote);
