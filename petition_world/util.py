@@ -412,7 +412,6 @@ def HasGeoData(data):
         return true
     return false;
 
-<<<<<<< .mine
 def GetGeoTweets(old,loadedTweets):
     tweets = []
     storeNumber = int(1000)

@@ -145,6 +145,10 @@
       color: #F8EDD5;
 
     }
+    
+    form.cmxform fieldset p  {
+            margin:0px;
+       }
     form.cmxform fieldset p b {
       color: #F8EDD5;
       width: 262px;
@@ -162,7 +166,7 @@
       display: inline-block;
       line-height: 1.0;
       vertical-align: top;
-      width: 88px;
+      width: 80px;
       font-size:  1.2em;
     }
 
@@ -181,12 +185,14 @@
       padding: 3px 7px 5px;
     }
 
+
     form.cmxform fieldset li input {
-      width: 155px;
+      width: 140px;
     }
     form.cmxform fieldset li select {
-      width: 155px;
+      width: 140px;
     }
+    
 
     form.cmxform em {
       font-weight: bold;
@@ -206,6 +212,7 @@
 {
   color: #F8EDD5;
   font-size: 20px;
+  margin: 0px;
 }
 
 #voteEarthTab #why {
@@ -228,3 +235,7 @@
 	margin: 0 0 0 20px;
 }
 
+.Error
+{
+   color: red; 
+}

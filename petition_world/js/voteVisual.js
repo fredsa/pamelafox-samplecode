@@ -20,6 +20,44 @@ if (site_bg_color == "" || site_bg_color == null) {
   }
 }
 
+
+var init = function()
+{
+  loadNonce();
+  jQuery("#form_toggle").change(toggleForm);
+  if (geo_position_js.init()) {
+    geo_position_js.getCurrentPosition(geoSuccess, geoError);
+  } else {
+   
+  }
+  jQuery('.org').hide();
+  jQuery('#sign').validate({
+       //overwrite to change the way errors are reported
+       //the extra space was kinda hard to fit in the new forms 
+     showErrors: function(errorMap, errorList) {
+             if (errorList.length > 0) {
+                 $(errorList).each(function() {
+                     $("[for='" +this.element.name + "']").addClass(" Error");
+                 });
+             } else {
+                 $(this.lastElement).each(function() {
+                     $("[for='" + this.id + "']").removeClass("Error");
+                 });
+             }           
+   }});
+  
+  // Do a geocode for any events that might fire if the form has changed.
+  jQuery('#country').change(performFormsGeoCode);
+  jQuery('#state').change(performFormsGeoCode);
+  jQuery('#city').change(performFormsGeoCode);
+  jQuery('#postcode').change(performFormsGeoCode);
+  jQuery('#streetinfo').change(performFormsGeoCode);
+  jQuery('#city').keypress(performFormsGeoCode);
+  jQuery('#postcode').keypress(performFormsGeoCode);
+  populateCountries();
+    
+}
+
 function cmxform() {
   // Hide forms
   jQuery('form.cmxform').hide().end();
@@ -43,7 +81,6 @@ function cmxform() {
 
 
 function performFormsGeoCode() {
-    debugger;
   var country = jQuery('#country option:selected').text();
   if (country != null && country.replace(/^\s+|\s+$/g, '') != '') {
     // They've set their country, we can geocode something.
@@ -78,45 +115,20 @@ function loadNonce() {
 }
 
 jQuery(document).ready(function() {
+    //if we have this cookie we have voted, dont show search button
+    var latlng = jQuery.cookie('latlng');
     var language = 'en_us';
-    votemap = VOTEMAP.initialize("vote_map_wrapper", new GLatLng(55.6763, 12.5681), G_HYBRID_MAP, language,"Recent",false,true);
+    var showVote = true;
+    if(latlng)
+        showVote = false;
+        
+    voteMap = VOTEMAP.initialize("vote_map_wrapper", new GLatLng(55.6763, 12.5681), G_HYBRID_MAP, language,"Recent",false,showVote,init);
     VOTEMAP.startScan();
-  loadNonce();
-  jQuery('.org').hide();
-  jQuery('#sign').validate({
-      //overwrite to change the way errors are reported
-      //the extra space was kinda hard to fit in the new forms 
-    showErrors: function(errorMap, errorList) {
-            if (errorList.length > 0) {
-                $(errorList).each(function() {
-                    $("[for='" +this.element.name + "']").addClass(" Error");
-                });
-            } else {
-                $(this.lastElement).each(function() {
-                    $("[for='" + this.id + "']").removeClass("Error");
-                });
-            }           
-  }});
-
-  jQuery("#close").click(function()
-  {
-      VOTEMAP.removeVote();
-  });
-  if (geo_position_js.init()) {
-    geo_position_js.getCurrentPosition(geoSuccess, geoError);
-  } else {
-   
-  }
-
-  // Do a geocode for any events that might fire if the form has changed.
-  jQuery('#country').change(performFormsGeoCode);
-  jQuery('#state').change(performFormsGeoCode);
-  jQuery('#city').change(performFormsGeoCode);
-  jQuery('#postcode').change(performFormsGeoCode);
-  jQuery('#streetinfo').change(performFormsGeoCode);
-  jQuery('#city').keypress(performFormsGeoCode);
-  jQuery('#postcode').keypress(performFormsGeoCode);
-  populateCountries();
+    jQuery('.org').hide();
+    if (!showVote) {
+        var point = new GLatLng(latlng.split(',')[0], latlng.split(',')[1]);
+        voteMap.setCenter(point, 8);
+      }
 });
 
 
@@ -204,9 +216,6 @@ function latLngHandler(point) {
   if (!point) {
     geoError();
   } else {
-    if (!voteMap) {
-      initVoteMap();
-    }
     voteMap.clearOverlays();
     voteMap.setCenter(point, 11);
     var marker = new GMarker(point);
@@ -218,12 +227,12 @@ function latLngHandler(point) {
 }
 
 
-function toggleForm(formValue) {
+function toggleForm() {
+  formValue = jQuery('#form_toggle').val();
   if (formValue == 'org') {
     jQuery('#email').rules('add', {required: true});
     jQuery('#streetinfo').rules('add', {required: true});
     jQuery('#org_name').rules('add', {required: true});
-    jQuery('#person_name').rules('remove');
     jQuery('.person').hide();
     jQuery('.org').show();
   } else {
@@ -231,7 +240,6 @@ function toggleForm(formValue) {
     jQuery('#email').rules('remove');
     jQuery('#streetinfo').rules('remove');
     jQuery('#org_name').rules('remove');
-    jQuery('#person_name').rules('add', {required: false});
     jQuery('.person').show();
   }
 }

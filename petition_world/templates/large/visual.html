@@ -54,38 +54,33 @@
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.js" type="text/javascript"></script>
    <script src="http://dev.jquery.com/view/trunk/plugins/validate/jquery.validate.js"></script>
     <script src="/js/base_compiled.js" type="text/javascript"></script>
+    <script src="/js/jquery-cookie-1.0.js" type="text/javascript"></script>
     <script type="text/javascript" src="js/voteVisual.js"></script>
     <script type="text/javascript" src="js/votemap.js"></script>
     <script type="text/javascript" src="js/ScanNPanControl.js"></script>
-    <script type="text/javascript">
- 
-		
-    </script>
 <div id="clone" style='display:none'>
-  <div id="voteEarthTab">
-  <a id="close" onclick="VOTEMAP.removeVote();return false;" style="float: right;width:10px;height:10px;background-color:red;margin-right: 20px; display:block"></a>
+  <div id="voteEarthTabRemove">
+  <a id="close" onclick="VOTEMAP.closeVote();return false;" style="float: right;width:10px;height:10px;background-color:red;margin-right: 20px; display:block"></a>
   <h1> Show your vote </h1> 
-    <form name="sign" id="sign" enctype="multipart/form-data" action="/add/signer" method="post" class="cmxform">
+    <form name="signRemove" id="signRemove" enctype="multipart/form-data" action="/add/signer" method="post" class="cmxform">
  		<input type="hidden" name="website" value="{{ website }}" />
-	      <fieldset id="VoteForm">
-	      <legend>
+	      <fieldset id="VoteFormRemove">
 	        <p><b>Your vote will be presented to world leaders at the COP15 UN climate summit in Copenhagen, telling them to seal a fair and effective climate deal.</b></p>
-	      </legend>
 	        <ol>
 	          <li>
 	            <label for="form_toggle"><em>*</em> Are You An </label>
-	            <select id="form_toggle" onchange="toggleForm(jQuery(this).val())">
+	            <select id="form_toggleRemove">
 	              <option value="person">Individual</option>
 	              <option value="org">Organization</option>
 	            </select>
 	          </li>
 	          <li class="org">
 	            <label for="org_name"> <em>*</em> Organization</label>
-	            <input name="org_name" id="org_name" />
+	            <input name="org_name" id="org_nameRemove" />
 	          </li>
 	          <li class="org">
 	            <label for="email"><em>*</em> Email </label>
-	            <input name="email" id="email" class="email"/>
+	            <input name="email" id="emailRemove" class="email"/>
 	          </li>
 	          <li class="org">
 	            <label for="org_icon">Icon:</label>
@@ -93,37 +88,38 @@
 	          </li>
 	          <li class="loc country">
 	            <label for="country"><em>*</em> Country</label>
-	            <select name="country" id="country" class="required">
+	            <select name="country" id="countryRemove" class="required">
 	              <option value="">- Select Your Country -</option>
 	            </select>
 	          </li>
 	          <li class="loc state">
 	            <label for="state"><em>*</em> State</label>
-	            <select name="state" id="state">
+	            <select name="state" id="stateRemove">
 	              <option value="">- Select Your State -</option>
 	            </select>
 	          </li>
 	          <li class="loc org">
 	            <label for="streetinfo"> <em>*</em> Street Address</label>
-	            <input type="text" name="streetinfo" id="streetinfo"/>
+	            <input type="text" name="streetinfo" id="streetinfoRemove"/>
 	          </li>
 	          <li class="loc">
 	            <label for="city">City</label>
-	            <input type="text" name="city" id="city"/>
+	            <input type="text" name="city" id="cityRemove"/>
 	          </li>
 	          <li class="loc postcode">
 	            <label for="postcode"><em>*</em> Postcode </label>
-	            <input type="text" name="postcode" id="postcode"/>
+	            <input type="text" name="postcode" id="postcodeRemove"/>
 	          </li>
 	          <li>
 	             <p style="font-size: 12px">Required fields marked <em>*</em>
 	          </li>
 	        </ol>
-	        <input type="hidden" id="nonce" name="nonce" />
-	        <input type="hidden" id="person_gfc_id" name="person_gfc_id" />
-	        <input type="hidden" id="lat" name="lat" />
-	        <input type="hidden" id="lng" name="lng" />
-	        <input type="hidden" id="skin" name="skin" value="large" />
+	        <input type="hidden" id="nonceRemove" name="nonce" />
+	        <input type="hidden" id="person_gfc_idRemove" name="person_gfc_id" />
+	        <input type="hidden" id="latRemove" name="lat" />
+	        <input type="hidden" id="lngRemove" name="lng" />
+	        <input type="hidden" id="skinRemove" name="skin" value="large" />
+			<input type="hidden" id="mapTypeRemove" name="mapType" value="visual">
 	      </fieldset>
 
 	      <!--TODO: position this button -->

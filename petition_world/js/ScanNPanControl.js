@@ -22,7 +22,7 @@ earthHourVote.prototype = new GControl();
 
 earthHourVote.prototype.initialize = function(map) {
        var container = document.createElement("div");
-       container.innerHTML = '<a href="" id="earthHour" class="earthHour" onclick="VOTEMAP.showVote();return false;"></a>';
+       container.innerHTML = '<a href="#" id="earthHour" class="earthHour" onclick="VOTEMAP.showVote();return false;"></a>';
        map.getContainer().appendChild(container);
        return container;
 }
@@ -38,7 +38,9 @@ earthHourVoteControl.prototype = new GControl();
 
 earthHourVoteControl.prototype.initialize = function(map) {
        var container = document.createElement("div");
-       container.innerHTML = jQuery("#clone").html();
+       var html = jQuery("#clone").html();
+       html = html.replace(/remove/gi, '');
+       container.innerHTML = html;
        map.getContainer().appendChild(container);
        return container;
 }

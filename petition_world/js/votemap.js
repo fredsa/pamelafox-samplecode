@@ -55,7 +55,7 @@ var VOTEMAP = function() {
     ryv_icon.iconAnchor = new GPoint(12,14);
     ryv_icon.infoWindowAnchor = new GPoint(12,2);
     var IE6 = navigator.appName.indexOf('Microsoft') != -1 && parseFloat(navigator.appVersion) < 7;
-
+    var init;
     // private functions
     function setTotals(numPeople, numQuestions, numVotes) {
         if (!show_totals) return;
@@ -249,8 +249,9 @@ var VOTEMAP = function() {
             });
     }
     return {
-        initialize: function(mapElem, initCentre, initType, language, mapContentType, cube,allowVote) {
+        initialize: function(mapElem, initCentre, initType, language, mapContentType, cube,allowVote, initFunc) {
             // is this for the cube?
+            init = initFunc;
             if (cube) cube_version = cube;  // default is false
 
             // if the mapElem param is a string then create the map
@@ -347,10 +348,13 @@ var VOTEMAP = function() {
         {
                 voteControl = new earthHourVoteControl();
                 map.addControl(voteControl);  
+                init();
+            
         },
-        removeVote: function()
+        closeVote: function()
         {
              map.removeControl(voteControl);
+       
         },
         startScan: function() {
             hideAllMarkers();
