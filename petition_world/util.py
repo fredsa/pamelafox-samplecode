@@ -407,7 +407,7 @@ def getLatLong(location):
 
 
 def addMassVotes(countryCode,countryVote):
-  memcache.delete(model.genKeyForMassVote() + countryCode)
+  memcache.delete(models.genKeyForMassVote() + countryCode)
   query = db.Query(models.MassVotes)
   result = query.filter('country =',countryCode).get()
   logging.info(result)
