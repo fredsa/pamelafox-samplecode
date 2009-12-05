@@ -219,7 +219,7 @@ function initExploreMap() {
               "scope": "ID",
               "features": "video,comment",
               "allowAnonymousPost":"true",
-              "docId": SHA1(currentMarker.markerType + currentMarker.locationCode + currentMarker.title),
+              "docId": SHA1Digest(currentMarker.markerType + currentMarker.locationCode + currentMarker.title),
               "startMaximized": "true",
               "useFixedHeight": "true"
             }

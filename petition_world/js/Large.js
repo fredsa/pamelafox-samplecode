@@ -93,7 +93,7 @@ function loadNonce() {
   if (!nonce) {
     jQuery.getJSON('/nonce', function (data) {
       nonce = data['nonce'];
-      jQuery('#nonce').val(SHA1(nonce));
+      jQuery('#nonce').val(SHA1Digest(nonce));
     })
   }
 }
@@ -688,7 +688,7 @@ function initExploreMap(exploreMap) {
               "scope": "ID",
               "features": "video,comment",
               "allowAnonymousPost":"true",
-              "docId": SHA1(currentMarker.markerType + currentMarker.locationCode + currentMarker.title),
+              "docId": SHA1Digest(currentMarker.markerType + currentMarker.locationCode + currentMarker.title),
               "startMaximized": "true",
               "useFixedHeight": "true"
             }
