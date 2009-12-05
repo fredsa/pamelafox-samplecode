@@ -22,12 +22,23 @@ class CryptographicNonceService(webapp.RequestHandler):
     self.response.headers.add_header('Expires', 'Thu, 01 Jan 1970 08:00:00 GMT')
     # Produces 160 bits of randomness to send back to the user
     randomVal = ''.join(["%02x" % ord(x) for x in os.urandom(20)])
+    # Check the cookie, if they've already got an identifier, use it,
+    # otherwise, generate a new one
+    identifierVal = self.request.cookies.get(
+      'identifier',
+      ''.join(["%02x" % ord(x) for x in os.urandom(20)])
+    )
     # No value is required, we only need to be able to verify that we've
     # issued this nonce in the recent past.
     memcache.set(randomVal, '', 3600)
     # Spam bots generally don't maintain cookie stores
     self.response.headers.add_header(
       'Set-Cookie', 'nonce=%s; path=/' % randomVal
+    )
+    # This keeps people from voting twice
+    self.response.headers.add_header(
+      'Set-Cookie', ('identifier=%s; path=/; ' +
+      'expires=Sat, 01 Jan 2011 08:00:00 GMT') % identifierVal
     )
     # Simple format string is faster than a JSON dump
     self.response.out.write("{\"nonce\": \"%s\"}" % randomVal)

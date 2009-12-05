@@ -320,9 +320,8 @@ class SignerAddService(webapp.RequestHandler):
   def post(self):    
     skin = 'mini'
     if self.request.get('skin') != '':
-      skin = self.request.get('skin') 
-        
-    originalNonce = self.request.cookies.get('nonce', None)
+      skin = self.request.get('skin')
+    originalNonce = self.request.cookies.get('nonce')
     hashedNonce = self.request.get('nonce')
     cachedVal = originalNonce and memcache.get(originalNonce)
     personName = self.request.get('person_name')
@@ -357,7 +356,13 @@ class SignerAddService(webapp.RequestHandler):
     self.response.out.write('Queued')
 
   def createSignerFromParams(self, request):
-    signer = models.PetitionSigner()
+    identifier = self.request.cookies.get('identifier')
+    if identifier:
+      signer = models.PetitionSigner.get_or_insert(key_name=identifier)
+      logging.info("Signer created with identifier: " + identifier)
+    else:
+      return None
+    new_voter = (not signer.type)
     # defaults to a person
     if not self.request.get('org_name') or self.request.get('org_name') == '':
       signer.type = 'person'
@@ -387,9 +392,10 @@ class SignerAddService(webapp.RequestHandler):
     if self.request.get('lat') and self.request.get('lng'):
       #TODO: We used to get two lat/lngs. What happened?
       signer.latlng = db.GeoPt(float(self.request.get('lat')), float(self.request.get('lng')))
-    if os.environ['SERVER_SOFTWARE'].startswith('Development'):
-      util.addSignerToClusters(signer, signer.latlng)
-    else:
-      deferred.defer(util.addSignerToClusters, signer, signer.latlng)
+    if new_voter:
+      if os.environ['SERVER_SOFTWARE'].startswith('Development'):
+        util.addSignerToClusters(signer, signer.latlng)
+      else:
+        deferred.defer(util.addSignerToClusters, signer, signer.latlng)
     return signer
 

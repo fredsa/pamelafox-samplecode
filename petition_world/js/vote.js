@@ -67,7 +67,11 @@ function loadNonce() {
   if (!nonce) {
     jQuery.getJSON('/nonce', function (data) {
       nonce = data['nonce'];
-      jQuery('#nonce').val(SHA1(nonce));
+      if (nonce) {
+        jQuery('#nonce').val(SHA1(nonce));
+      } else {
+        alert("Missing nonce, cannot submit form successfully.");
+      }
     })
   }
 }
