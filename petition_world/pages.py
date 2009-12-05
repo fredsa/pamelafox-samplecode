@@ -6,6 +6,9 @@ import hashlib
 import csv
 import re
 
+import urllib2
+
+
 from google.appengine.ext import webapp
 from google.appengine.ext.webapp.util import run_wsgi_app
 from google.appengine.ext.webapp import template
@@ -79,6 +82,7 @@ class BasePage(webapp.RequestHandler):
 
   def render(self, filename, template_values):
     path = os.path.join(os.path.dirname(__file__), 'templates', template_values['skin'], filename)
+    logging.info(path)
     self.response.out.write(template.render(path, template_values))
 
 class LearnPage(BasePage):
@@ -259,6 +263,45 @@ class RandomAddService(webapp.RequestHandler):
     self.response.out.write(signer.state)
     util.addSignerToClusters(signer)
 
+
+
+    url = "http://www.google.com/"
+    try:
+      result = urllib2.urlopen(url)
+      doSomethingWithResult(result)
+    except urllib2.URLError, e:
+      handleError(e)
+
+class TwitterPage(BasePage):
+        def getTemplateValues(self):
+          template_values = BasePage.getTemplateValues(self, 'Show Your Vote: twitter feed', 5)
+          return template_values
+
+        def getTemplateFilename(self):
+          return "twitter.html"
+          
+class UpdateTwitter(webapp.RequestHandler):
+    def get(self):
+         try:
+             request = 'http://search.twitter.com/search.json?q=earthhour' 
+             twitterReponse = urllib2.urlopen(request).read()
+             if len(twitterResponse) > 0:
+                memcache.delete('twitter',0)
+                query = db.Query(models.TwitterFeed)
+                result = query.get()
+                logging.info(twitterResponse)
+                if result is None:
+                     mass = models.TwitterFeed()
+                     mass.twitterJson = twitterReponse
+                     result = mass;
+                else:
+                    result.twitterJson = twitterReponse;
+              
+                result.put()   
+                memcache.add('twitter',result,600)
+         except urllib2.URLError, e:
+            logging.error('twitter update failed')
+            
 class SignerAddService(webapp.RequestHandler):
   def post(self):    
     skin = 'mini'

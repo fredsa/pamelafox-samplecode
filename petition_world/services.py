@@ -207,6 +207,12 @@ class GetBoundedOrgs(webapp.RequestHandler):
         memcache.set(models.genKeyForBoundedOrgs(), response, 300)
         self.response.out.write(response)
       
+      
+class TwitterService(webapp.RequestHandler):
+    def get(self):
+        self.response.headers.add_header('Cache-Control', 'no-cache, must-revalidate')
+        self.response.headers.add_header('Expires', 'Sat, 26 Jul 1997 05:00:00 GMT')
+        self.response.out.write('{"results":[{"profile_image_url":"http://a3.twimg.com/profile_images/292680765/Photo_14_normal.jpg","created_at":"Fri, 04 Dec 2009 23:06:09 +0000","from_user":"enfox","to_user_id":452837,"text":"@earthhour Im Voting Earth for Earth Hour Copenhagen! Show your vote for Earth too at http://www.earthhour.org","id":6352307121,"from_user_id":127933,"to_user":"earthhour","geo":null,"iso_language_code":"en","source":"<a href="http://twitter.com/">web</a>"},{"profile_image_url":"http://a3.twimg.com/profile_images/536284163/12966_178182684102_722859102_3018367_27518_n_normal.jpg","created_at":"Fri, 04 Dec 2009 23:04:59 +0000","from_user":"miskolino","to_user_id":null,"text":"Im Voting Earth for Earth Hour Copenhagen! Show your vote for Earth too at http://www.earthhour.org (via @earthhour)","id":6352275687,"from_user_id":3359267,"geo":null,"iso_language_code":"en","source":"<a href="http://twitter.com/">web</a>"},{"profile_image_url":"http://a3.twimg.com/profile_images/406964235/P7182730_normal.JPG","created_at":"Fri, 04 Dec 2009 22:55:45 +0000","from_user":"ViolenaJ","to_user_id":452837,"text":"@earthhour Im Voting Earth for Earth Hour Copenhagen! Show your vote for Earth too at http://www.earthhour.org","id":6352037109,"from_user_id":41668672,"to_user":"earthhour","geo":null,"iso_language_code":"en","source":"<a href="http://twitter.com/">web</a>"},{"profile_image_url":"http://a1.twimg.com/profile_images/500883552/jp140185_normal.png","created_at":"Fri, 04 Dec 2009 22:24:51 +0000","from_user":"Jeep_Down_Under","to_user_id":null,"text":"Great! RT @earthhour: Obama to come to Copenhagen at decision time @ COP15. Will this turn out to be #Hopenhagen: http://tinyurl.com/yb6tj3t","id":6351256065,"from_user_id":29644019,"geo":null,"iso_language_code":"en","source":"<a href="http://www.tweetdeck.com/" rel="nofollow">TweetDeck</a>"}],"max_id":6352307121,"since_id":0,"refresh_url":"?since_id=6352307121&q=earthHour","next_page":"?page=2&max_id=6352307121&q=earthHour","results_per_page":15,"page":1,"completed_in":0.092802,"query":"earthHour"}')
     
 class GetUniqueOrgs(webapp.RequestHandler):
   def get(self):

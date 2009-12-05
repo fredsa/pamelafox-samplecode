@@ -20,6 +20,7 @@ def main():
                                       ('/embed', pages.EmbedPage),
                                       ('/debug', pages.DebugPage),
                                       ('/upload', pages.UploadPage),
+                                      ('/twitter', pages.TwitterPage),
                                       ('/add/random', pages.RandomAddService),
                                       ('/add/signer', pages.SignerAddService),
 									  ('/add/host', pages.HostAddService),
@@ -35,7 +36,9 @@ def main():
                                       ('/info/logo', services.LogoForOrg),
                                       ('/info/search', services.GetBoundedOrgs),
                                       ('/clearcache', pages.MemcacheClearer),
-                                      ('/jsonimport', pages.JSONImport)
+                                      ('/jsonimport', pages.JSONImport),
+                                      ('/tasks/twitter', pages.UpdateTwitter),
+                                      ('/info/twitter', services.TwitterService)
                                       ],
                                      debug=True)
   run_wsgi_app(application)
