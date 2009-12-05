@@ -42,14 +42,14 @@ function initVoteMap() {
 
 function updateTwitter()
 {
-    jQuery.getJSON('http://search.twitter.com/search.json?q=earthhour&callback=?',function(data,status)
+    jQuery.getJSON('/info/twitter',function(data,status)
       {
     
             var twitterContainer = jQuery("#TwitterList");
-            jQuery.each(data.results, function(i,tweet){
+            jQuery.each(data, function(i,tweet){
             if(i < 8)
             {
-              twitterContainer.append("<li style='color:#F8EDD5'>"+tweet.from_user + "said: " + tweet.text +"</li>");
+              twitterContainer.append("<li style='color:#F8EDD5'>"+tweet.name + "said: " + tweet.text +"</li>");
               if(tweet.geo)
               {
                 //add to map

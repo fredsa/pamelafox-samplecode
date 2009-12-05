@@ -20,7 +20,7 @@ var locationId = "global";
 var toggler = 0;
 var currentMarker;
 var mapWidth;
-
+var continentMarkers;
 
 if (site_bg_color == "" || site_bg_color == null) {
   switch(site_skin) {

@@ -15,6 +15,7 @@ var orgs = {};
 var searchedOrgs;
 var loadedCountries = false;
 var loadedContinents = false;
+var continentMarkers;
 var markerManager;
 var markerManagerSearch;
 
@@ -527,6 +528,7 @@ function processContinents(json) {
   }
   markerManager.addMarkers(markers, 0, 3);
   markerManager.refresh();
+  continentMarkers = markers;
 }
 
 function processCountries(json) {
