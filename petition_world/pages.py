@@ -118,7 +118,11 @@ class ExplorePage(BasePage):
     return template_values
 
   def getTemplateFilename(self):
-    return "explore.html"
+    explore = self.request.get('version')
+    if len(explore) == 0:
+        return "explore.html"
+    else:
+        return "exploreVisual.html"
 
 class TermsPage(BasePage):
   def getTemplateValues(self):
