@@ -77,7 +77,10 @@ class Country(db.Model):
 class MassVotes(db.Model):
     country = db.StringProperty()
     counter = db.IntegerProperty(default=0)
+    org = db.StringProperty()
     
 class TwitterFeed(db.Model):
-    twitterJson = db.StringProperty()
+    twitterFeedJson = db.StringProperty()
+    twitterRefresh = db.StringProperty()
+    twitterLocationFeedJson = db.StringProperty()
 

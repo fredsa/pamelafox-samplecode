@@ -189,9 +189,14 @@ class UploadPage(webapp.RequestHandler):
          if len(line) > 1: 
            logging.info(line)
            countryCode = line[0]
+           org = ''
            countryVote = filter(lambda x: x.isdigit(), line[1])
+           if line[2] is not None:
+               org = line[2]
+
+            
            if countryCode in geodata.countries:
-              util.addMassVotes(countryCode,countryVote)
+              util.addMassVotes(countryCode,countryVote,org)
               self.response.out.write('uploaded %s votes for %s<br />' % ( countryVote,countryCode))
            else:
               self.response.out.write('invalid country code %s' % (countryCode))
@@ -325,6 +330,9 @@ class UpdateTwitter(webapp.RequestHandler):
 class SignerAddService(webapp.RequestHandler):
   def post(self):    
     skin = 'mini'
+    version = self.request.get('version')
+    if version != '':
+        version = "&version=%s" % version
     if self.request.get('skin') != '':
       skin = self.request.get('skin')
     originalNonce = self.request.cookies.get('nonce')
@@ -339,7 +347,7 @@ class SignerAddService(webapp.RequestHandler):
       # Remove the nonce cookie
       self.response.headers.add_header('Set-Cookie', 'nonce=; expires=Fri, 31-Dec-1980 23:59:59 GMT; path=/')
       #not set so chanes are it was not set  
-      self.redirect('/explore?location=%s&skin=%s' % (self.request.get('postcode'),skin))
+      self.redirect('/explore?location=%s&skin=%s%s' % (self.request.get('postcode'),skin,version))
     else:
       # Spam
       if not hashedNonce:
@@ -390,6 +398,7 @@ class SignerAddService(webapp.RequestHandler):
         #put an empty string in to stop it falling over
         signer.org_icon = str('')
   
+    logging.info("Signer adding common elements")
     signer.city = self.request.get('city')
     signer.state = self.request.get('state')
     signer.country = self.request.get('country')

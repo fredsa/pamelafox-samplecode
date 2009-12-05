@@ -237,16 +237,18 @@ def getCountryVotes(countryCode):
 
 
 def getMassCountryVotes(countryCode):
+
   votes = 0
   votesMemcache = memcache.get(models.genKeyForMassVote() + countryCode)
   if votesMemcache is not None:
     return int(votesMemcache)
   query = db.Query(models.MassVotes)  
-  result = query.filter('country =',countryCode).get()
-  if result is not None:
-    votes += int(result.counter)
-    memcache.set(models.genKeyForMassVote() + countryCode, str(result.counter))
-    
+  result = query.filter('country =',countryCode)
+  for data in result:
+    votes += int(data.counter)
+
+  memcache.set(models.genKeyForMassVote() + countryCode , str(votes))
+  logging.info(votes)  
   return votes
 
 def getStateVotes(countryCode, stateCode):
@@ -405,16 +407,43 @@ def getLatLong(location):
     else:
         return 'invalid','invalid'
 
+def HasGeoData(data):
+    if data['geo'] is not None:
+        return true
+    return false;
 
+<<<<<<< .mine
+def GetGeoTweets(old,loadedTweets):
+    tweets = []
+    storeNumber = int(1000)
+    if len(old) > 0:
+        #old geo data append to it
+        tweets = simplejson.loads(old)
+        
+    geoTweets = filter(loadedTweets,HasGeoData)
+    
+    if len(tweets) > storeNumber:
+        tweets = tweets[-len(geoTweets)]
+   
+
+def addMassVotes(countryCode,countryVote,org):
+  memcache.delete(models.genKeyForMassVote() + countryCode)
+=======
 def addMassVotes(countryCode,countryVote):
   memcache.delete(models.genKeyForMassVote() + countryCode)
+>>>>>>> .r266
   query = db.Query(models.MassVotes)
-  result = query.filter('country =',countryCode).get()
+  result = query.filter('org=',org).filter('country =',countryCode).get()
   logging.info(result)
   if result is None:
      mass = models.MassVotes()
      mass.country = countryCode
+<<<<<<< .mine
+     mass.counter = long(countryVote);
+     mass.org = org
+=======
      mass.counter = long(countryVote)
+>>>>>>> .r266
      mass.put()
   else:
     result.counter += long(countryVote);
