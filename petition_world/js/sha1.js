@@ -6,6 +6,9 @@
 **/
 
 function SHA1 (msg) {
+  if (!msg) {
+    return null;
+  }
 
   function rotate_left(n,s) {
     var t4 = ( n<<s ) | (n>>>(32-s));
@@ -75,7 +78,7 @@ function SHA1 (msg) {
   var H4 = 0xC3D2E1F0;
   var A, B, C, D, E;
   var temp;
- 
+  
   msg = Utf8Encode(msg);
  
   var msg_len = msg.length;
