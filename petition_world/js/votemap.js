@@ -304,6 +304,7 @@ var VOTEMAP = function() {
 
             // request data, returned data will start scan
             getData();
+            return map;
         },
         scanNext: function() {
             // check if the current question is geocoded already
