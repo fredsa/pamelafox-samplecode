@@ -426,24 +426,16 @@ def GetGeoTweets(old,loadedTweets):
         tweets = tweets[-len(geoTweets)]
    
 
-def addMassVotes(countryCode,countryVote,org):
-  memcache.delete(models.genKeyForMassVote() + countryCode)
-=======
 def addMassVotes(countryCode,countryVote):
   memcache.delete(models.genKeyForMassVote() + countryCode)
->>>>>>> .r266
   query = db.Query(models.MassVotes)
   result = query.filter('org=',org).filter('country =',countryCode).get()
   logging.info(result)
   if result is None:
      mass = models.MassVotes()
      mass.country = countryCode
-<<<<<<< .mine
      mass.counter = long(countryVote);
      mass.org = org
-=======
-     mass.counter = long(countryVote)
->>>>>>> .r266
      mass.put()
   else:
     result.counter += long(countryVote);
