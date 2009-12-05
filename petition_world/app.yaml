@@ -1,5 +1,6 @@
 application: show-your-vote
-version: 10
+version: 12
+
 runtime: python
 api_version: 1
 
