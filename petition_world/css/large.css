@@ -140,6 +140,10 @@ p { margin: 10px 0; }
   display: inline;
   position: relative;
 }
+#vote.Widget
+{
+      background: url('/images/Large/FloatingFormBackground.png') no-repeat left top !important;
+}
 #vote h1
 {
   color: #F8EDD5;

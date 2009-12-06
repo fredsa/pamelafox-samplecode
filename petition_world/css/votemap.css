@@ -131,9 +131,6 @@
     }
     .earthHour
     {
-        height: 20px;
-        width: 20px;
-        background-color: green;
         display:block;
     }
 
@@ -202,12 +199,13 @@
 
 #voteEarthTab
 {
-  background: url('/images/Large/FormBackground.png') no-repeat left top;
+  background: url('/images/Large/FloatingFormBackground.png') no-repeat left top;
   width: 287px;
   height: 430px;
   margin-left: 15px;
   padding: 15px 0 0 15px;
 }
+
 #voteEarthTab h1
 {
   color: #F8EDD5;
