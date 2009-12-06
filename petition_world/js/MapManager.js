@@ -15,6 +15,28 @@ var MapManager = function(param) {
     var orgs = null;
     var nonce;
 
+
+
+    var editParamsFromQuery = function()
+    {
+        params.voteControl = getQueryValue(params.voteControl,util.getParameterByName('voteControl'));
+        params.includeVoteMarkers = getQueryValue(params.includeVoteMarkers,util.getParameterByName('includeVoteMarkers'));
+        params.includeSearch = getQueryValue(params.includeSearch,util.getParameterByName('includeSearch'));
+        params.voteControl = getQueryValue(params.voteControl,util.getParameterByName('voteControl'));
+        params.startScan = getQueryValue(params.startScan,util.getParameterByName('startScan'));
+        params.visual = getQueryValue(params.visual,util.getParameterByName('visual'));
+        params.showTotals =getQueryValue(params.visual,util.getParameterByName('showTotals'));
+    };
+    var getQueryValue = function(param,value)
+    {
+        if(value == '')
+            return param;
+        else if(value.toUpperCase() == 'TRUE' )
+            return true;
+        
+        return false;
+    };
+    
     var animateTotals = function() {
         if (toggler == 0) {
             jQuery('#votes_span').toggle();
@@ -292,6 +314,7 @@ var MapManager = function(param) {
 
     var init = function()
     {
+        editParamsFromQuery();
         setPageDict();
         processHandlers = new Processors(setUpMap(), setUpMarkerManager());
         showTotals();
@@ -302,6 +325,7 @@ var MapManager = function(param) {
             pagesTypes['vote']();
         }
         addMarkers();
+    
         return map;
     };
     return init();
@@ -328,7 +352,7 @@ var Processors = function(map, markers)
         jQuery("#orgs").html(json.total.totalOrgs);
     };
 
-    this.processContinents = function(json) {
+    var processContinents = function(json) {
         var info = json;
         var markers = [];
         for (continentCode in info.continents) {
@@ -341,7 +365,7 @@ var Processors = function(map, markers)
         markerManager.refresh();
     };
 
-    this.processCountries = function(json) {
+    var processCountries = function(json) {
         var info = json;
         var markers = [];
         for (countryCode in info.countries) {
@@ -623,12 +647,12 @@ var Processors = function(map, markers)
     };
 
     this.handleZoomChange = function() {
-        if (map.getZoom() > 2 && map.getZoom() < 6 && !this.loadedCountries) {
-            jQuery.getJSON("/info/countries", this.processCountries);
+        if (map.getZoom() > 2 && map.getZoom() < 6 && !loadedCountries) {
+            jQuery.getJSON("/info/countries", processCountries);
             loadedCountries = true;
         }
-        if (map.getZoom() >= 0 && map.getZoom() < 4 && !this.loadedContinents) {
-            jQuery.getJSON("/info/continents", this.processContinents);
+        if (map.getZoom() >= 0 && map.getZoom() < 4 && !loadedContinents) {
+            jQuery.getJSON("/info/continents", processContinents);
             loadedContinents = true;
         }
     };
@@ -879,7 +903,6 @@ var Util = function()
 
         }
     }
-
 
     this.getParameterByName = function(name) {
         name = name.replace(/[\[]/, "\\\[").replace(/[\]]/, "\\\]");
