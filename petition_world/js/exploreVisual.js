@@ -17,13 +17,13 @@ jQuery(document).ready(function() {
              map = "vote_map_wrapper";
           }
         var language = 'en_us';
-        if(map = "vote_map_wrapper")
+        if(map == "vote_map_wrapper")
         {
             maps =VOTEMAP.initialize(map, new GLatLng(55.6763, 12.5681), G_HYBRID_MAP, language,'Recent',false,true,formInit);
         }
         else
         {
-            maps = VOTEMAP.initialize(map, new GLatLng(55.6763, 12.5681), G_HYBRID_MAP, language);
+            maps = VOTEMAP.initialize(map, new GLatLng(55.6763, 12.5681), G_HYBRID_MAP, language,'Recent',false,true,formInit);
         }
         exploreMap = maps;
         jQuery('.org').hide();

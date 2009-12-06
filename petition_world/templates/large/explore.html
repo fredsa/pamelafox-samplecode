@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block includes %}
     <link type="text/css" href="/css/syv.css" rel="stylesheet" />
-    <script src="/js/explore.js"></script>
+	<script src='/js/MapManager.js'></script>
     <script type="text/javascript">
       document.write(
         '<script src="http://maps.google.com/maps?file=api&amp;v=2&amp;sensor=true&amp;key=' +
@@ -21,6 +21,13 @@
     <script src="/js/markermanager.js"></script>
     <script src="/js/maptooltip.js"></script>
     <script src="/js/mapiconmaker.js"></script>
+	<script type="text/javascript">
+	jQuery(document).ready(function()
+	{
+			var mapManager = new MapManager({'map':"#explore_map",'showTotals':true,"page":'explore','skin':site_skin });
+	});
+
+	</script>
 <!--    <script src="http://www.google.com/uds/solutions/videobar/gsvideobar.js?mode=new" type="text/javascript"></script> -->
 <!--    <script type="text/javascript" src="http://jquery.malsup.com/cycle/jquery.cycle.all.js"></script> -->
 {% endblock %}

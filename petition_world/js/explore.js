@@ -67,7 +67,7 @@ function loadVideoBar() {
 */
 
 jQuery(document).ready(function() {
-  window.setInterval(animateTotals, 4000);
+  //window.setInterval(animateTotals, 4000);
   /* location of rpc_relay.html and canvas.html */
   google.friendconnect.container.setParentUrl('/gfc/');
   //loadVideoBar();
@@ -75,33 +75,33 @@ jQuery(document).ready(function() {
   initSearch();
   jQuery("#closeBar").click(closeBar);
   jQuery("#expandButton").click(expandBar);
+              google.friendconnect.container.initOpenSocialApi({
+                   site: site_id,
+                   onload: function(securityToken) {
+                     var req = opensocial.newDataRequest();
+                     req.add(req.newFetchPersonRequest('VIEWER'), 'viewer');
+                     req.send(function(response) {
+                       var data = response.get('viewer').getData();
+                       if (data) {
+                         visitorId = data.getId();
+                         visitorName = data.getDisplayName();
+                         var nameField = jQuery('#person_name');
+                         if (nameField.val() == null || nameField.val().replace(/^\s+|\s+$/g, '') == '') {
+                           nameField.val(visitorName);
+                         }
+                         var gfcIdField = jQuery('#person_gfc_id');
+                         gfcIdField.val(visitorId);
+                       } else {
+                         // Not logged in
+                         visitorId = null;
+                         visitorName = null;
+                       }
+                     });
+                   }
+                 });
  
   
-  
-  google.friendconnect.container.initOpenSocialApi({
-    site: site_id,
-    onload: function(securityToken) {
-      var req = opensocial.newDataRequest();
-      req.add(req.newFetchPersonRequest('VIEWER'), 'viewer');
-      req.send(function(response) {
-        var data = response.get('viewer').getData();
-        if (data) {
-          visitorId = data.getId();
-          visitorName = data.getDisplayName();
-          var nameField = jQuery('#person_name');
-          if (nameField.val() == null || nameField.val().replace(/^\s+|\s+$/g, '') == '') {
-            nameField.val(visitorName);
-          }
-          var gfcIdField = jQuery('#person_gfc_id');
-          gfcIdField.val(visitorId);
-        } else {
-          // Not logged in
-          visitorId = null;
-          visitorName = null;
-        }
-      });
-    }
-  });
+ 
 });
 
 
@@ -307,7 +307,7 @@ function processStates(json) {
     var marker = createMarker("state", stateCode, new GLatLng(state.center[0], state.center[1]), createMediumIcon(state.count), state.name, 6);
     markers.push(marker);
   }
-
+  debugger;
   markerManager.addMarkers(markers, 4, 7);
   markerManager.refresh();
 }

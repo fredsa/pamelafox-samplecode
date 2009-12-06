@@ -347,12 +347,10 @@ var VOTEMAP = function() {
         },
         showVote: function() 
         {
+         
                 voteControl = new earthHourVoteControl();
                 map.addControl(voteControl);  
-                if(typeof(init) == 'function')
-                {
-                    init(); 
-                }
+                jQuery(map).trigger("voteControlAdded");
         },
         closeVote: function()
         {
