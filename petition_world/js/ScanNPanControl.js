@@ -28,7 +28,7 @@ earthHourVote.prototype.initialize = function(map) {
 }
 
 earthHourVote.prototype.getDefaultPosition = function() {
-    return new GControlPosition(G_ANCHOR_BOTTOM_RIGHT, new GSize(0,0));
+    return new GControlPosition(G_ANCHOR_BOTTOM_RIGHT, new GSize(5,20));
 }
 
 
@@ -46,7 +46,7 @@ earthHourVoteControl.prototype.initialize = function(map) {
 }
 
 earthHourVoteControl.prototype.getDefaultPosition = function() {
-    return new GControlPosition(G_ANCHOR_BOTTOM_RIGHT, new GSize(0,0));
+    return new GControlPosition(G_ANCHOR_BOTTOM_RIGHT, new GSize(5,20));
 }
 
 
