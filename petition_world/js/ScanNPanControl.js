@@ -22,13 +22,13 @@ earthHourVote.prototype = new GControl();
 
 earthHourVote.prototype.initialize = function(map) {
        var container = document.createElement("div");
-       container.innerHTML = '<a href="#" id="earthHour" class="earthHour" onclick="VOTEMAP.showVote();return false;"></a>';
+       container.innerHTML = '<a href="#" id="earthHour" class="earthHour" onclick="mapManager.showVoteControl();return false;"><img src="/images/ShowYourSupport.png"></img></a>';
        map.getContainer().appendChild(container);
        return container;
 }
 
 earthHourVote.prototype.getDefaultPosition = function() {
-    return new GControlPosition(G_ANCHOR_TOP_RIGHT, new GSize(7,80));
+    return new GControlPosition(G_ANCHOR_BOTTOM_RIGHT, new GSize(0,0));
 }
 
 

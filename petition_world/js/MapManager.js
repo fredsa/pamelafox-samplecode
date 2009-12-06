@@ -2,6 +2,32 @@
 google.load('friendconnect', '0.8');
 google.load("search", "1.0");
 
+
+
+var VoteController = function() {
+    var voteControl;
+    var map = null;
+     return {
+         setMap: function(globalMap)
+         {
+             map = globalMap;
+         },
+         
+        showVote: function() 
+        {
+                     voteControl = new earthHourVoteControl();
+                     map.addControl(voteControl);  
+                     jQuery(map).trigger("voteControlAdded");
+        },
+        closeVote: function()
+        {
+            map.removeControl(voteControl);
+        }
+     };
+}();
+
+
+
 var MapManager = function(param) {
     var params = param;
     var map;
@@ -14,9 +40,14 @@ var MapManager = function(param) {
     var util = new Util();
     var orgs = null;
     var nonce;
+    var voteControlButton;
 
 
-
+    this.showVoteControl = function()
+    {
+         map.removeControl(voteControlButton);
+         VoteController.showVote();
+    };
     var editParamsFromQuery = function()
     {
         params.voteControl = getQueryValue(params.voteControl,util.getParameterByName('voteControl'));
@@ -69,23 +100,20 @@ var MapManager = function(param) {
 
     var setUpMap = function()
     {
-        var voteControl = false;
+        
         if (params.visual)
         {
-             if(params.voteControl)
-             {
-                    voteControl = true;
-             }
+     
             if (params.useMapObject)
             {
                 map = new GMap2(jQuery(params.map)[0]);
                 map.setCenter(new GLatLng(0, 10), 1, G_HYBRID_MAP);
                 map.setUIToDefault();
-                map = VOTEMAP.initialize(map, new GLatLng(55.6763, 12.5681), G_HYBRID_MAP, language, 'Recent',false,voteControl);
+                map = VOTEMAP.initialize(map, new GLatLng(55.6763, 12.5681), G_HYBRID_MAP, language, 'Recent',false);
             }
             else
             {
-                map = VOTEMAP.initialize(params.map, new GLatLng(55.6763, 12.5681), G_HYBRID_MAP, language,'Recent',false,voteControl);
+                map = VOTEMAP.initialize(params.map, new GLatLng(55.6763, 12.5681), G_HYBRID_MAP, language,'Recent',false);
             }
             if (params.startScan)
             {
@@ -112,7 +140,23 @@ var MapManager = function(param) {
                 alert('Please specify a valid map');
             }
         }
+        if(params.voteControl)
+        {
+         VoteController.setMap(map);
+         voteControlButton = new earthHourVote();
+         map.addControl(voteControlButton);
+        
+        }
         return map;
+    };
+    
+
+    
+    this.closeVoteControl = function()
+    {
+         VoteController.closeVote();
+         //the VoteController class should really be handling this stuff
+         map.addControl(voteControlButton);
     };
 
     var setUpExplorePage = function()
@@ -279,6 +323,7 @@ var MapManager = function(param) {
         return pageTypes;
     };
 
+    
     var setUpSearch = function()
     {
         if (params.includeSearch)
@@ -316,7 +361,7 @@ var MapManager = function(param) {
     {
         editParamsFromQuery();
         setPageDict();
-        processHandlers = new Processors(setUpMap(), setUpMarkerManager());
+        processHandlers = new Processors(setUpMap(), setUpMarkerManager(),params.RYV);
         showTotals();
         setUpSearch();
         pageTypes[params.page]();
@@ -325,16 +370,14 @@ var MapManager = function(param) {
             pagesTypes['vote']();
         }
         addMarkers();
-    
-        return map;
-    };
-    return init();
+    }();
 };
 
-var Processors = function(map, markers)
+var Processors = function(map, markers,skin)
  {
     var markerManager = markers;
-    var markerCreator = new MarkerCreator(map);
+    
+    var markerCreator = new MarkerCreator(map,skin);
     var map = map;
     var loadedCountries = false;
     var loadedContinents = false;
@@ -373,7 +416,7 @@ var Processors = function(map, markers)
             var marker = markerCreator.createMarker("country", countryCode, new GLatLng(country.center[0], country.center[1]), markerCreator.createBigIcon(country.count), country.name, 6);
             markers.push(marker);
         }
-        markerManager.addMarkers(markers, 4, 7);
+        markerManager.addMarkers(markers, 3, 7);
         markerManager.refresh();
     };
 
@@ -659,9 +702,11 @@ var Processors = function(map, markers)
 }
 
 
-var MarkerCreator = function(map)
+var MarkerCreator = function(map,ryv)
  {
     var util = new Util();
+    var color = ryv ? "#0066cc" :"#ca6618";
+    
     this.currentMarker = null;
     this.createOrgIcon = function(url) {
         var opts = {};
@@ -690,7 +735,7 @@ var MarkerCreator = function(map)
     this.createBigIcon = function(label) {
         var iconOptions = {};
         iconOptions.size = new GSize(64, 26);
-        iconOptions.backgroundColor = "#ca6618";
+        iconOptions.backgroundColor = color;
         iconOptions.label = "" + label;
         return iconOptions;
     }
@@ -803,7 +848,7 @@ var MarkerCreator = function(map)
             GEvent.addListener(marker, "click",
             function() {
                 map.openInfoWindowHtml(latlng,
-                '<p>' + title + ' has voted earth ' + icon.label + ' times</p>',
+                   '<p>' +  icon.label  +'people and organizations have shown their support for the COP15.</p><a href="#" id="showVote" onclick="VoteController.showVote();return false;">  Show your vote of support now.</a>',
                 {
                     pixelOffset: new GSize(0, -icon.size.height)
                 }

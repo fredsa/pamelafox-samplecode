@@ -26,11 +26,11 @@
     <script type="text/javascript" src="/js/votemap.js"></script>
     <script type="text/javascript" src="/js/ScanNPanControl.js"></script>
   <script type="text/javascript">
-
+	var mapManager;
 
 	jQuery(document).ready(function()
 	{
-			var mapManager = new MapManager({'map':"#explore_map",'showTotals':true,'useMapObject':true,'visual':true,"page":'explore','startScan':true,'voteControl':true,'skin':site_skin,'includeSearch':true });
+			mapManager = new MapManager({'map':"#explore_map",'showTotals':true,'useMapObject':true,'visual':true,"page":'explore','startScan':true,'voteControl':true,'skin':site_skin,'includeSearch':true });
 	});
 		</script>
 <!--    <script src="http://www.google.com/uds/solutions/videobar/gsvideobar.js?mode=new" type="text/javascript"></script> -->
@@ -75,7 +75,7 @@
 
 <div id="clone" style='display:none'>
   <div id="voteEarthTabRemove">
-  <a id="close" onclick="VOTEMAP.closeVote();return false;" style="float: right;width:10px;height:10px;background-color:red;margin-right: 20px; display:block"></a>
+  <a id="close" onclick="mapManager.closeVoteControl();return false;" style="float: right;width:10px;height:10px;background-color:red;margin-right: 20px; display:block"></a>
   <h1> Show your vote </h1> 
     <form name="signRemove" id="signRemove" enctype="multipart/form-data" action="/add/signer" method="post" class="cmxform">
  		<input type="hidden" name="website" value="{{ website }}" />
