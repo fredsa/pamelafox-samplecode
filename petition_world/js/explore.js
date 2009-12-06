@@ -606,6 +606,18 @@ function createMarker(markerType, locationCode, latlng, icon, title, zoom) {
   GEvent.addListener(marker, "mouseout", function() {
     exploreMap.removeOverlay(tooltip);
   });
+  if(markerType == 'continent')
+  {
+      GEvent.addListener(marker, "click", function() {
+            exploreMap.openInfoWindowHtml(latlng,
+              '<p>' +title + ' has voted earth '+ icon.label + ' times</p>',
+                {pixelOffset: new GSize(0 ,-icon.size.height)}
+            );
+      });
+
+  }
+  
+  
   if (markerType != "continent") {
     var createInfoWindow = function() {
       currentMarker = marker;
