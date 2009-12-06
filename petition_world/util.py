@@ -251,7 +251,7 @@ def getMassCountryVotes(countryCode):
     votes += int(data.counter)
 
   memcache.set(models.genKeyForMassVote() + countryCode , str(votes),300)
-  logging.info(countryCode + " memcache miss " +votes)  
+  logging.info(countryCode + " memcache miss " + str(votes))  
   return votes
 
 def getStateVotes(countryCode, stateCode):
