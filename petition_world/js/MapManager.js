@@ -100,6 +100,9 @@ var MapManager = function(param) {
         var visitorName = null;
 
         google.friendconnect.container.setParentUrl('/gfc/');
+        if(typeof(params.includeVoteMarkers) == 'undefined') {
+            params.includeVoteMarkers = true;
+        }
         if(params.includeVoteMarkers)
         {
             GEvent.addListener(map, "zoomend", processHandlers.handleZoomChange);
