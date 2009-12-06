@@ -33,7 +33,7 @@ def genKeyForBoundedOrgs():
     return 'BOUNDED_ORGS'
   
 def genKeyForMassVote():
-    return 'BOUNDED_ORGS'
+    return 'MASS_VOTES'
 
 
 class PetitionSigner(db.Model):
