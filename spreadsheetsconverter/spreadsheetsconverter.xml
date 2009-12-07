@@ -104,8 +104,8 @@ function convertToJSON(data) {
     for (var col = 0; col < data.getNumberOfColumns(); col++) {
       var columnLabel = data.getColumnLabel(col);
 
-      var formattedValue = data.getFormattedValue(row, col);
-      formattedValue = escapeHtml(formattedValue);
+      var formattedValue = data.getValue(row, col);
+      //formattedValue = escapeHtml(formattedValue);
       rowObj.push('"' + columnLabel + '"' + ":" + '"' + formattedValue + '"');
     }
    arrayObj.push("{" + rowObj.join(",") + "}");
