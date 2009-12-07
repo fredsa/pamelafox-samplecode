@@ -848,7 +848,7 @@ var MarkerCreator = function(map,ryv)
             GEvent.addListener(marker, "click",
             function() {
                 map.openInfoWindowHtml(latlng,
-                   '<p>' +  icon.label  +'people and organizations have shown their support for the COP15.</p><a href="#" id="showVote" onclick="VoteController.showVote();return false;">  Show your vote of support now.</a>',
+                   '<p>' +  icon.label  +' people and organizations have shown their support for the COP15.</p><a href="#" id="showVote" onclick="VoteController.showVote();return false;">  Show your vote of support now.</a>',
                 {
                     pixelOffset: new GSize(0, -icon.size.height)
                 }
