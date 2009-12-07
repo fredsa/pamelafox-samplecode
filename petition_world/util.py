@@ -50,8 +50,8 @@ def addSignerToClusters(signer, extraLatLng):
                  'state': signer.state,
                  'country': signer.country,
                  'postcode': signer.postcode,
-                 'lat': signer.latlng.lat,
-                 'lng': signer.latlng.lon}
+                 'lat': signer.latlng and signer.latlng.lat or None,
+                 'lng': signer.latlng and signer.latlng.lon or None}
 
   countryCode = signer.country
   stateCode = signer.state
