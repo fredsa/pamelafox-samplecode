@@ -13,7 +13,7 @@ p { margin: 10px 0; }
 
 #show_your_vote {
   overflow: hidden;
-  width: 965px;
+  width: 940px;
   height: 442px;
   border: none;
   background-color: #F8EDD5;
@@ -88,7 +88,7 @@ p { margin: 10px 0; }
 
 #MapContainer
 {
-  width: 620px;
+  width: 599px;
   height: 446px;
   background-color: #F8EDD5;
   padding-top: 2px;
@@ -99,7 +99,7 @@ p { margin: 10px 0; }
 
 
 #explore_map {
-  width: 965px;
+  width: 940px;
   height: 400px;
   background-color: red;
 }
@@ -311,4 +311,57 @@ form.cmxform em {
     width: 20px;
     background-color: blac;
     
+}
+
+
+
+#voteEarthTab
+{
+  background: url('/images/Large/FloatingFormBackground.png') no-repeat left top;
+  width: 287px;
+  height: 430px;
+  margin-left: 15px;
+  padding: 15px 0 0 15px;
+}
+
+#voteEarthTab.Widget
+{
+  background: url('/images/Large/FormBackground.png') no-repeat left top;
+  width: 287px;
+  height: 430px;
+  margin-left: 15px;
+  padding: 15px 0 0 15px;
+}
+
+
+#voteEarthTab h1
+{
+  color: #F8EDD5;
+  font-size: 20px;
+  margin: 0px;
+}
+
+#voteEarthTab #why {
+  float: left;
+  border: 0px solid #cccccc;
+  width: 598px;
+  height: 50px;
+  margin: 0px 0px 0px 0;
+  padding: 0px;
+}
+
+#voteEarthTab form {
+  border: 0px solid #cccccc;
+  margin: 2px 0 2px 0;
+  padding: 5px;
+  overflow: hidden;
+}
+
+#voteEarthTab #submit{
+	margin: 0 0 0 20px;
+}
+
+.Error
+{
+   color: red; 
 }
