@@ -307,7 +307,6 @@ function processStates(json) {
     var marker = createMarker("state", stateCode, new GLatLng(state.center[0], state.center[1]), createMediumIcon(state.count), state.name, 6);
     markers.push(marker);
   }
-  debugger;
   markerManager.addMarkers(markers, 4, 7);
   markerManager.refresh();
 }
