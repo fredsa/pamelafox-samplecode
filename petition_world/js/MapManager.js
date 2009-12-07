@@ -140,9 +140,9 @@ var MapManager = function(param) {
                 alert('Please specify a valid map');
             }
         }
+        VoteController.setMap(map);
         if(params.voteControl)
         {
-         VoteController.setMap(map);
          voteControlButton = new earthHourVote();
          map.addControl(voteControlButton);
         
