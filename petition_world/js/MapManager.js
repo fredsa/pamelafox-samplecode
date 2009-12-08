@@ -119,10 +119,6 @@ var MapManager = function(param) {
             {
                 VOTEMAP.startScan();
             }
-            jQuery(map).bind("voteControlAdded", function()
-            {
-                setUpVotePage();
-            });
         }
         else
         {
@@ -140,6 +136,10 @@ var MapManager = function(param) {
                 alert('Please specify a valid map');
             }
         }
+         jQuery(map).bind("voteControlAdded", function()
+            {
+                setUpVotePage();
+            });
         VoteController.setMap(map);
         if(params.voteControl)
         {
@@ -367,7 +367,7 @@ var MapManager = function(param) {
         pageTypes[params.page]();
         if(params.hasForm)
         {
-            pagesTypes['vote']();
+            pageTypes['vote']();
         }
         addMarkers();
     }();

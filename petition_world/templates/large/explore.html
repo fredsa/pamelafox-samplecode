@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block includes %}
     <link type="text/css" href="/css/syv.css" rel="stylesheet" />
-
+    <script src="http://dev.jquery.com/view/trunk/plugins/validate/jquery.validate.js"></script>
 	<script src='/js/MapManager.js'></script>
     <script type="text/javascript">
       document.write(
@@ -27,7 +27,7 @@
 		var mapManager;
 	jQuery(document).ready(function()
 	{
-			 mapManager = new MapManager({'map':"#explore_map",'showTotals':true,"page":'explore','skin':site_skin,'includeSearch':true });
+			 mapManager = new MapManager({'map':"#explore_map",'showTotals':true,"page":'explore','skin':site_skin,'includeSearch':true,'hasVote':true,'hasForm':true });
 	});
 
 	</script>
