@@ -259,6 +259,10 @@ var MapManager = function(param) {
           }
         })
       }
+      else
+      {
+           jQuery('#nonce').val(SHA1Digest(nonce));
+      }
     }
 
     var setUpVotePage = function()
@@ -303,11 +307,8 @@ var MapManager = function(param) {
 
     var showTotals = function()
     {
-        if (params.showTotals)
-        {
             window.setInterval(animateTotals, 4000);
             jQuery.getJSON("/info/totals", processHandlers.processTotals);
-        }
     };
 
     var addMarkers = function()
@@ -376,13 +377,13 @@ var MapManager = function(param) {
 var Processors = function(map, markers,skin)
  {
     var markerManager = markers;
-    
     var markerCreator = new MarkerCreator(map,skin);
     var map = map;
     var loadedCountries = false;
     var loadedContinents = false;
     var orgs;
     var geocodeInProgress;
+    var util = new Util();
 
     this.addOrgs = function(searchOrgs)
     {
@@ -525,14 +526,14 @@ var Processors = function(map, markers,skin)
         markerManager.refresh();
     };
 
-    this.latLngHandler = function(point) {
+     var latLngHandler = function(point) {
       if (!point) {
         //geoError();
       } else {
         map.clearOverlays();
         map.setCenter(point, 11);
         var marker = new GMarker(point);
-        voteMap.addOverlay(marker);
+        map.addOverlay(marker);
         jQuery('#lat').val(point.lat());
         jQuery('#lng').val(point.lng());
         jQuery('#submit').removeAttr('disabled');
@@ -577,7 +578,7 @@ var Processors = function(map, markers,skin)
             if (jQuery.inArray(orgName.toUpperCase(), orgs) > -1)
             {
                 ;
-                var bounds = exploreMap.getBounds();
+                var bounds = map.getBounds();
                 /*
            this is not longer needed, but may be useful code if the search does not function as desired
            So going to leave it in, for at least one check in
@@ -603,7 +604,7 @@ var Processors = function(map, markers,skin)
                 {
                     $("#searchButton").val("Cancel");
                     var bounds = new google.maps.LatLngBounds();
-                    bounds.extend(exploreMap.getCenter())
+                    bounds.extend(map.getCenter())
                     searchedOrgs = data;
                     markerManager.hide();
                     markerManagerSearch.clearMarkers()
@@ -613,9 +614,9 @@ var Processors = function(map, markers,skin)
                     jQuery.each(searchedOrgs['zoomed'],
                     function(i, val)
                     {
-                        markers.push(createOrgMarkerWithCount(createItem(val)));
+                        markers.push(createOrgMarkerWithCount(util.createItem(val)));
                         //image
-                        if (exploreMap.getZoom() > 5)
+                        if (map.getZoom() > 5)
                         {
                             bounds.extend(new GLatLng(val['item'][0][0], val['item'][0][1]));
                         }
@@ -628,7 +629,7 @@ var Processors = function(map, markers,skin)
                     jQuery.each(searchedOrgs['countryLevel'],
                     function(i, val)
                     {
-                        markers.push(markerCreator.createOrgMarkerWithCount(createItem(val)));
+                        markers.push(markerCreator.createOrgMarkerWithCount(util.createItem(val)));
                     });
                     //all markers
                     markerManagerSearch.addMarkers(markers, 0, 5);
@@ -651,7 +652,7 @@ var Processors = function(map, markers,skin)
                         marker.openInfoWindowHtml(htmlString);
                         GEvent.addListener(marker, "infowindowclose",
                         function() {
-                            exploreMap.removeOverlay(marker)
+                            map.removeOverlay(marker)
                         });
                     }
                 }
@@ -708,7 +709,7 @@ var MarkerCreator = function(map,ryv)
     var color = ryv ? "#0066cc" :"#ca6618";
     
     this.currentMarker = null;
-    this.createOrgIcon = function(url) {
+    var createOrgIcon = function(url) {
         var opts = {};
         opts.useImg = true;
         opts.image = url;
@@ -716,7 +717,7 @@ var MarkerCreator = function(map,ryv)
         return opts;
     }
 
-    this.createMedOrgIcon = function(url) {
+    var createMedOrgIcon = function(url) {
         var opts = {}
         opts.useImg = true;
         opts.image = url;
@@ -724,7 +725,7 @@ var MarkerCreator = function(map,ryv)
         return opts;
     }
 
-    this.createSmallOrgIcon = function(url) {
+    var createSmallOrgIcon = function(url) {
         var opts = {}
         opts.useImg = true;
         opts.image = url;
@@ -767,7 +768,7 @@ var MarkerCreator = function(map,ryv)
             info.icon = document.location.protocol + '//' +
             document.location.host + "/" + info.icon;
         }
-        var marker = new MarkerLight(new GLatLng(info.center[0], info.center[1]), MarkerCreator.createOrgIcon(info.icon));
+        var marker = new MarkerLight(new GLatLng(info.center[0], info.center[1]), createOrgIcon(info.icon));
         GEvent.addListener(marker, "click",
         function() {
             map.openInfoWindowHtml(marker.getPoint(), "<b>" + info.name + "</b><br />Total Votes: " + info.count, {
@@ -778,7 +779,7 @@ var MarkerCreator = function(map,ryv)
     }
 
     this.createOrgMarker = function(info) {
-        var marker = new MarkerLight(new GLatLng(info.center[0], info.center[1]), this.createOrgIcon(info.icon));
+        var marker = new MarkerLight(new GLatLng(info.center[0], info.center[1]), createOrgIcon(info.icon));
         GEvent.addListener(marker, "click",
         function() {
             map.openInfoWindowHtml(marker.getPoint(), "<b>" + info.name + "</b>", {
@@ -789,7 +790,7 @@ var MarkerCreator = function(map,ryv)
     }
 
     this.createMedOrgMarker = function(info) {
-        var marker = new MarkerLight(new GLatLng(info.center[0], info.center[1]), this.createMedOrgIcon(info.icon));
+        var marker = new MarkerLight(new GLatLng(info.center[0], info.center[1]), createMedOrgIcon(info.icon));
         GEvent.addListener(marker, "click",
         function() {
             map.openInfoWindowHtml(marker.getPoint(), "<b>" + info.name + "</b>", {
@@ -800,7 +801,7 @@ var MarkerCreator = function(map,ryv)
     }
 
     this.createSmallOrgMarker = function(info) {
-        var marker = new MarkerLight(new GLatLng(info.center[0], info.center[1]), this.createSmallOrgIcon(info.icon));
+        var marker = new MarkerLight(new GLatLng(info.center[0], info.center[1]), createSmallOrgIcon(info.icon));
         GEvent.addListener(marker, "click",
         function() {
             map.openInfoWindowHtml(marker.getPoint(), "<b>" + info.name + "</b>", {
@@ -812,6 +813,7 @@ var MarkerCreator = function(map,ryv)
 
 
     this.createMarker = function(markerType, locationCode, latlng, icon, title, zoom) {
+        debugger;
         var voteLocation = util.getParameterByName("location");
         var infoWindowOptions = function() {
             var commentsWidth = 441;
@@ -948,6 +950,16 @@ var Util = function()
 
         }
     }
+
+    this.createItem = function(val)
+    {
+      return {'center': val['item'][0], //lat lng
+               'name': val['item'][1], //name
+               'icon' :val['item'][2],
+               'count': val.count};
+    }
+
+    
 
     this.getParameterByName = function(name) {
         name = name.replace(/[\[]/, "\\\[").replace(/[\]]/, "\\\]");

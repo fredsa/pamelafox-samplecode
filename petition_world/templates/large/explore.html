@@ -14,7 +14,9 @@
           'show-your-vote.appspot.com': 'ABQIAAAA-O3c-Om9OcvXMOJXreXHAxRlOb26qSyU154aZeLwOrF4C7-DphSw7JoLuXrcDjUb_7h-S1txkSCY7A',
 	        'syv-test.appspot.com': 'ABQIAAAALrtqAVfQq7mfTTl0EBb7vBT0h0tJ-bKGUcjUByQY52vcgVjYfBTGUDVuRrptlbTJqV8QJhQ1sQgxDQ',
           'earthhour.interesting.com.au:8080':'ABQIAAAAR4dJSBii5YOC7_avESB3UhSREOJVzwcXxPhGJSAmogrttN-hZxRP8oi7AcITKR4T74UqgppixA8RSw',
-'12.latest.show-your-vote.appspot.com': 'ABQIAAAAR4dJSBii5YOC7_avESB3UhS00szMXHqURiJ46Lk4zS5qD3CHuhTqdMURnOffX9b61UC_HwdFfMHkBw'
+'12.latest.show-your-vote.appspot.com': 'ABQIAAAAR4dJSBii5YOC7_avESB3UhS00szMXHqURiJ46Lk4zS5qD3CHuhTqdMURnOffX9b61UC_HwdFfMHkBw',
+'13.latest.show-your-vote.appspot.com': 'ABQIAAAAR4dJSBii5YOC7_avESB3UhQ4aYfKQ0Fjb0bsIXQ303Y0OwswCBRYhKhyPggrY_MOsHFIn0ohxT05Lg'
+
         }[location.host] +
         '"><\/script>'
       );
@@ -27,7 +29,7 @@
 		var mapManager;
 	jQuery(document).ready(function()
 	{
-			 mapManager = new MapManager({'map':"#explore_map",'showTotals':true,"page":'explore','skin':site_skin,'includeSearch':true,'hasVote':true,'hasForm':true });
+			 mapManager = new MapManager({'map':"#explore_map",'showTotals':true,"page":'explore','skin':site_skin,'includeSearch':true,'hasVote':true,'hasForm':true,'showTotals':true });
 	});
 
 	</script>
@@ -134,7 +136,6 @@
 	        <input type="hidden" id="latRemove" name="lat" />
 	        <input type="hidden" id="lngRemove" name="lng" />
 	        <input type="hidden" id="skinRemove" name="skin" value="large" />
-	 <input type="hidden" id="versionRemove" name="version" value="visual" />
 	
 	      </fieldset>
 
