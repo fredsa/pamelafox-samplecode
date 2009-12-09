@@ -33,6 +33,7 @@ var MapManager = function(param) {
     var map;
     var toggler = 0;
     var markerManager;
+    var markerManagerSearch;
     var processHandlers;
     var pageTypes = {};
     var language = "en_us";
@@ -329,6 +330,7 @@ var MapManager = function(param) {
     {
         if (params.includeSearch)
         {
+            processHandlers.addSearchMarkerManager(new MarkerManager(map));
             jQuery.getJSON("/info/orgName",
             function(data, text)
             {
@@ -379,6 +381,7 @@ var Processors = function(map, markers,skin)
     var markerManager = markers;
     var markerCreator = new MarkerCreator(map,skin);
     var map = map;
+    var markerManagerSearch;
     var loadedCountries = false;
     var loadedContinents = false;
     var orgs;
@@ -390,6 +393,10 @@ var Processors = function(map, markers,skin)
         orgs = searchOrgs;
     };
 
+    this.addSearchMarkerManager = function(markers)
+    {
+        markerManagerSearch = markers;
+    };
     this.processTotals = function(json) {
         jQuery("#votes").html(json.total.totalVotes);
         jQuery("#countries").html(json.total.totalCountries);
@@ -614,15 +621,17 @@ var Processors = function(map, markers,skin)
                     jQuery.each(searchedOrgs['zoomed'],
                     function(i, val)
                     {
-                        markers.push(createOrgMarkerWithCount(util.createItem(val)));
+                        markers.push(markerCreator.createOrgMarkerWithCount(util.createItem(val)));
                         //image
                         if (map.getZoom() > 5)
                         {
                             bounds.extend(new GLatLng(val['item'][0][0], val['item'][0][1]));
                         }
                     });
-
-                    map.setCenter(bounds.getCenter(), map.getBoundsZoomLevel(bounds))
+                    if (map.getZoom() > 5)
+                    {
+                        map.setCenter(bounds.getCenter(), map.getBoundsZoomLevel(bounds))
+                    }
                     markerManagerSearch.addMarkers(markers, 5);
 
                     markers.length = 0;
@@ -638,6 +647,8 @@ var Processors = function(map, markers,skin)
             }
             else
             {
+                markerManagerSearch.hide();
+                markerManager.show();
                 var geocoder = new GClientGeocoder();
                 geocoder.getLatLng(
                 orgName,
@@ -757,7 +768,7 @@ var MarkerCreator = function(map,ryv)
         return iconOptions;
     }
 
-    this.createOrgMarkerWithCount = function(info) {
+     this.createOrgMarkerWithCount = function(info) {
         if (info.icon.length == 0)
         {
             //default image for orgs with no image attached to them
@@ -813,7 +824,6 @@ var MarkerCreator = function(map,ryv)
 
 
     this.createMarker = function(markerType, locationCode, latlng, icon, title, zoom) {
-        debugger;
         var voteLocation = util.getParameterByName("location");
         var infoWindowOptions = function() {
             var commentsWidth = 441;
