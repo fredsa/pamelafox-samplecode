@@ -346,7 +346,7 @@ class SignerAddService(webapp.RequestHandler):
       if signer is not None:
           self.response.headers.add_header('Set-Cookie', 'latlng=%s; expires=Fri, 31-Dec-2020 23:59:59 GMT; path=/' % (str(signer.latlng.lat) + ',' + str(signer.latlng.lon)))
       else:
-        logging.info("Signer None vote details lat: %s long:%s country:" % self.request.get('lat'),self.request.get('lng'),self.request.get('country'))
+        logging.info("Signer None vote details lat: %s long:%s country: %s" % (self.request.get('lat'), self.request.get('lng'), self.request.get('country')))
       # Remove the nonce cookie
       self.response.headers.add_header('Set-Cookie', 'nonce=; expires=Fri, 31-Dec-1980 23:59:59 GMT; path=/')
       #not set so chanes are it was not set  
