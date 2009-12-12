@@ -236,7 +236,15 @@ def getCountryVotes(countryCode):
   memcache.set(models.MEMCACHE_VOTES + countryCode, str(votesInCountry),300)
   return votesInCountry
 
-
+def getCountryBreakDown(countryCode):
+    orgs = memcache.get(models.genKeyForMassVote() + "orgs" + countryCode)
+    if orgs is not None:
+        return orgs
+    else:
+        query = db.Query(models.MassVotes)
+        result = query.filter('country =',countryCode)
+        memcache.set(models.genKeyForMassVote() + "orgs" + countryCode,result)
+        return result
 
 def getMassCountryVotes(countryCode):
   votes = 0

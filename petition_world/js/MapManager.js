@@ -7,24 +7,24 @@ google.load("search", "1.0");
 var VoteController = function() {
     var voteControl;
     var map = null;
-     return {
-         setMap: function(globalMap)
-         {
-             map = globalMap;
-         },
-         
-        showVote: function() 
+    return {
+        setMap: function(globalMap)
         {
-                     voteControl = new earthHourVoteControl();
-                     map.addControl(voteControl);  
-                     jQuery(map).trigger("voteControlAdded");
+            map = globalMap;
+        },
+
+        showVote: function()
+        {
+            voteControl = new earthHourVoteControl();
+            map.addControl(voteControl);
+            jQuery(map).trigger("voteControlAdded");
         },
         closeVote: function()
         {
             map.removeControl(voteControl);
         }
-     };
-}();
+    };
+} ();
 
 
 
@@ -46,29 +46,29 @@ var MapManager = function(param) {
 
     this.showVoteControl = function()
     {
-         map.removeControl(voteControlButton);
-         VoteController.showVote();
+        map.removeControl(voteControlButton);
+        VoteController.showVote();
     };
     var editParamsFromQuery = function()
     {
-        params.voteControl = getQueryValue(params.voteControl,util.getParameterByName('voteControl'));
-        params.includeVoteMarkers = getQueryValue(params.includeVoteMarkers,util.getParameterByName('includeVoteMarkers'));
-        params.includeSearch = getQueryValue(params.includeSearch,util.getParameterByName('includeSearch'));
-        params.voteControl = getQueryValue(params.voteControl,util.getParameterByName('voteControl'));
-        params.startScan = getQueryValue(params.startScan,util.getParameterByName('startScan'));
-        params.visual = getQueryValue(params.visual,util.getParameterByName('visual'));
-        params.showTotals =getQueryValue(params.visual,util.getParameterByName('showTotals'));
+        params.voteControl = getQueryValue(params.voteControl, util.getParameterByName('voteControl'));
+        params.includeVoteMarkers = getQueryValue(params.includeVoteMarkers, util.getParameterByName('includeVoteMarkers'));
+        params.includeSearch = getQueryValue(params.includeSearch, util.getParameterByName('includeSearch'));
+        params.voteControl = getQueryValue(params.voteControl, util.getParameterByName('voteControl'));
+        params.startScan = getQueryValue(params.startScan, util.getParameterByName('startScan'));
+        params.visual = getQueryValue(params.visual, util.getParameterByName('visual'));
+        params.showTotals = getQueryValue(params.visual, util.getParameterByName('showTotals'));
     };
-    var getQueryValue = function(param,value)
+    var getQueryValue = function(param, value)
     {
-        if(value == '')
-            return param;
-        else if(value.toUpperCase() == 'TRUE' )
-            return true;
-        
+        if (value == '')
+        return param;
+        else if (value.toUpperCase() == 'TRUE')
+        return true;
+
         return false;
     };
-    
+
     var animateTotals = function() {
         if (toggler == 0) {
             jQuery('#votes_span').toggle();
@@ -101,20 +101,20 @@ var MapManager = function(param) {
 
     var setUpMap = function()
     {
-        
+
         if (params.visual)
         {
-     
+
             if (params.useMapObject)
             {
                 map = new GMap2(jQuery(params.map)[0]);
                 map.setCenter(new GLatLng(0, 10), 1, G_HYBRID_MAP);
                 map.setUIToDefault();
-                map = VOTEMAP.initialize(map, new GLatLng(55.6763, 12.5681), G_HYBRID_MAP, language, 'Recent',false);
+                map = VOTEMAP.initialize(map, new GLatLng(55.6763, 12.5681), G_HYBRID_MAP, language, 'Recent', false);
             }
             else
             {
-                map = VOTEMAP.initialize(params.map, new GLatLng(55.6763, 12.5681), G_HYBRID_MAP, language,'Recent',false);
+                map = VOTEMAP.initialize(params.map, new GLatLng(55.6763, 12.5681), G_HYBRID_MAP, language, 'Recent', false);
             }
             if (params.startScan)
             {
@@ -137,27 +137,28 @@ var MapManager = function(param) {
                 alert('Please specify a valid map');
             }
         }
-         jQuery(map).bind("voteControlAdded", function()
-            {
-                setUpVotePage();
-            });
-        VoteController.setMap(map);
-        if(params.voteControl)
+        jQuery(map).bind("voteControlAdded",
+        function()
         {
-         voteControlButton = new earthHourVote();
-         map.addControl(voteControlButton);
-        
+            setUpVotePage();
+        });
+        VoteController.setMap(map);
+        if (params.voteControl)
+        {
+            voteControlButton = new earthHourVote();
+            map.addControl(voteControlButton);
+
         }
         return map;
     };
-    
 
-    
+
+
     this.closeVoteControl = function()
     {
-         VoteController.closeVote();
-         //the VoteController class should really be handling this stuff
-         map.addControl(voteControlButton);
+        VoteController.closeVote();
+        //the VoteController class should really be handling this stuff
+        map.addControl(voteControlButton);
     };
 
     var setUpExplorePage = function()
@@ -167,10 +168,10 @@ var MapManager = function(param) {
         var visitorName = null;
 
         google.friendconnect.container.setParentUrl('/gfc/');
-        if(typeof(params.includeVoteMarkers) == 'undefined') {
+        if (typeof(params.includeVoteMarkers) == 'undefined') {
             params.includeVoteMarkers = true;
         }
-        if(params.includeVoteMarkers)
+        if (params.includeVoteMarkers)
         {
             GEvent.addListener(map, "zoomend", processHandlers.handleZoomChange);
             GEvent.addListener(map, "moveend", processHandlers.handleBoundsChange);
@@ -250,20 +251,21 @@ var MapManager = function(param) {
     };
 
     var loadNonce = function() {
-      if (!nonce) {
-        jQuery.getJSON('/nonce', function (data) {
-          nonce = data['nonce'];
-          if (nonce) {
+        if (!nonce) {
+            jQuery.getJSON('/nonce',
+            function(data) {
+                nonce = data['nonce'];
+                if (nonce) {
+                    jQuery('#nonce').val(SHA1Digest(nonce));
+                } else {
+                    alert("Missing nonce, cannot submit form successfully.");
+                }
+            })
+        }
+        else
+        {
             jQuery('#nonce').val(SHA1Digest(nonce));
-          } else {
-            alert("Missing nonce, cannot submit form successfully.");
-          }
-        })
-      }
-      else
-      {
-           jQuery('#nonce').val(SHA1Digest(nonce));
-      }
+        }
     }
 
     var setUpVotePage = function()
@@ -273,18 +275,19 @@ var MapManager = function(param) {
         jQuery("#form_toggle").change(processHandlers.toggleForm);
         jQuery('#sign').validate({
             //overwrite to change the way errors are reported
-            //the extra space was kinda hard to fit in the new forms 
-          showErrors: function(errorMap, errorList) {
-                  if (errorList.length > 0) {
-                      $(errorList).each(function() {
-                          $("[for='" +this.element.name + "']").addClass(" Error");
-                      });
-                  } else {
-                      $(this.lastElement).each(function() {
-                          $("[for='" + this.id + "']").removeClass("Error");
-                      });
-                  }           
-        }});
+            //the extra space was kinda hard to fit in the new forms
+            showErrors: function(errorMap, errorList) {
+                if (errorList.length > 0) {
+                    $(errorList).each(function() {
+                        $("[for='" + this.element.name + "']").addClass(" Error");
+                    });
+                } else {
+                    $(this.lastElement).each(function() {
+                        $("[for='" + this.id + "']").removeClass("Error");
+                    });
+                }
+            }
+        });
         jQuery('#country').change(processHandlers.performFormsGeoCode);
         jQuery('#state').change(processHandlers.performFormsGeoCode);
         jQuery('#city').change(processHandlers.performFormsGeoCode);
@@ -308,8 +311,8 @@ var MapManager = function(param) {
 
     var showTotals = function()
     {
-            window.setInterval(animateTotals, 4000);
-            jQuery.getJSON("/info/totals", processHandlers.processTotals);
+        window.setInterval(animateTotals, 4000);
+        jQuery.getJSON("/info/totals", processHandlers.processTotals);
     };
 
     var addMarkers = function()
@@ -325,7 +328,7 @@ var MapManager = function(param) {
         return pageTypes;
     };
 
-    
+
     var setUpSearch = function()
     {
         if (params.includeSearch)
@@ -364,22 +367,22 @@ var MapManager = function(param) {
     {
         editParamsFromQuery();
         setPageDict();
-        processHandlers = new Processors(setUpMap(), setUpMarkerManager(),params.RYV);
+        processHandlers = new Processors(setUpMap(), setUpMarkerManager(), params.RYV);
         showTotals();
         setUpSearch();
         pageTypes[params.page]();
-        if(params.hasForm)
+        if (params.hasForm)
         {
             pageTypes['vote']();
         }
         addMarkers();
-    }();
+    } ();
 };
 
-var Processors = function(map, markers,skin)
+var Processors = function(map, markers, skin)
  {
     var markerManager = markers;
-    var markerCreator = new MarkerCreator(map,skin);
+    var markerCreator = new MarkerCreator(map, skin);
     var map = map;
     var markerManagerSearch;
     var loadedCountries = false;
@@ -440,85 +443,96 @@ var Processors = function(map, markers,skin)
         markerManager.refresh();
     };
 
-    this.performFormsGeoCode =function() {
-      var country = jQuery('#country option:selected').text();
-      if (country != null && country.replace(/^\s+|\s+$/g, '') != '') {
-        // They've set their country, we can geocode something.
-        // TODO: Do fewer geocodes.
-        setTimeout(function () {
-          var streetinfo = jQuery('#streetinfo').val();
-          var state = jQuery('#state').val();
-          var city = jQuery('#city').val();
-          var postcode = jQuery('#postcode').val();
-          var geocoder = new GClientGeocoder();
-          var locationString;
-          locationString = streetinfo + ", " + city + ", " + state + " " + postcode + ", " + country;
-          if (!geocodeInProgress || locationString != geocodeInProgress) {
-            geocoder.getLatLng(locationString, latLngHandler);
-            geocodeInProgress = locationString;
-          }
-        }, 100);
-      }
+    this.performFormsGeoCode = function() {
+        var country = jQuery('#country option:selected').text();
+        if (country != null && country.replace(/^\s+|\s+$/g, '') != '') {
+            // They've set their country, we can geocode something.
+            // TODO: Do fewer geocodes.
+            setTimeout(function() {
+                var streetinfo = jQuery('#streetinfo').val();
+                var state = jQuery('#state').val();
+                var city = jQuery('#city').val();
+                var postcode = jQuery('#postcode').val();
+                var geocoder = new GClientGeocoder();
+                var locationString;
+                locationString = streetinfo + ", " + city + ", " + state + " " + postcode + ", " + country;
+                if (!geocodeInProgress || locationString != geocodeInProgress) {
+                    geocoder.getLatLng(locationString, latLngHandler);
+                    geocodeInProgress = locationString;
+                }
+            },
+            100);
+        }
     };
-    
+
     this.populateCountries = function() {
-      jQuery('.state').hide();
-      var countrySelect = jQuery('#country');
-      countrySelect.change(this.populateStates);
-      for (var countryCode in countriesInfo) {
-        var countryOption = jQuery(document.createElement('option'));
-        countryOption.val(countryCode);
-        countryOption.text(countriesInfo[countryCode].name);
-        countrySelect.append(countryOption);
-      }
+        jQuery('.state').hide();
+        var countrySelect = jQuery('#country');
+        countrySelect.change(this.populateStates);
+        for (var countryCode in countriesInfo) {
+            var countryOption = jQuery(document.createElement('option'));
+            countryOption.val(countryCode);
+            countryOption.text(countriesInfo[countryCode].name);
+            countrySelect.append(countryOption);
+        }
     };
 
     this.populateStates = function() {
-      var countryCode = jQuery('#country').val();
-      if (countriesInfo[countryCode].hasStates) {
-        jQuery('.state').show();
-        var states = countriesInfo[countryCode].states;
-        jQuery('#state').rules('add', {required: true});
-        jQuery('#state').html('');
-        for (var i = 0; i < states.length; i++) {
-          var stateOption = jQuery(document.createElement('option'));
-          stateOption.val(states[i]);
-          stateOption.text(states[i]);
-          jQuery('#state').append(stateOption);
+        var countryCode = jQuery('#country').val();
+        if (countriesInfo[countryCode].hasStates) {
+            jQuery('.state').show();
+            var states = countriesInfo[countryCode].states;
+            jQuery('#state').rules('add', {
+                required: true
+            });
+            jQuery('#state').html('');
+            for (var i = 0; i < states.length; i++) {
+                var stateOption = jQuery(document.createElement('option'));
+                stateOption.val(states[i]);
+                stateOption.text(states[i]);
+                jQuery('#state').append(stateOption);
+            }
+        } else {
+            jQuery('.state').hide();
+            jQuery('#state').rules('remove');
         }
-      } else {
-        jQuery('.state').hide();
-        jQuery('#state').rules('remove');
-      }
 
-      var postcodeInput = jQuery('#postcode');
-      if (countriesInfo[countryCode].hasPostcodes) {
-        jQuery('.postcode').show();
-        jQuery('#postcode').rules('add', {required: true});
-      } else {
-        jQuery('.postcode').hide();
-        jQuery('#postcode').rules('remove');
-      }
+        var postcodeInput = jQuery('#postcode');
+        if (countriesInfo[countryCode].hasPostcodes) {
+            jQuery('.postcode').show();
+            jQuery('#postcode').rules('add', {
+                required: true
+            });
+        } else {
+            jQuery('.postcode').hide();
+            jQuery('#postcode').rules('remove');
+        }
     }
-    
-    
+
+
     this.toggleForm = function() {
-      formValue =  $("#form_toggle").val();
-      if (formValue == 'org') {
-        jQuery('#email').rules('add', {required: true});
-        jQuery('#streetinfo').rules('add', {required: true});
-        jQuery('#org_name').rules('add', {required: true});
-        jQuery('.person').hide();
-        jQuery('.org').show();
-      } else {
-        jQuery('.org').hide();
-        jQuery('#email').rules('remove');
-        jQuery('#streetinfo').rules('remove');
-        jQuery('#org_name').rules('remove');
-        jQuery('.person').show();
-      }
+        formValue = $("#form_toggle").val();
+        if (formValue == 'org') {
+            jQuery('#email').rules('add', {
+                required: true
+            });
+            jQuery('#streetinfo').rules('add', {
+                required: true
+            });
+            jQuery('#org_name').rules('add', {
+                required: true
+            });
+            jQuery('.person').hide();
+            jQuery('.org').show();
+        } else {
+            jQuery('.org').hide();
+            jQuery('#email').rules('remove');
+            jQuery('#streetinfo').rules('remove');
+            jQuery('#org_name').rules('remove');
+            jQuery('.person').show();
+        }
     };
-    
+
     var processPostcodes = function(json) {
 
         var info = json;
@@ -533,20 +547,20 @@ var Processors = function(map, markers,skin)
         markerManager.refresh();
     };
 
-     var latLngHandler = function(point) {
-      if (!point) {
-        //geoError();
-      } else {
-        map.clearOverlays();
-        map.setCenter(point, 11);
-        var marker = new GMarker(point);
-        map.addOverlay(marker);
-        jQuery('#lat').val(point.lat());
-        jQuery('#lng').val(point.lng());
-        jQuery('#submit').removeAttr('disabled');
-      }
+    var latLngHandler = function(point) {
+        if (!point) {
+            //geoError();
+            } else {
+            map.clearOverlays();
+            map.setCenter(point, 11);
+            var marker = new GMarker(point);
+            map.addOverlay(marker);
+            jQuery('#lat').val(point.lat());
+            jQuery('#lng').val(point.lng());
+            jQuery('#submit').removeAttr('disabled');
+        }
     };
-    
+
     var processOrgs = function(json) {
         var orgs = json.orgs;
         var markers = [];
@@ -582,11 +596,11 @@ var Processors = function(map, markers,skin)
 
     this.searchnNearOrgs = function(name) {
         var orgName = jQuery("#searchInput").val();
-            if (jQuery.inArray(orgName.toUpperCase(), orgs) > -1)
-            {
-                ;
-                var bounds = map.getBounds();
-                /*
+        if (jQuery.inArray(orgName.toUpperCase(), orgs) > -1)
+        {
+            ;
+            var bounds = map.getBounds();
+            /*
            this is not longer needed, but may be useful code if the search does not function as desired
            So going to leave it in, for at least one check in
           var countryCodes = [];
@@ -598,79 +612,80 @@ var Processors = function(map, markers,skin)
             }
           }
           */
-                var arguments = {}
-                //name to search for
-                arguments.name = orgName;
-                //current view, get center use haversine to poll based on radius rather than bounds
-                //arguments.bounds =  exploreMap.getBounds();
-                //country codes we are looking at
-                //more app enginy way to do this? rpc? or encode a json string and use djangos simplejson lib
-                //arguments.countryCode = countryCodes.join('|');
-                jQuery.getJSON('/info/search', arguments,
-                function(data, status)
+            var arguments = {}
+            //name to search for
+            arguments.name = orgName;
+            //current view, get center use haversine to poll based on radius rather than bounds
+            //arguments.bounds =  exploreMap.getBounds();
+            //country codes we are looking at
+            //more app enginy way to do this? rpc? or encode a json string and use djangos simplejson lib
+            //arguments.countryCode = countryCodes.join('|');
+            jQuery.getJSON('/info/search', arguments,
+            function(data, status)
+            {
+                var hide = false;
+                $("#searchButton").val("Cancel");
+                var bounds = new google.maps.LatLngBounds();
+                bounds.extend(map.getCenter())
+                searchedOrgs = data;
+                markerManager.hide();
+                markerManagerSearch.clearMarkers()
+                markerManagerSearch.show()
+                //zoom level 0 3 for country
+                var markers = [];
+                jQuery.each(searchedOrgs['zoomed'],
+                function(i, val)
                 {
-                    $("#searchButton").val("Cancel");
-                    var bounds = new google.maps.LatLngBounds();
-                    bounds.extend(map.getCenter())
-                    searchedOrgs = data;
-                    markerManager.hide();
-                    markerManagerSearch.clearMarkers()
-                    markerManagerSearch.show()
-                    //zoom level 0 3 for country
-                    var markers = [];
-                    jQuery.each(searchedOrgs['zoomed'],
-                    function(i, val)
-                    {
-                        markers.push(markerCreator.createOrgMarkerWithCount(util.createItem(val)));
-                        //image
-                        if (map.getZoom() > 5)
-                        {
-                            bounds.extend(new GLatLng(val['item'][0][0], val['item'][0][1]));
-                        }
-                    });
+                    markers.push(markerCreator.createOrgMarkerWithCount(util.createItem(val)));
+                    //image
                     if (map.getZoom() > 5)
                     {
-                        map.setCenter(bounds.getCenter(), map.getBoundsZoomLevel(bounds))
+                        bounds.extend(new GLatLng(val['item'][0][0], val['item'][0][1]));
                     }
-                    markerManagerSearch.addMarkers(markers, 5);
-
-                    markers.length = 0;
-                    jQuery.each(searchedOrgs['countryLevel'],
-                    function(i, val)
-                    {
-                        markers.push(markerCreator.createOrgMarkerWithCount(util.createItem(val)));
-                    });
-                    //all markers
-                    markerManagerSearch.addMarkers(markers, 0, 5);
-                    markerManagerSearch.refresh();
                 });
-            }
-            else
-            {
-                markerManagerSearch.hide();
-                markerManager.show();
-                var geocoder = new GClientGeocoder();
-                geocoder.getLatLng(
-                orgName,
-                function(point) {
-                    if (!point) {
-                        //todo figure out what we do in this case
-                        } else {
-                        map.setCenter(point, 13);
-                        var marker = new GMarker(point);
-                        map.addOverlay(marker);
-                        var htmlString = "<p>" + orgName + "</p>";
-                        marker.openInfoWindowHtml(htmlString);
-                        GEvent.addListener(marker, "infowindowclose",
-                        function() {
-                            map.removeOverlay(marker)
-                        });
-                    }
+                if (map.getZoom() > 5)
+                {
+                    map.setCenter(bounds.getCenter(), map.getBoundsZoomLevel(bounds))
                 }
-                );
+                markerManagerSearch.addMarkers(markers, 5);
 
+                markers.length = 0;
+                jQuery.each(searchedOrgs['countryLevel'],
+                function(i, val)
+                {
+                    markers.push(markerCreator.createOrgMarkerWithCount(util.createItem(val)));
+                });
+                //all markers
+                markerManagerSearch.addMarkers(markers, 0, 5);
+                markerManagerSearch.refresh();
+            });
+        }
+        else
+        {
+            markerManagerSearch.hide();
+            markerManager.show();
+            var geocoder = new GClientGeocoder();
+            geocoder.getLatLng(
+            orgName,
+            function(point) {
+                if (!point) {
+                    //todo figure out what we do in this case
+                    } else {
+                    map.setCenter(point, 13);
+                    var marker = new GMarker(point);
+                    map.addOverlay(marker);
+                    var htmlString = "<p>" + orgName + "</p>";
+                    marker.openInfoWindowHtml(htmlString);
+                    GEvent.addListener(marker, "infowindowclose",
+                    function() {
+                        map.removeOverlay(marker)
+                    });
+                }
             }
-        };
+            );
+
+        }
+    };
     this.handleBoundsChange = function() {
         var bounds = map.getBounds();
         for (countryCode in countriesInfo) {
@@ -693,7 +708,7 @@ var Processors = function(map, markers,skin)
                 if (countryInfo.hasStates
                 && !countryInfo.loadedPostcodes
                 && map.getZoom() > 4) {
-                    jQuery.getJSON("/info/postcodes?countryCode=" + countryCode,processPostcodes);
+                    jQuery.getJSON("/info/postcodes?countryCode=" + countryCode, processPostcodes);
                     jQuery.getJSON("/info/orgs?countryCode=" + countryCode, processOrgs);
                     countryInfo.loadedPostcodes = true;
                 }
@@ -714,11 +729,11 @@ var Processors = function(map, markers,skin)
 }
 
 
-var MarkerCreator = function(map,ryv)
+var MarkerCreator = function(map, ryv)
  {
     var util = new Util();
-    var color = ryv ? "#0066cc" :"#ca6618";
-    
+    var color = ryv ? "#0066cc": "#ca6618";
+
     this.currentMarker = null;
     var createOrgIcon = function(url) {
         var opts = {};
@@ -768,7 +783,7 @@ var MarkerCreator = function(map,ryv)
         return iconOptions;
     }
 
-     this.createOrgMarkerWithCount = function(info) {
+    this.createOrgMarkerWithCount = function(info) {
         if (info.icon.length == 0)
         {
             //default image for orgs with no image attached to them
@@ -860,15 +875,26 @@ var MarkerCreator = function(map,ryv)
             GEvent.addListener(marker, "click",
             function() {
                 map.openInfoWindowHtml(latlng,
-                   '<p>' +  icon.label  +' people and organizations have shown their support for the COP15.</p><a href="#" id="showVote" onclick="VoteController.showVote();return false;">  Show your vote of support now.</a>',
+                '<p>' + icon.label + ' people and organizations have shown their support for the COP15.</p><a href="#" id="showVote" onclick="VoteController.showVote();return false;">  Show your vote of support now.</a>',
                 {
                     pixelOffset: new GSize(0, -icon.size.height)
                 }
                 );
             });
-
         }
-
+        var totals ='';
+        if (markerType == 'country')
+        {
+            jQuery.getJSON("/info/massVotes?countryCode=" + locationCode,
+            function(data)
+            {
+                jQuery.each(data,
+                function(i, val)
+                {
+                    totals +=  '<li>' + val[0] + ' voted ' + val[1] + ' times</li>';
+                });
+            });
+        }
 
         if (markerType != "continent") {
             var createInfoWindow = function() {
@@ -878,8 +904,9 @@ var MarkerCreator = function(map,ryv)
                     if (gfcSigners.length == 0) {
                         map.openInfoWindowHtml(latlng,
                         '<p>' +
-                        icon.label + ' signed the petition here.' +
-                        '</p>',
+                        icon.label + ' signed the petition here </p><ul class="tally">' +
+                        totals
+                        + '</ul>',
                         infoWindowOptions()
                         );
                         return;
@@ -963,13 +990,17 @@ var Util = function()
 
     this.createItem = function(val)
     {
-      return {'center': val['item'][0], //lat lng
-               'name': val['item'][1], //name
-               'icon' :val['item'][2],
-               'count': val.count};
+        return {
+            'center': val['item'][0],
+            //lat lng
+            'name': val['item'][1],
+            //name
+            'icon': val['item'][2],
+            'count': val.count
+        };
     }
 
-    
+
 
     this.getParameterByName = function(name) {
         name = name.replace(/[\[]/, "\\\[").replace(/[\]]/, "\\\]");

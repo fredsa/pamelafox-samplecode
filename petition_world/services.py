@@ -239,7 +239,18 @@ class TwitterService(webapp.RequestHandler):
         twitterFeedJson = simplejson.dumps(twitterFeed)
         memcache.set('twitterFeed', twitterFeedJson, 600)
         self.response.out.write(twitterFeedJson)
-        
+
+class GetCountryMassVotes(webapp.RequestHandler):
+    def get(self):
+        countryCode = self.request.get('countryCode')
+        totals = memcache.get('orgJSON' + countryCode)
+        if totals is None:
+            orgs = util.getCountryBreakDown(countryCode)
+            totals = simplejson.dumps(map(lambda x: (x.org,x.counter),orgs))
+            memcache.set('orgJSON' + countryCode, totals, 300)
+        self.response.out.write(totals)
+       
+   
 class GetUniqueOrgs(webapp.RequestHandler):
   def get(self):
     cachedVal = memcache.get(models.genKeyForAllOrgsInfo())

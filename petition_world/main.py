@@ -36,6 +36,7 @@ def main():
                                       ('/info/orgName',services.GetUniqueOrgs),
                                       ('/info/logo', services.LogoForOrg),
                                       ('/info/search', services.GetBoundedOrgs),
+                                      ('/info/massVotes',services.GetCountryMassVotes),
                                       ('/clearcache', pages.MemcacheClearer),
                                       ('/jsonimport', pages.JSONImport),
                                       ('/tasks/twitter', pages.UpdateTwitter),
