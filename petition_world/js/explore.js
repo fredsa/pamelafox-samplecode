@@ -616,6 +616,21 @@ function createMarker(markerType, locationCode, latlng, icon, title, zoom) {
 
   }
   
+  var totals ='';
+  if (markerType == 'country')
+  {
+      jQuery.getJSON("/info/massVotes?countryCode=" + locationCode,
+      function(data)
+      {
+          jQuery.each(data,
+          function(i, val)
+          {
+              totals +=  '<li>' + val[0] + ' voted ' + val[1] + ' times</li>';
+          });
+      });
+  }
+  
+ 
   
   if (markerType != "continent") {
     var createInfoWindow = function() {
@@ -623,9 +638,10 @@ function createMarker(markerType, locationCode, latlng, icon, title, zoom) {
       jQuery.getJSON("/info/votelocal?" + markerType + "=" + locationCode, function (gfcSigners) {
         if (gfcSigners.length == 0) {
           exploreMap.openInfoWindowHtml(latlng,
-            '<p>' +
-              icon.label + ' signed the petition here.' +
-            '</p>',
+              '<p>' +
+               icon.label + ' signed the petition here </p><ul class="tally">' +
+               totals
+               + '</ul>',
             infoWindowOptions()
           );
           return;
