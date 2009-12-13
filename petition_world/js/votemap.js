@@ -30,8 +30,8 @@ var VOTEMAP = function() {
     var YT_VIDEO_PREFIX = "http://www.youtube.com/watch?v=";
     var YT_THUMBNAIL_PREFIX = "http://img.youtube.com/vi/";
     var YT_THUMBNAIL_SUFFIX = "/default.jpg";
-    var RECENT_URL = "http://google5.osuosl.org:8081/recent?hl=";
-    var POPULAR_URL = "http://google5.osuosl.org:8081/top?hl=";
+    var POPULAR_URL = "http://google5.osuosl.org/top?hl=";
+    var RECENT_URL = "http://google5.osuosl.org/top?use=recent&hl=";
     var VOTE = {
         "en_US" : "VOTE"
     }
@@ -74,6 +74,7 @@ var VOTEMAP = function() {
         }
     }
     function returnData(data, rc) {
+        
         //console.log("data returned rc=" + rc);
         if (rc == 200 || rc == 0) {           
             // success -- save new data
@@ -304,7 +305,6 @@ var VOTEMAP = function() {
 
             // request data, returned data will start scan
             getData();
-            //init function is meant to return a map
             return map;
         },
         scanNext: function() {
