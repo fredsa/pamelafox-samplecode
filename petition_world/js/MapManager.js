@@ -762,7 +762,7 @@ var MarkerCreator = function(map, ryv)
     this.createBigIcon = function(label) {
         var iconOptions = {};
         iconOptions.size = new GSize(64, 26);
-        iconOptions.backgroundColor = color;
+        iconOptions.backgroundColor = "#0066cc";
         iconOptions.label = "" + label;
         return iconOptions;
     }
