@@ -616,32 +616,41 @@ function createMarker(markerType, locationCode, latlng, icon, title, zoom) {
 
   }
   
-  var totals ='';
-  if (markerType == 'country')
-  {
-      jQuery.getJSON("/info/massVotes?countryCode=" + locationCode,
-      function(data)
+    if (markerType == 'country')
       {
-          jQuery.each(data,
-          function(i, val)
+          var totals ='';
+          jQuery.getJSON("/info/massVotes?countryCode=" + locationCode,
+          function(data)
           {
-              totals +=  '<li>' + val[0] + ' voted ' + val[1] + ' times</li>';
+              jQuery.each(data,
+              function(i, val)
+              {
+                  totals +=  '<li>' + val[0] + ' voted ' + val[1] + ' times</li>';
+              });
           });
-      });
-  }
-  
+          GEvent.addListener(marker, "click",
+          function() {
+              map.openInfoWindowHtml(latlng,
+                   '<p>' +
+                      icon.label + ' signed the petition here </p><ul class="tally">' +
+                      totals
+                      + '</ul>',
+              {
+                  pixelOffset: new GSize(0, -icon.size.height)
+              }
+              );
+          });
+      }
  
   
-  if (markerType != "continent") {
+    if (markerType != "continent" && markerType != 'country') {
     var createInfoWindow = function() {
       currentMarker = marker;
       jQuery.getJSON("/info/votelocal?" + markerType + "=" + locationCode, function (gfcSigners) {
         if (gfcSigners.length == 0) {
           exploreMap.openInfoWindowHtml(latlng,
               '<p>' +
-               icon.label + ' signed the petition here </p><ul class="tally">' +
-               totals
-               + '</ul>',
+               icon.label + ' signed the petition here </p>',
             infoWindowOptions()
           );
           return;

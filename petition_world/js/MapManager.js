@@ -882,9 +882,10 @@ var MarkerCreator = function(map, ryv)
                 );
             });
         }
-        var totals ='';
+       
         if (markerType == 'country')
         {
+            var totals ='';
             jQuery.getJSON("/info/massVotes?countryCode=" + locationCode,
             function(data)
             {
@@ -894,9 +895,21 @@ var MarkerCreator = function(map, ryv)
                     totals +=  '<li>' + val[0] + ' voted ' + val[1] + ' times</li>';
                 });
             });
+            GEvent.addListener(marker, "click",
+            function() {
+                map.openInfoWindowHtml(latlng,
+                     '<p>' +
+                        icon.label + ' signed the petition here </p><ul class="tally">' +
+                        totals
+                        + '</ul>',
+                {
+                    pixelOffset: new GSize(0, -icon.size.height)
+                }
+                );
+            });
         }
 
-        if (markerType != "continent") {
+        if (markerType != "continent" && markerType != 'country') {
             var createInfoWindow = function() {
                 currentMarker = marker;
                 jQuery.getJSON("/info/votelocal?" + markerType + "=" + locationCode,
@@ -904,9 +917,7 @@ var MarkerCreator = function(map, ryv)
                     if (gfcSigners.length == 0) {
                         map.openInfoWindowHtml(latlng,
                         '<p>' +
-                        icon.label + ' signed the petition here </p><ul class="tally">' +
-                        totals
-                        + '</ul>',
+                        icon.label + ' signed the petition here </p>',
                         infoWindowOptions()
                         );
                         return;
