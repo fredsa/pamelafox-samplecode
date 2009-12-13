@@ -615,33 +615,32 @@ function createMarker(markerType, locationCode, latlng, icon, title, zoom) {
       });
 
   }
-  
     if (markerType == 'country')
       {
-          var totals ='';
-          jQuery.getJSON("/info/massVotes?countryCode=" + locationCode,
-          function(data)
-          {
-              jQuery.each(data,
-              function(i, val)
-              {
-                  totals +=  '<li>' + val[0] + ' voted ' + val[1] + ' times</li>';
-              });
-          });
+          
           GEvent.addListener(marker, "click",
           function() {
-              map.openInfoWindowHtml(latlng,
-                   '<p>' +
-                      icon.label + ' signed the petition here </p><ul class="tally">' +
-                      totals
-                      + '</ul>',
+              var totals ='';
+              jQuery.getJSON("/info/massVotes?countryCode=" + locationCode,
+              function(data)
               {
-                  pixelOffset: new GSize(0, -icon.size.height)
-              }
-              );
+                  jQuery.each(data,
+                  function(i, val)
+                  {
+                      totals +=  '<li>' + val[0] + ' voted ' + val[1] + ' times</li>';
+                  });
+                   exploreMap.openInfoWindowHtml(latlng,
+                           '<p>' +
+                              icon.label + ' signed the petition here </p><ul class="tally">' +
+                              totals
+                              + '</ul>',
+                      {
+                          pixelOffset: new GSize(0, -icon.size.height)
+                      }
+                      );
+              });
           });
       }
- 
   
     if (markerType != "continent" && markerType != 'country') {
     var createInfoWindow = function() {

@@ -2,12 +2,6 @@
         font-family: Helvetica,Arial;
         font-size:12px;
     }
-    a {
-        text-decoration:none;
-    }
-    a:hover {
-        text-decoration:underline;
-    }
     #map_canvas {
         width:100%;
         height:95%;
@@ -30,17 +24,20 @@
         float:right;
         font-size:14px;
     }
+    #question_infowin {
+        background-color:#f5f5f5;
+        padding:0 5px 5px;
+        color:#666666;
+    }
     #infowin_question_text {
         font-size:13px;
         line-height:130%;
         margin:5px 0;
+        color:#333333;
     }
     #infowin_footer {
         height:40px;
         width:100%;
-    }
-    a#vote_button:hover {
-        text-decoration:none;
     }
     .smaller_text {
         font-size:12px;
@@ -48,35 +45,21 @@
         color:#666666;
     }
     #infowin_thumb {
-        height:96px;
-        width:126px;
-        border:3px double #999999;
+        border:1px solid #333333;
         cursor:pointer;
-        margin:0 5px 5px 0;
+        margin:5px 8px 5px 0;
+        padding:2px;
+    }
+    #infowin_thumb a {
+        color:#333333;
     }
     #vote_graphs {
         float:right;
+        border: 2px solid #eeeeee;
+        background-color:#ffffff;
     }
     .cop15_sprite {
         background: transparent url(../images/cop15map_sprite.gif) no-repeat 0 0;
-    }
-    #vote_button {
-        background-position: 0 0;
-        height:34px;
-        width:127px;
-        text-align:center;
-        float:left;
-        margin:12px 5px;
-    }
-    #vote_button:hover {
-        background-position: 0 -34px;
-    }
-    #vote_button_text {
-        font-family:Arial,sans-serif;
-        font-size:18px;
-        color:white;
-        font-weight:bold;
-        margin-top:5px;
     }
     .vote_bar {
         height:11px;
@@ -85,6 +68,23 @@
     .vote_bar_background {
         height:100%;
         background-color:#f2f2f2;
+    }
+    #thumb_up_image, #thumb_down_image {
+        width:16px;
+        height:18px;
+        display:block;
+    }
+    #thumb_up_image {
+        background-position:-127px -36px;
+    }
+    #thumb_up_image:hover {
+        background-position:-127px -54px;
+    }
+    #thumb_down_image {
+        background-position:-127px -18px;
+    }
+    #thumb_down_image:hover {
+        background-position:-127px 0;
     }
     #startScan, #stopScan {
         float:left;
@@ -112,128 +112,113 @@
     #startScan.selected {
         background-position:-57px -156px;
     }
-    #thumb_up_image, #thumb_down_image, .filler {
-        width:16px;
-        height:18px;
-        display:block;
+    
+     .earthHour
+        {
+            display:block;
+        }
+
+
+        /* forms */
+        form.cmxform fieldset {
+          margin-bottom: 10px;
+          border: none;
+          color: #F8EDD5;
+
+        }
+
+        form.cmxform fieldset p  {
+                margin:0px;
+           }
+        form.cmxform fieldset p b {
+          color: #F8EDD5;
+          width: 262px;
+        }
+
+
+        form.cmxform #Submit
+        {
+          position: absolute;
+          right: 17px;
+          bottom: 10px;
+        }
+
+        form.cmxform label {
+          display: inline-block;
+          line-height: 1.0;
+          vertical-align: top;
+          width: 80px;
+          font-size:  1.2em;
+        }
+
+        form.cmxform fieldset ol {
+          margin: 0;
+          padding: 0;
+        }
+
+
+        form.cmxform fieldset li {
+          list-style: none;
+          margin: 0;
+          -moz-background-clip:border;
+          -moz-background-inline-policy:continuous;
+          -moz-background-origin:padding;
+          padding: 3px 7px 5px;
+        }
+
+
+        form.cmxform fieldset li input {
+          width: 140px;
+        }
+        form.cmxform fieldset li select {
+          width: 140px;
+        }
+
+
+        form.cmxform em {
+          font-weight: bold;
+          font-style: normal;
+          font-size: 12px;
     }
-    #thumb_up_image {
-        background-position:-127px -36px;
-    }
-    #thumb_up_image:hover {
-        background-position:-127px -54px;
-    }
-    #thumb_down_image {
-        background-position:-127px -18px;
-    }
-    #thumb_down_image:hover {
-        background-position:-127px 0;
-    }
-    .earthHour
+
+    #voteEarthTab
     {
-        display:block;
+      background: url('/images/Large/FormBackground.png') no-repeat left top;
+      width: 287px;
+      height: 430px;
+      margin-left: 15px;
+      padding: 15px 0 0 15px;
+    }
+    #voteEarthTab h1
+    {
+      color: #F8EDD5;
+      font-size: 20px;
+      margin: 0px;
     }
 
+    #voteEarthTab #why {
+      float: left;
+      border: 0px solid #cccccc;
+      width: 598px;
+      height: 50px;
+      margin: 0px 0px 0px 0;
+      padding: 0px;
+    }
 
-    /* forms */
-    form.cmxform fieldset {
-      margin-bottom: 10px;
-      border: none;
-      color: #F8EDD5;
+    #voteEarthTab form {
+      border: 0px solid #cccccc;
+      margin: 2px 0 2px 0;
+      padding: 5px;
+      overflow: hidden;
+    }
 
+    #voteEarthTab #submit{
+    	margin: 0 0 0 20px;
+    }
+
+    .Error
+    {
+       color: red; 
     }
     
-    form.cmxform fieldset p  {
-            margin:0px;
-       }
-    form.cmxform fieldset p b {
-      color: #F8EDD5;
-      width: 262px;
-    }
 
-
-    form.cmxform #Submit
-    {
-      position: absolute;
-      right: 17px;
-      bottom: 10px;
-    }
-
-    form.cmxform label {
-      display: inline-block;
-      line-height: 1.0;
-      vertical-align: top;
-      width: 80px;
-      font-size:  1.2em;
-    }
-
-    form.cmxform fieldset ol {
-      margin: 0;
-      padding: 0;
-    }
-
-
-    form.cmxform fieldset li {
-      list-style: none;
-      margin: 0;
-      -moz-background-clip:border;
-      -moz-background-inline-policy:continuous;
-      -moz-background-origin:padding;
-      padding: 3px 7px 5px;
-    }
-
-
-    form.cmxform fieldset li input {
-      width: 140px;
-    }
-    form.cmxform fieldset li select {
-      width: 140px;
-    }
-    
-
-    form.cmxform em {
-      font-weight: bold;
-      font-style: normal;
-      font-size: 12px;
-}
-
-#voteEarthTab
-{
-  background: url('/images/Large/FloatingFormBackground.png') no-repeat left top;
-  width: 287px;
-  height: 430px;
-  margin-left: 15px;
-  padding: 15px 0 0 15px;
-}
-
-#voteEarthTab h1
-{
-  color: #F8EDD5;
-  font-size: 20px;
-  margin: 0px;
-}
-
-#voteEarthTab #why {
-  float: left;
-  border: 0px solid #cccccc;
-  width: 598px;
-  height: 50px;
-  margin: 0px 0px 0px 0;
-  padding: 0px;
-}
-
-#voteEarthTab form {
-  border: 0px solid #cccccc;
-  margin: 2px 0 2px 0;
-  padding: 5px;
-  overflow: hidden;
-}
-
-#voteEarthTab #submit{
-	margin: 0 0 0 20px;
-}
-
-.Error
-{
-   color: red; 
-}

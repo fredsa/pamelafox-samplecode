@@ -30,8 +30,10 @@ var VOTEMAP = function() {
     var YT_VIDEO_PREFIX = "http://www.youtube.com/watch?v=";
     var YT_THUMBNAIL_PREFIX = "http://img.youtube.com/vi/";
     var YT_THUMBNAIL_SUFFIX = "/default.jpg";
+    var RECENT_URL = "http://google5.osuosl.org:8081/recent?hl=";
+    var POPULAR_URL = "http://google5.osuosl.org:8081/top?hl=";
     var VOTE = {
-        "en_us" : "VOTE"
+        "en_US" : "VOTE"
     }
     // private variables
     var map = null;
@@ -39,7 +41,7 @@ var VOTEMAP = function() {
     var markers = [];
     var scanner = null;
     var scan_interrupt_listener = null;
-    var content_lang = "en_us";
+    var content_lang = "en_US";
     var current_data = null;
     var current_display_index = 0;
     var current_geocode_index = 0;
@@ -47,15 +49,14 @@ var VOTEMAP = function() {
     var delay_start = false;
     var show_totals = true;
     var cube_version = false;
-    var content_type = "Recent";
-    var voteControl;
+    var content_type = "Recent";    // Recent or Popular -- must be exact, also used in link text
     var ryv_icon = new GIcon();
     ryv_icon.image = "images/pin_raiseyourvoice2.png";
     ryv_icon.iconSize = new GSize(24,28);
     ryv_icon.iconAnchor = new GPoint(12,14);
     ryv_icon.infoWindowAnchor = new GPoint(12,2);
     var IE6 = navigator.appName.indexOf('Microsoft') != -1 && parseFloat(navigator.appVersion) < 7;
-    var init;
+
     // private functions
     function setTotals(numPeople, numQuestions, numVotes) {
         if (!show_totals) return;
@@ -64,12 +65,8 @@ var VOTEMAP = function() {
     }
     function getData() {
         // request new data
-/*        var scrpt = document.createElement("script");
-        scrpt.type = "text/javascript";
-        scrpt.src = "js/json.js";
-        document.getElementsByTagName("head")[0].appendChild(scrpt);*/
         try {
-            var url = (content_type == "Recent" ? "data/top50.json" : "data/top50.json");
+            var url = (content_type == "Recent" ? RECENT_URL : POPULAR_URL) + content_lang;
             GDownloadUrl(url, returnData);
         }
         catch (e) {
@@ -182,30 +179,32 @@ var VOTEMAP = function() {
         var html = [];
         html.push('<div id="question_infowin"><table cellpadding=0 cellspacing=0><tr>');
         if (q_data.hasOwnProperty("youtube_id")) {
-            html.push('<td width="130" align="center"><div id="infowin_thumb" style="background-image:url(http://img.youtube.com/vi/');
+            html.push('<td width="130" align="center" rowspan=2><div id="infowin_thumb"><img src="http://img.youtube.com/vi/');
             html.push(q_data.youtube_id);
-            html.push('/default.jpg);" onclick="VOTEMAP.showVideo();"></div><a href="#" class="smaller_text" onclick="VOTEMAP.showVideo();">');
-            html.push((q_data.title && q_data.title != "" ? q_data.title : "Play Video"));
+            html.push('/default.jpg" style="height:90px; width120px;" onclick="VOTEMAP.showVideo();"></div></div><a href="#" class="smaller_text" onclick="VOTEMAP.showVideo();">');
+            html.push((q_data.title && q_data.title != "" ? q_data.title : "watch video"));
             html.push('</a></td>');
         }
-        else html.push('<td></td>');
-        html.push('<td><div id="infowin_question_text" style="');
+        html.push('<td colspan=2><div id="infowin_question_text" style="');
         if (!IE6)
             html.push('max-');
         html.push('width:340px;">');
-        if (q_data.hasOwnProperty("stmt"))
+        if (q_data.hasOwnProperty("stmt")) {
+            html.push('"');
             html.push(q_data.stmt);
-        html.push('</div><div id="infowin_submitter" class="smaller_text">');
+            html.push('"');
+        }
+        if (q_data.hasOwnProperty("original_stmt")) {
+            html.push('<br /><span style="color:#666666;font-style:italic;">"');
+            html.push(q_data.original_stmt);
+            html.push('"</span>');
+        }
+        html.push('</div></td></tr><tr><td><div id="infowin_submitter" class="smaller_text">');
         html.push(q_data.name);
         html.push('<br />');
         html.push(q_data.loc);
-        html.push('</div></td></tr><tr><td colspan=2>');
-        html.push('<a href="');
-        html.push(q_data.vote_url);
-        html.push('" target="_blank" id="vote_button" class="cop15_sprite"><div id="vote_button_text">');
-        html.push(VOTE[content_lang]);
-//        html.push('VOTE');  // this needs to be translated
-        html.push('</div></a><div id="vote_graphs"><table><tr><td><div class="vote_bar" style="background-color:');
+        html.push('</div></td><td>');
+        html.push('<div id="vote_graphs"><table><tr><td><div class="vote_bar" style="background-color:');
         html.push(q_data.votes.pos_pct >= q_data.votes.neg_pct ? DARK_BLUE_TOP : LIGHT_BLUE_TOP);
         html.push(';"><div class="vote_bar_background" style="width:');
         html.push(100 - q_data.votes.pos_pct);
@@ -230,14 +229,14 @@ var VOTEMAP = function() {
         html.push('</div>');
         return html.join('');
     }
-    function showAllMarkers() {
-        for (var i=0; i<markers.length; i++) {
-            markers[i].show();
-        }
-    }
     function hideAllMarkers() {
         for (var i=0; i<markers.length; i++) {
             markers[i].hide();
+        }
+    }
+    function showAllMarkers() {
+        for (var i=0; i<markers.length; i++) {
+            markers[i].show();
         }
     }
     function initScanner() {
@@ -249,9 +248,8 @@ var VOTEMAP = function() {
             });
     }
     return {
-        initialize: function(mapElem, initCentre, initType, language, mapContentType, cube,allowVote, initFunc) {
+        initialize: function(mapElem, initCentre, initType, language, mapContentType, cube) {
             // is this for the cube?
-            init = initFunc;
             if (cube) cube_version = cube;  // default is false
 
             // if the mapElem param is a string then create the map
@@ -265,7 +263,7 @@ var VOTEMAP = function() {
                 // note that for some reason have to set width and height of map here instead of css
                 var display_html = '<div id="vote_map_header"><table width="100%"><tr><td align="left"><div id="counts_display"></div></td>';
                 if (!cube_version)  // don't want the link for the cube
-                    display_html += '<td align="right"><a href="#" onclick="VOTEMAP.swapType();return false;">Show Most <span id="content_type">Popular</span> Questions</a></td>';
+                    display_html += '<td align="right"><a href="#" onclick="VOTEMAP.swapType();return false;">Show Most <span id="content_type">' + (content_type == "Recent" ? "Popular" : "Recent") + '</span> Questions</a></td>';
                 display_html += '</tr></table></div><div id="vote_map_canvas" style="width:100%; height:95%;"></div>';
                 wrapper.innerHTML = display_html;
 
@@ -286,16 +284,10 @@ var VOTEMAP = function() {
                 map = mapElem;
                 show_totals = false;
             }
-            if(allowVote)
-            {
-                  map.addControl(new earthHourVote());
-            }
-            
             // don't need controls for the cube
             if (!cube_version) {
                 // add the scan'n'pan control
                 map.addControl(new ScanNPanControl());
-              
 
                 // stop the scanning when zoom is changed
                 GEvent.addListener(map, "zoomend", function(oz, nz) {   // funny--looks like Australia and New Zealand but is actually short for old-zoom and new-zoom 
@@ -312,6 +304,7 @@ var VOTEMAP = function() {
 
             // request data, returned data will start scan
             getData();
+            //init function is meant to return a map
             return map;
         },
         scanNext: function() {
@@ -328,7 +321,6 @@ var VOTEMAP = function() {
             }
         },
         stopScan: function() {
-            jQuery(map).trigger("scanStopped");
             if (scanner != null) {
                 clearInterval(scanner);
                 scanner = null;
@@ -344,18 +336,6 @@ var VOTEMAP = function() {
                 document.getElementById("startScan").className = "cop15_sprite";
                 document.getElementById("stopScan").className += " selected";
             }
-        },
-        showVote: function() 
-        {
-         
-                voteControl = new earthHourVoteControl();
-                map.addControl(voteControl);  
-                jQuery(map).trigger("voteControlAdded");
-        },
-        closeVote: function()
-        {
-             map.removeControl(voteControl);
-       
         },
         startScan: function() {
             hideAllMarkers();
@@ -379,7 +359,7 @@ var VOTEMAP = function() {
             var old_type = content_type;
             if (content_type == "Recent")
                 content_type = "Popular";
-            else content_type == "Recent";
+            else content_type = "Recent";
 
             VOTEMAP.stopScan();
             map.clearOverlays();
@@ -395,8 +375,5 @@ var VOTEMAP = function() {
         }
     }
 }();
-
-
-
 
     
