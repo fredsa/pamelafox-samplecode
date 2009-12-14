@@ -189,14 +189,14 @@ class TotalsInfoService(webapp.RequestHandler):
 
 class GetBoundedOrgs(webapp.RequestHandler):
   def get(self):
+    name = self.request.get('name')
     self.response.headers.add_header('Cache-Control', 'no-cache, must-revalidate')
     self.response.headers.add_header('Expires', 'Sat, 26 Jul 1997 05:00:00 GMT')
-    cachedVal = memcache.get(models.genKeyForBoundedOrgs())
+    cachedVal = memcache.get(models.genKeyForBoundedOrgs() + name + "bound")
     if cachedVal is not None:
        self.response.out.write(cachedVal)
     else:
     #countryCodes = self.request.get('countryCode').split('|')
-        name = self.request.get('name')
         #bounds = self.request.get('bounds')
         results = []
         for code in geodata.countries.keys():
@@ -215,7 +215,7 @@ class GetBoundedOrgs(webapp.RequestHandler):
         display['countryLevel'] = countryResults
         response = simplejson.dumps(display)
         #5 mins seems to be the defacto
-        memcache.set(models.genKeyForBoundedOrgs(), response, 300)
+        memcache.set(models.genKeyForBoundedOrgs() + name + "bound",  response, 300)
         self.response.out.write(response)
       
       

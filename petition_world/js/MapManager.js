@@ -349,18 +349,22 @@ var MapManager = function(param) {
 
             jQuery('#searchInput').keydown(function()
             {
-                if ($("#searchButton").val() == "Cancel")
+               jQuery('#searchInput').keydown(function()
                 {
-                    $("#searchButton").val("Search");
-                }
+                     if ($('#cancelLink').is(':visible'))
+                    {
+                            processHandlers.cancelOrgMode(true);
+                    }
+                });
             });
+            jQuery('#cancelLink').click(processHandlers.cancelOrgMode);
         }
         else
         {
             $("#MapTop").hide();
             $(params.map).height($("#show_your_vote").height());
             map.checkResize();
-        }
+        }        
     };
 
     var init = function()
@@ -376,7 +380,7 @@ var MapManager = function(param) {
             pageTypes['vote']();
         }
         addMarkers();
-    } ();
+    }();
 };
 
 var Processors = function(map, markers, skin)
@@ -594,6 +598,16 @@ var Processors = function(map, markers, skin)
     };
 
 
+    this.cancelOrgMode = function(e)
+    {
+            jQuery('#searchButton').show();
+            jQuery('#cancelLink').hide();
+            markerManager.show();
+            markerManager.refresh();
+            markerManagerSearch.hide();
+    };
+
+
     this.searchnNearOrgs = function(name) {
         var orgName = jQuery("#searchInput").val();
         if (jQuery.inArray(orgName.toUpperCase(), orgs) > -1)
@@ -624,6 +638,7 @@ var Processors = function(map, markers, skin)
             function(data, status)
             {
                 var hide = false;
+                var hasExtended = false;
                 $("#searchButton").val("Cancel");
                 var bounds = new google.maps.LatLngBounds();
                 bounds.extend(map.getCenter())
@@ -641,9 +656,10 @@ var Processors = function(map, markers, skin)
                     if (map.getZoom() > 5)
                     {
                         bounds.extend(new GLatLng(val['item'][0][0], val['item'][0][1]));
+                        hasExtended = true;
                     }
                 });
-                if (map.getZoom() > 5)
+                if (hasExtended)
                 {
                     map.setCenter(bounds.getCenter(), map.getBoundsZoomLevel(bounds))
                 }
@@ -657,13 +673,20 @@ var Processors = function(map, markers, skin)
                 });
                 //all markers
                 markerManagerSearch.addMarkers(markers, 0, 5);
-                markerManagerSearch.refresh();
+                if(markers.length > 0) {
+                     markerManager.hide();
+                     markerManagerSearch.show();
+                     markerManagerSearch.refresh();
+                     jQuery('#searchButton').hide();
+                     jQuery('#cancelLink').show();
+                }
             });
         }
         else
         {
             markerManagerSearch.hide();
             markerManager.show();
+            markerManager.refresh();
             var geocoder = new GClientGeocoder();
             geocoder.getLatLng(
             orgName,

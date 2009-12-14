@@ -295,12 +295,33 @@ take a map instance as a dep this will allow for easy duplication of behaviours
 rather than repeated code
 */
 
+
+function cancelOrgMode(e)
+{
+            jQuery('#searchButton').show();
+            jQuery('#cancelLink').hide();
+            markerManager.show();
+            markerManager.refresh();
+            markerManagerSearch.hide();
+}
+
 function initSearch() {
   jQuery.getJSON("/info/orgName", function(data,text)
   {
      orgs = data; 
   });
   jQuery("#searchButton").click(searchnNearOrgs);
+  
+  jQuery('#searchInput').keydown(function()
+  {
+    if ($('#cancelLink').is(':visible'))
+    {
+          cancelOrgMode(true);
+    }
+  });
+  
+  jQuery('#cancelLink').click(cancelOrgMode);
+  
 }
 
 function createOrgIcon(url) {
@@ -749,6 +770,16 @@ function processTotals(json) {
   jQuery("#orgs").html(json.total.totalOrgs);
 }
 
+function countProperties(data)
+{
+  var count = 0;
+  for (prop in data) {
+    if (data.hasOwnProperty(prop)) {
+      count++;
+    }
+  }
+  return count;
+}
 
 /* TODO: hook up the cancel button */
 function searchnNearOrgs(name) {
@@ -776,24 +807,29 @@ function searchnNearOrgs(name) {
     //arguments.countryCode = countryCodes.join('|');
     jQuery.getJSON('/info/search',arguments,function(data,status)
     {
+ 
          var bounds = new google.maps.LatLngBounds();
-         bounds.extend(voteMap.getCenter())
+         var hasExtended = false;
+         bounds.extend(voteMap.getCenter());
          searchedOrgs = data;
-         markerManager.hide();
-         markerManagerSearch.clearMarkers()
-         markerManagerSearch.show()
          //zoom level 0 3 for country
          var markers = [];
-         jQuery.each(searchedOrgs['zoomed'],  function(i, val)
+         markerManagerSearch.clearMarkers();
+         jQuery.each(searchedOrgs['zoomed'],
+         function(i, val)
          {
-           markers.push(createOrgMarkerWithCount(createItem(val))); //image
-           if(voteMap.getZoom() > 5)
-           {
-              bounds.extend(new GLatLng(val['item'][0][0],val['item'][0][1]));
-           }
+              markers.push(createOrgMarkerWithCount(createItem(val)));
+                    //image
+              if (voteMap.getZoom() > 5)
+              {
+                  bounds.extend(new GLatLng(val['item'][0][0], val['item'][0][1]));
+                  hasExtended = true;
+              }
          });
-       
-        voteMap.setCenter(bounds.getCenter(),voteMap.getBoundsZoomLevel(bounds))
+         if (hasExtended)
+         {
+            voteMap.setCenter(bounds.getCenter(), voteMap.getBoundsZoomLevel(bounds))
+         }
         markerManagerSearch.addMarkers(markers, 5);
 
         markers.length = 0;
@@ -803,11 +839,20 @@ function searchnNearOrgs(name) {
          });
          //all markers
           markerManagerSearch.addMarkers(markers, 0, 5);
-          markerManagerSearch.refresh();
+          if(markers.length > 0) {
+            markerManager.hide();
+            markerManagerSearch.show();
+            markerManagerSearch.refresh();
+            jQuery('#searchButton').hide();
+            jQuery('#cancelLink').show();
+          }
     });
   }
   else
   {
+    markerManagerSearch.hide();
+    markerManager.show();
+    markerManager.refresh();
     var geocoder = new GClientGeocoder();
     geocoder.getLatLng(
     orgName,
@@ -829,6 +874,8 @@ function searchnNearOrgs(name) {
     
   }
 }
+
+
 
 
 function createItem(val)
