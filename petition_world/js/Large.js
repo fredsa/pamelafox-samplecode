@@ -432,7 +432,7 @@ function createMarker(markerType, locationCode, latlng, icon, title, zoom) {
             GEvent.addListener(marker, "click",
             function() {
                 voteMap.openInfoWindowHtml(latlng,
-                '<p>' + icon.label + ' people and organizations have shown their support for the COP15.</p><a href="#" id="showVote" onclick="VoteController.showVote();return false;">  Show your vote of support now.</a>',
+                '<p style="font-size: 10px">' + icon.label + ' people and organizations have shown their support.<br> Your vote will be added to the Earth Hour Orb, to be presented<br>to Ban Ki Moon during Earth Hour Copenhagen on December 16th.</p>',
                 {
                     pixelOffset: new GSize(0, -icon.size.height)
                 }
