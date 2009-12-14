@@ -167,7 +167,7 @@ function initExploreMap() {
   if(!exploreMap)
   {
       exploreMap = new GMap2(jQuery("#explore_map")[0]);
-      exploreMap.setCenter(new GLatLng(0, 10), 1, G_PHYSICAL_MAP);
+      exploreMap.setCenter(new GLatLng(0, 10), 1, G_HYBRID_MAP);
       exploreMap.setUIToDefault();
       var latlng = jQuery.cookie('latlng');
       if (latlng) {
@@ -627,7 +627,7 @@ function createMarker(markerType, locationCode, latlng, icon, title, zoom) {
                   jQuery.each(data,
                   function(i, val)
                   {
-                      totals +=  '<li>' + val[0] + ' voted ' + val[1] + ' times</li>';
+                      totals +=  '<li>' + val[0] + ' contributed ' + val[1] + ' votes</li>';
                   });
                    exploreMap.openInfoWindowHtml(latlng,
                            '<p>' +

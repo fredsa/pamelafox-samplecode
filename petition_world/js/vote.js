@@ -135,7 +135,7 @@ jQuery(document).ready(function() {
           visitorId = null;
           visitorName = null;
           var nameInfo = jQuery('#person_name_info');
-          nameInfo.html("<div style='margin-left:120px;margin-top:-10px;'>Vote with your name using Friend Connect,<br>or keep your vote anonymous here.</div>");
+          nameInfo.html("<div style='margin-left:100px;margin-top:-20px;'>Vote with your name by signing in to Friend Connect above, otherwise your vote will remain anonymous.</div>");
         }
       });
     }
@@ -146,7 +146,7 @@ jQuery(document).ready(function() {
 
 function initVoteMap() {
   voteMap = new GMap2(jQuery("#vote_map")[0]);
-  voteMap.setCenter(new GLatLng(0,180), 1);
+  voteMap.setCenter(new GLatLng(0,0), 1);
   voteMap.setUIToDefault();
 }
 

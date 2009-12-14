@@ -37,7 +37,7 @@
  <div id="MapContainer" class="left" style="background-color:{{bg_color}}">
   <div id="MapTop">
        <div class="Search left" style="width:320px">
-         <input type="text" id="searchInput" name="search" style="float: left; margin-right: 10px;">
+         <input type="text" id="searchInput" name="search" style="float: left; margin-right: 10px; font-size:10px">
            <div class="imageHolder" style="width:40px; float: left margin-bottom:10spx" >
              <input type="Image" id="searchButton" SRC="images/Large/search.png">
            </div>
@@ -50,6 +50,7 @@
     </div>
    <div id="vote_map" style="width: 600px; height: 395px; overflow:hidden;">
         <!-- map element -->
+
     </div>
  
   </div>
@@ -60,42 +61,43 @@
      
       <fieldset id="VoteForm">
       <legend>
-        <p><b>Your vote will be presented to world leaders at the COP15 UN climate summit in Copenhagen, telling them to seal a fair and effective climate deal.</b></p>
+        <p style="font-size:11px; margin-top:-5px"><b>Your vote of support will be presented to world leaders at the COP15 UN Climate<br>Change Conference, telling them to seal a fair and effective climate deal.</b></p>
       </legend>
-        <ol>
+<br>
+        <ol style="font-size:11px">
           <li>
-            <label for="form_toggle"><em>*</em> Are You An </label>
+            <label for="form_toggle">Are You An<em>*</em></label>
             <select id="form_toggle" onchange="toggleForm(jQuery(this).val())">
               <option value="person">Individual</option>
               <option value="org">Organization</option>
             </select>
           </li>
           <li class="org">
-            <label for="org_name"> <em>*</em> Organization</label>
+            <label for="org_name">Organization<em>*</em></label>
             <input name="org_name" id="org_name" />
           </li>
           <li class="org">
-            <label for="email"><em>*</em> Email </label>
+            <label for="email">Email<em>*</em></label>
             <input name="email" id="email" class="email"/>
           </li>
           <li class="org">
-            <label for="org_icon">Icon:</label>
+            <label for="org_icon" style="width:35px">Icon:</label>
             <input type="file" name="org_icon">
           </li>
           <li class="loc country">
-            <label for="country"><em>*</em> Country</label>
+            <label for="country">Country<em>*</em></label>
             <select name="country" id="country" class="required">
               <option value="">- Select Your Country -</option>
             </select>
           </li>
           <li class="loc state">
-            <label for="state"><em>*</em> State</label>
+            <label for="state">State<em>*</em></label>
             <select name="state" id="state">
               <option value="">- Select Your State -</option>
             </select>
           </li>
           <li class="loc org">
-            <label for="streetinfo"> <em>*</em> Street Address</label>
+            <label for="streetinfo">Street<em>*</em></label>
             <input type="text" name="streetinfo" id="streetinfo"/>
           </li>
           <li class="loc">
@@ -103,11 +105,11 @@
             <input type="text" name="city" id="city"/>
           </li>
           <li class="loc postcode">
-            <label for="postcode"><em>*</em> Postcode </label>
+            <label for="postcode">Postcode<em>*</em></label>
             <input type="text" name="postcode" id="postcode"/>
           </li>
           <li>
-             <p style="font-size: 12px">Required fields marked <em>*</em>
+             <p style="font-size: 10px"><b>Required fields marked <em>*</em></b>
           </li>
         </ol>
         <input type="hidden" id="nonce" name="nonce" />
@@ -122,5 +124,9 @@
       <div id="errmsg" style="color:#ff0000"></div>
     </form>
   </div>
- 
+
+ 	 <div id="legal" style="position:absolute; left:230px; top:405px; font-size: 10px; background-color:none; color:#ffffff">
+	<a href="http://showyourvote.posterous.com/" target="_blank" style="color:#ffffff">Latest News</a> -    
+	<a href="register?skin=mini&amp;bg_color={{bg_color}}" target="_blank" style="color:#ffffff">Show the Vote on your website</a> - <a href="terms?skin=mini&amp;bg_color={{bg_color}}" target="_blank" style="color:#ffffff">Show Your Vote Terms of Use</a>
+	  </div>
 {% endblock %}

@@ -125,7 +125,7 @@ var MapManager = function(param) {
         {
             if (typeof params.map == "string") {
                 map = new GMap2(jQuery(params.map)[0]);
-                map.setCenter(new GLatLng(0, 10), 1, G_PHYSICAL_MAP);
+                map.setCenter(new GLatLng(0, 10), 1, G_HYBRID_MAP);
                 map.setUIToDefault();
             }
             else if (params.map)
@@ -424,7 +424,7 @@ var Processors = function(map, markers, skin)
         var markers = [];
         for (countryCode in info.countries) {
             var country = info.countries[countryCode];
-            var marker = markerCreator.createMarker("country", countryCode, new GLatLng(country.center[0], country.center[1]), markerCreator.createBigIcon(country.count), country.name, 6);
+            var marker = markerCreator.createMarker("country", countryCode, new GLatLng(country.center[0], country.center[1]), markerCreator.createMediumIcon(country.count), country.name, 6);
             markers.push(marker);
         }
         markerManager.addMarkers(markers, 3, 7);
@@ -762,7 +762,7 @@ var MarkerCreator = function(map, ryv)
     this.createBigIcon = function(label) {
         var iconOptions = {};
         iconOptions.size = new GSize(64, 26);
-        iconOptions.backgroundColor = "#0066cc";
+        iconOptions.backgroundColor = "#01466d";
         iconOptions.label = "" + label;
         return iconOptions;
     }
@@ -770,7 +770,7 @@ var MarkerCreator = function(map, ryv)
     this.createMediumIcon = function(label) {
         var iconOptions = {};
         iconOptions.size = new GSize(48, 22);
-        iconOptions.backgroundColor = "#0097c4";
+        iconOptions.backgroundColor = "#c9630f";
         iconOptions.label = "" + label;
         return iconOptions;
     }
@@ -875,7 +875,7 @@ var MarkerCreator = function(map, ryv)
             GEvent.addListener(marker, "click",
             function() {
                 map.openInfoWindowHtml(latlng,
-                '<p>' + icon.label + ' people and organizations have shown their support for the COP15.</p><a href="#" id="showVote" onclick="VoteController.showVote();return false;">  Show your vote of support now.</a>',
+                '<p style="font-size: 10px">' + icon.label + ' people and organizations have shown their support.<br> Your vote will be added to the Earth Hour Orb, to be presented<br>to Ban Ki Moon during Earth Hour Copenhagen on December 16th.</p>',
                 {
                     pixelOffset: new GSize(0, -icon.size.height)
                 }
@@ -895,11 +895,11 @@ var MarkerCreator = function(map, ryv)
                     jQuery.each(data,
                     function(i, val)
                     {
-                        totals +=  '<li>' + val[0] + ' voted ' + val[1] + ' times</li>';
+                        totals +=  '<li>' + val[0] + ' contributed ' + val[1] + ' votes</li>';
                     });
                      map.openInfoWindowHtml(latlng,
-                             '<p>' +
-                                icon.label + ' signed the petition here </p><ul class="tally">' +
+                             '<p style="font-size: 10px">' +
+                                icon.label + ' signed the petition here </p><ul class="tally" style="margin-left:15px">' +
                                 totals
                                 + '</ul>',
                         {

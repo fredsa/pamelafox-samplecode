@@ -158,11 +158,11 @@ if(!voteMap)
   var latlng = jQuery.cookie('latlng');
   if (latlng) {
     var point = new GLatLng(latlng.split(',')[0], latlng.split(',')[1]);
-      voteMap.setCenter(point, 8);
+      voteMap.setCenter(point, 8, G_HYBRID_MAP);
   }
   else
   {
-      voteMap.setCenter(new GLatLng(0,180), 1);
+      voteMap.setCenter(new GLatLng(0,180), 1, G_HYBRID_MAP);
   }
   voteMap.setUIToDefault();
   
@@ -330,7 +330,7 @@ function createSmallOrgIcon(url) {F
 function createBigIcon(label) {
   var iconOptions = {};
   iconOptions.size = new GSize(64, 26);
-  iconOptions.backgroundColor = "#ca6618";
+  iconOptions.backgroundColor = "#01466d";
   iconOptions.label = "" + label;
   return iconOptions;
 }
@@ -338,7 +338,7 @@ function createBigIcon(label) {
 function createMediumIcon(label) {
   var iconOptions = {};
   iconOptions.size = new GSize(48, 22);
-  iconOptions.backgroundColor =  "#0097c4";
+  iconOptions.backgroundColor =  "#c9630f";
   iconOptions.label = "" + label;
   return iconOptions;
 }

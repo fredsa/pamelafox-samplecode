@@ -54,7 +54,7 @@
 	      <!-- map element -->
       </div>
       <fieldset id="VoteForm">
-        <p style="font-size: 12px; margin-top:5px; margin-left:12px; margin-right:15px"><b>Your vote will be presented to world leaders at the COP15 UN climate summit in Copenhagen, telling them to seal a fair and effective climate deal.</b></p>
+        <p style="font-size: 12px; margin-top:5px; margin-left:12px; margin-right:15px"><b>Your vote of support will be presented<br>to world leaders at the COP15 UN Climate Change Conference, telling them to seal a fair and effective climate deal.</b></p>
         <p style="font-size: 12px; margin-left:12px; margin-right:15px">Required fields marked <em>*</em>
         <ol>
           <li>
@@ -98,7 +98,7 @@
             <input type="text" name="streetinfo" id="streetinfo"/>
           </li>
           <li class="loc">
-            <label for="city">City</label>
+            <label for="city">&nbsp City</label>
             <input type="text" name="city" id="city"/>
           </li>
           <li class="loc postcode">
@@ -116,5 +116,10 @@
       
       <div id="errmsg" style="color:#ff0000"></div>
     </form>
+  </div>
+
+  <div id="legal" style="position:absolute; left:0px; top: 485px; font-size: 9px; background-color:{{bg_color}}">
+<a href="http://showyourvote.posterous.com/" target="_blank">Latest News</a> -    
+<a href="register?skin=mini&amp;bg_color={{bg_color}}">Show the Vote on your website</a> - <a href="terms?skin=mini&amp;bg_color={{bg_color}}">Terms of Use</a>
   </div>
 {% endblock %}
