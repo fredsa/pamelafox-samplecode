@@ -40,13 +40,13 @@ indexes:
   - name: index
     direction: desc
 
+- kind: PetitionSigner
+  properties:
+  - name: country
+  - name: type
+
 - kind: RegionCluster
   properties:
   - name: type
   - name: count
     direction: desc
-
-- kind: PetitionSigner
-  properties:
-  - name: country
-  - name: type

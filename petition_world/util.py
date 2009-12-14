@@ -337,7 +337,7 @@ def getOrgsInCountryForName(countryCode,name):
         query.filter('name = ', name)
         #have to query few times around if these ever exceed 1000
         #can probably change the way the orgs are stored to improve this code
-        results = query.fetch(1000)
+        results = query.fetch()
         memcache.set(models.MEMCACHE_VOTES + countryCode + name,results,300)
         return results
 

@@ -350,7 +350,7 @@ class SignerAddService(webapp.RequestHandler):
       # Remove the nonce cookie
       self.response.headers.add_header('Set-Cookie', 'nonce=; expires=Fri, 31-Dec-1980 23:59:59 GMT; path=/')
       #not set so chanes are it was not set  
-      redirect = '/explore?location=%s&skin=%s%s' % (self.request.get('postcode'),skin,version)
+      redirect = '/explore?bg_color=%s&location=%s&skin=%s%s' % (self.request.get('bg_color'),self.request.get('postcode'),skin,version)
       if self.request.get('mapType') != '':
            redirect = '/visualisation?skin=large'
           
