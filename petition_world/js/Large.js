@@ -427,7 +427,47 @@ function createMarker(markerType, locationCode, latlng, icon, title, zoom) {
   GEvent.addListener(marker, "mouseout", function() {
     voteMap.removeOverlay(tooltip);
   });
-  if (markerType != "continent") {
+  if (markerType == 'continent')
+        {
+            GEvent.addListener(marker, "click",
+            function() {
+                voteMap.openInfoWindowHtml(latlng,
+                '<p>' + icon.label + ' people and organizations have shown their support for the COP15.</p><a href="#" id="showVote" onclick="VoteController.showVote();return false;">  Show your vote of support now.</a>',
+                {
+                    pixelOffset: new GSize(0, -icon.size.height)
+                }
+                );
+            });
+        }
+       
+        if (markerType == 'country')
+        {
+            
+            GEvent.addListener(marker, "click",
+            function() {
+                var totals ='';
+                jQuery.getJSON("/info/massVotes?countryCode=" + locationCode,
+                function(data)
+                {
+                    jQuery.each(data,
+                    function(i, val)
+                    {
+                        totals +=  '<li>' + val[0] + ' voted ' + val[1] + ' times</li>';
+                    });
+                     voteMap.openInfoWindowHtml(latlng,
+                             '<p>' +
+                                icon.label + ' signed the petition here </p><ul class="tally">' +
+                                totals
+                                + '</ul>',
+                        {
+                            pixelOffset: new GSize(0, -icon.size.height)
+                        }
+                        );
+                });
+            });
+        }
+
+  if (markerType != "continent" && markerType != 'country') {
     var createInfoWindow = function() {
       currentMarker = marker;
       jQuery.getJSON("/info/votelocal?" + markerType + "=" + locationCode, function (gfcSigners) {
