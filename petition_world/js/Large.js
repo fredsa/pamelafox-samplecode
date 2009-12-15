@@ -473,7 +473,7 @@ function createMarker(markerType, locationCode, latlng, icon, title, zoom) {
                     jQuery.each(data,
                     function(i, val)
                     {
-                        totals +=  '<li>' + val[0] + ' voted ' + val[1] + ' times</li>';
+                        totals +=  '<li>' + val[0] + ' contributed ' + val[1] + ' votes</li>';
                     });
                      voteMap.openInfoWindowHtml(latlng,
                              '<p>' +
