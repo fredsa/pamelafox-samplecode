@@ -382,7 +382,8 @@ class SignerAddService(webapp.RequestHandler):
       signer = models.PetitionSigner.get_or_insert(key_name=identifier)
       logging.info("Signer created with identifier: " + identifier)
     else:
-      return None
+      signer = models.PetitionSigner()
+      logging.info("Unidentified signer, creating anyway.")
     new_voter = (not signer.type)
     # defaults to a person
     if not self.request.get('org_name') or self.request.get('org_name') == '':
