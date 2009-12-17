@@ -145,7 +145,10 @@ class PostcodesInfoService(webapp.RequestHandler):
       results = util.getPostcodesInCountry(countryCode)
       data['postcodes'] = {}
       for result in results:
-        data['postcodes'][result.postcode] = {"count": result.counter, "center": [result.latlng.lat, result.latlng.lon]}
+        if result.latlng:
+          data['postcodes'][result.postcode] = {"count": result.counter, "center": [result.latlng.lat, result.latlng.lon]}
+        else:
+          logging.info('Missing lat/lng for postcode: %s' % result.postcode)
 
       newVal = simplejson.dumps(data)
       memcache.set(models.genKeyForPostcodesInfo(countryCode), newVal, 10)
