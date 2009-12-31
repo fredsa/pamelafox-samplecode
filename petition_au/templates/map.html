@@ -18,14 +18,13 @@
 var map;
 var currentPostcode;
 var currentState;
-var maxInPostcodes;
 
 function initialize() {
   calcStats();
   map = new GMap2(document.getElementById("map_canvas"));
   map.setCenter(new GLatLng(-26.74561,135.615234), 4, G_PHYSICAL_MAP);
   map.setUIToDefault();
-  downloadUrl("/getclusters", processClusters);
+  downloadUrl("/services/clusters", processClusters);
 }
 
 function calcStats() {
@@ -69,7 +68,6 @@ function format(num) {
 
 function processClusters(response) {
   var clusterJSON = eval("(" + response + ")");
-  maxInPostcodes = clusterJSON.maxpostcodes;
   stateClusters = clusterJSON.states;
 
   var totalCount = 0;
@@ -140,8 +138,8 @@ function createPostcodeMarker(postcodeAddresses) {
                {size: 24, color: "#6cb510"},
                {size: 16, color: "#acdc3f"},
                {size: 12, color: "#c6f329"}];
-  var percent = numAddresses/maxInPostcodes;
-  if (numAddresses == 1) rangeNum = 3;
+  var percent = numAddresses/30;
+  if (numAddresses >= 1) rangeNum = 3;
   else if (percent < .6) rangeNum = 2;
   else if (percent < .8) rangeNum = 1;
   else rangeNum = 0;
