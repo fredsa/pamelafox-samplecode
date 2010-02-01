@@ -24,7 +24,7 @@ def main():
                                       ('/twitter', pages.TwitterPage),
                                       ('/add/random', pages.RandomAddService),
                                       ('/add/signer', pages.SignerAddService),
-									  ('/add/host', pages.HostAddService),
+									                    ('/add/host', pages.HostAddService),
                                       ('/nonce', services.CryptographicNonceService),
                                       ('/info/votelocal', services.VotesInLocationService),
                                       ('/info/continents', services.ContinentsInfoService),

@@ -453,7 +453,9 @@ function createMarker(markerType, locationCode, latlng, icon, title, zoom) {
             GEvent.addListener(marker, "click",
             function() {
                 voteMap.openInfoWindowHtml(latlng,
-                '<p style="font-size: 10px">' + icon.label + ' people and organizations have shown their support.<br> Your vote will be added to the Earth Hour Orb, to be presented<br>to Ban Ki Moon during Earth Hour Copenhagen on December 16th.</p>',
+              
+
+                '<p style="font-size: 10px">  Thank you for pledging your support. You have joined '+icon.label+ ' people and organisations who are already supporting the cause. Don’t forget to turn your lights out on Saturday 27th March at 8.30pm</p>',
                 {
                     pixelOffset: new GSize(0, -icon.size.height)
                 }
@@ -874,8 +876,6 @@ function searchnNearOrgs(name) {
     
   }
 }
-
-
 
 
 function createItem(val)

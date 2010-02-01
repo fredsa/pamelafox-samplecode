@@ -40,7 +40,7 @@ class BasePage(webapp.RequestHandler):
 
   def getTemplateValues(self, page_title, page_num):
     skin = self.request.get('skin') or 'main'
-    if not skin in ['main', 'mini','large']:
+    if not skin in ['main', 'mini','large','earthhour']:
       skin = 'main' 
 
     bg_color = self.request.get('bg_color')
