@@ -172,6 +172,20 @@ class HostAddService(webapp.RequestHandler):
       )
     )
     
+    
+class CreateLocalisation(webapp.RequestHandler):
+  def get(self):
+    # not the best solution, but the easiest to manage for now
+    # Todo: these resource strings should really be loaded else where
+    path = os.path.join(os.path.dirname(__file__), 'templates', 'translate.html')
+    logging.info(path)  
+    template_values = {}
+    self.response.out.write(template.render(path, template_values))
+  
+class AddLocalistation(webapp.RequestHandler):
+  def post(self):
+    #todo: add to db
+    
 class UploadPage(webapp.RequestHandler):
   def get(self):
       self.response.out.write('<form enctype="multipart/form-data" method="post" action="/upload">')

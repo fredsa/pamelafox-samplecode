@@ -20,7 +20,7 @@ var markerManager;
 var markerManagerSearch;
 
 
-
+debugger;
 if (site_bg_color == "" || site_bg_color == null) {
   switch(site_skin) {
   case "mini":

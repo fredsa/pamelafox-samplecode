@@ -49,7 +49,7 @@
   <span id="orgs_span" style="display:none"><span id="orgs"></span>&nbsp;Organizations</span>
         </div>
     </div>
-   <div id="vote_map" style="width: 550px; height: 395px; overflow:hidden;">
+   <div id="vote_map" style="width: 598px; height: 395px; overflow:hidden;">
         <!-- map element -->
 
     </div>
@@ -64,7 +64,7 @@
       <legend>
         <p style="font-size:11px; margin-top:-5px"><b>On 27th March 2010, at 8.30pm people from all around the world will be switching off their lights for Earth Hour. Make sure you are one of them and pledge your support now by signing up below.</b></p>
       </legend>
-<br>
+      <br />
         <ol style="font-size:11px">
           <li>
             <label for="form_toggle">Are You An<em>*</em></label>
@@ -109,6 +109,10 @@
             <label for="postcode">Postcode<em>*</em></label>
             <input type="text" name="postcode" id="postcode"/>
           </li>
+          <li class="loc optin">
+            <label for="optin">optin<em>*</em></label>
+            <input type="checkbox" name="optin" id="optin" value="yes"> 
+          </li>
           <li>
              <p style="font-size: 10px"><b>Required fields marked <em>*</em></b>
           </li>
@@ -132,3 +136,4 @@
 	<a href="register?skin=mini&amp;bg_color={{bg_color}}" target="_blank" style="color:#ffffff">Show the Vote on your website</a> - <a href="terms?skin=mini&amp;bg_color={{bg_color}}" target="_blank" style="color:#ffffff">Show Your Vote Terms of Use</a>
 	  </div>
 {% endblock %}
+

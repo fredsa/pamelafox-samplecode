@@ -84,3 +84,7 @@ class TwitterFeed(db.Model):
     twitterRefresh = db.StringProperty()
     twitterLocationFeedJson = db.StringProperty()
 
+class LocalisationStrings(db.Model):
+    countryCode = db.StringProperty()
+    resource = db.StringProperty()
+    value = db.StringProperty()
