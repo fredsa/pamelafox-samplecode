@@ -163,6 +163,29 @@ def getCountryVotesPerPostcodeInStore(countryCode):
     numVotesInCountry += result.counter
   return numVotesInCountry
 
+
+
+def getTranslation(languageCode,default=''):
+    query = db.Query(models.LocalisationStrings)
+    query.filter('languageCode =',languageCode)
+    ret = query.get()
+    if len(default) == 0:
+      if ret is None:
+        query = db.Query(models.LocalisationStrings)
+        query.filter('languageCode =',default)
+        ret = query.get()
+    return ret
+
+def updateTranslationTable(languageCode, resources):
+  currentValues = getTranslation(languageCode)
+  if currentValues is None:
+    currentValues = models.LocalisationStrings()
+    currentValues.languageCode = languageCode
+  for key in resources:
+    currentValues.__setattr__(key,resources[key])
+   
+  currentValues.put()
+    
 def getStateVotesInStore(countryCode, stateCode):
   numVotesInState = 0
   # this relies on there being less than 1000 postcodes in a state

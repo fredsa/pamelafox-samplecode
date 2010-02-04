@@ -173,6 +173,7 @@ class OrgsInfoService(webapp.RequestHandler):
       memcache.set(models.genKeyForOrgsInfo(countryCode), newVal, 10)
       self.response.out.write(newVal)
 
+
 class TotalsInfoService(webapp.RequestHandler):
   def get(self):
     self.response.headers.add_header('Cache-Control', 'no-cache, must-revalidate')
@@ -189,7 +190,23 @@ class TotalsInfoService(webapp.RequestHandler):
       memcache.set(models.genKeyForTotalsInfo(), newVal, 30)
       self.response.out.write(newVal)
 
-
+class GetTranslation(webapp.RequestHandler):
+  def get(self):
+    code = self.request.get('languageCode')
+    localStrings = util.getTranslation(code)
+    logging.info(localStrings)
+    value = {}
+    response = simplejson.dumps(value)
+    if localStrings is not None:
+            props = localStrings.dynamic_properties()
+            for key in props:
+              value[key] =  localStrings.__getattr__(key)
+            #simplejson is missing its default argument, so this loop will have to do :/
+            response = simplejson.dumps(value,ensure_ascii='false')
+    self.response.out.write(response)
+      
+    
+    
 class GetBoundedOrgs(webapp.RequestHandler):
   def get(self):
     name = self.request.get('name')

@@ -31,6 +31,7 @@ def main():
                                       ('/info/votelocal', services.VotesInLocationService),
                                       ('/info/continents', services.ContinentsInfoService),
                                       ('/info/countries', services.CountriesInfoService),
+                                      ('/info/translations', services.GetTranslation),
                                       ('/info/states', services.StatesInfoService),
                                       ('/info/postcodes', services.PostcodesInfoService),
                                       ('/info/orgs', services.OrgsInfoService),

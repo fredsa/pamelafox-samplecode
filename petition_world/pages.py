@@ -46,6 +46,9 @@ class BasePage(webapp.RequestHandler):
     bg_color = self.request.get('bg_color')
     website = self.request.get('website')
     tabSet = self.request.get('tabSet')
+    language = self.request.get('language')
+    if len(language) == 0:
+      language = 'en'
 
     if len(tabSet) == 0:
       tabSet = '<map name="Map" id="Map"> \
@@ -61,7 +64,8 @@ class BasePage(webapp.RequestHandler):
           <area shape="rect" coords="133,10,190,39" href="learn?skin=mini&amp;bg_color=%s&amp;tabSet=Blue" /> \
             <area shape="rect" coords="219,10,400,39" href="vote?skin=mini&amp;bg_color=%s&amp;tabSet=Blue" /> </map>' % (bg_color,bg_color,bg_color,bg_color)
        imageColor = 'Blue'
-        
+    
+    localisedStrings = util.getTranslation(language,'en')
     template_values = {
       'page_title': page_title,
       'page_num': page_num,
@@ -73,7 +77,8 @@ class BasePage(webapp.RequestHandler):
       #TODO: start using these in the templates
       'vote_href': "/vote?skin=%s&amp;bg_color=%s&amp;website=%s" % (skin, bg_color, website),
       'explore_href': "/explore?skin=%s&amp;bg_color=%s&amp;website=%s" % (skin, bg_color, website),
-      'learn_href': "/learn?skin=%s&amp;bg_color=%s&amp;website=%s" % (skin, bg_color, website)
+      'learn_href': "/learn?skin=%s&amp;bg_color=%s&amp;website=%s" % (skin, bg_color, website),
+      'localisedStrings': localisedStrings
     }
     return template_values
 
@@ -184,7 +189,13 @@ class CreateLocalisation(webapp.RequestHandler):
   
 class AddLocalistation(webapp.RequestHandler):
   def post(self):
-    #todo: add to db
+      update = {}
+      arguments = self.request.arguments()
+      for name in arguments:
+        update[name] = self.request.get(name)
+      
+      util.updateTranslationTable('en',update)
+      
     
 class UploadPage(webapp.RequestHandler):
   def get(self):
