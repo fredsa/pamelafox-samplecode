@@ -25,6 +25,8 @@
     <script src="/js/markermanager.js"></script>
     <script src="/js/maptooltip.js"></script>
     <script src="/js/mapiconmaker.js"></script>
+    <!--after everything has been created we want to resize the show your vote div -->
+    <script src="/js/resize.js"></script>
 	<script type="text/javascript">
 		var mapManager;
 	jQuery(document).ready(function()
@@ -37,7 +39,7 @@
 <!--    <script type="text/javascript" src="http://jquery.malsup.com/cycle/jquery.cycle.all.js"></script> -->
 {% endblock %}
 {% block content %}
-  <div id="explore">
+  <div id="explore" style="width:{{mapWidth}}px;">
     <div id="MapTop">
        <div class="Search left" style="width:400px">
          <input type="text" id="searchInput" name="search" style="float: left; margin-right: 10px; font-size:10px">
@@ -47,10 +49,10 @@
            </div>
        </div>
        <div class="Totals right">
-           <span id="votes_span"><span id="votes"></span>&nbsp;Supporters</span>
+            <span id="votes_span"><span id="votes"></span>&nbsp;{{localisedStrings.supporters}}</span>
         </div>
     </div>
-   <div id="explore_map"></div>
+   <div id="explore_map" style="width:{{mapWidth}}px;"></div>
   
   <!--    <div class="bottom">
         <a id="big_button" href="http://www.youtube.com/user/Cop15">
