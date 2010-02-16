@@ -19,7 +19,7 @@
 
         }[location.host] +
         '" type="text/javascript"><\/script>'
-      );
+      ); 
     </script>
     <script src="/js/Earthhour.js"></script>
     <script src="/js/Large.js"></script>
@@ -116,10 +116,6 @@
             <input type="checkbox" name="optin" id="optin" value="true"/>
             <span class="optinText">I would like to receive news and updates from Earth Hour and WWF</span>
           </li>
-          <li class="loc optin">
-            <label for="optin">optin<em>*</em></label>
-            <input type="checkbox" name="optin" id="optin" value="yes"> 
-          </li>
           <li>
              <p style="font-size: 10px"><b>{{ localisedStrings.required }}<em>*</em></b>
           </li>
@@ -143,4 +139,3 @@
 	<a href="register?skin=mini&amp;bg_color={{bg_color}}" target="_blank" style="color:#ffffff">Show the Vote on your website</a> - <a href="terms?skin=mini&amp;bg_color={{bg_color}}" target="_blank" style="color:#ffffff">Show Your Vote Terms of Use</a>
 	  </div>
 {% endblock %}
-
