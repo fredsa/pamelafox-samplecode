@@ -20,7 +20,6 @@ var markerManager;
 var markerManagerSearch;
 
 
-debugger;
 if (site_bg_color == "" || site_bg_color == null) {
   switch(site_skin) {
   case "mini":
@@ -101,10 +100,21 @@ function loadNonce() {
 
 function handleSubmit()
 {
+  if($('#sign').valid())
+    {
+      if(typeof extraSubmitAction == 'function')
+      {
+        extraSubmitAction($("#email").val(),$("#phone").val());
+      }     
+    }
+  //perform call back
+ 
+  /*
   $("#vote").hide();
   jQuery('#lng').val();
   var point = new GLatLng(jQuery('#lat').val(),jQuery('#lng').val());
       voteMap.setCenter(point, 8);
+      */
 }
 
 jQuery(document).ready(function() {
@@ -122,14 +132,13 @@ jQuery(document).ready(function() {
                 $(this.lastElement).each(function() {
                     $("[for='" + this.id + "']").removeClass("Error");
                 });
-            }           
-  }});
-
+          }}
+        });
   initVoteMap();
   initExploreMap(voteMap);
   initSearch();
-  $("sign").click(handleSubmit);
-  window.setInterval(animateTotals, 4000);
+  $("#Submit").click(handleSubmit);
+  //window.setInterval(animateTotals, 4000);
   google.friendconnect.container.setParentUrl('/gfc/');
   
   if (geo_position_js.init()) {
@@ -278,12 +287,13 @@ function toggleForm(formValue) {
     jQuery('#org_name').rules('add', {required: true});
     jQuery('.person').hide();
     jQuery('.org').show();
+    $(".earthhour").hide();
   } else {
     jQuery('.org').hide();
     jQuery('#email').rules('remove');
     jQuery('#streetinfo').rules('remove');
     jQuery('#org_name').rules('remove');
-    jQuery('.person').show();
+    jQuery('.earthhour').show();
   }
 }
 

@@ -78,7 +78,16 @@ p { margin: 10px 0; }
   padding-left: 10px;
 
 }
+.optinText
+{
+  font-size: 0.9em;
+  padding-left: 10px;  
 
+}
+#optin
+{
+  width: 17px;
+}
 .Totals span
 {
   font-size: 18px;

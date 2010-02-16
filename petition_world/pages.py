@@ -46,10 +46,21 @@ class BasePage(webapp.RequestHandler):
     bg_color = self.request.get('bg_color')
     website = self.request.get('website')
     tabSet = self.request.get('tabSet')
-    language = self.request.get('language')
+    language = self.request.get('language')   
+    mapWidth = self.request.get('mapWidth')
+    
     if len(language) == 0:
       language = 'en'
 
+    if len(mapWidth) == 0:
+      if page_num == 1:
+        mapWidth = '550px'
+      elif page_num == 2:
+        mapWidth == '892px'
+    else:
+      #blurgh but ensures a sane string
+        mapWidth = mapWidth.replace("px","")
+        
     if len(tabSet) == 0:
       tabSet = '<map name="Map" id="Map"> \
           <area shape="rect" coords="1,1,189,39" href="vote?skin=mini&amp;bg_color=%s" /> \
@@ -78,7 +89,8 @@ class BasePage(webapp.RequestHandler):
       'vote_href': "/vote?skin=%s&amp;bg_color=%s&amp;website=%s" % (skin, bg_color, website),
       'explore_href': "/explore?skin=%s&amp;bg_color=%s&amp;website=%s" % (skin, bg_color, website),
       'learn_href': "/learn?skin=%s&amp;bg_color=%s&amp;website=%s" % (skin, bg_color, website),
-      'localisedStrings': localisedStrings
+      'localisedStrings': localisedStrings,
+      'mapWidth': mapWidth
     }
     return template_values
 
@@ -194,7 +206,7 @@ class AddLocalistation(webapp.RequestHandler):
       for name in arguments:
         update[name] = self.request.get(name)
       
-      util.updateTranslationTable('en',update)
+      util.updateTranslationTable(self.request.get('Language'),update)
       
     
 class UploadPage(webapp.RequestHandler):
@@ -354,6 +366,7 @@ class UpdateTwitter(webapp.RequestHandler):
             
 class SignerAddService(webapp.RequestHandler):
   def post(self):    
+    logging.info('adding a vote')
     skin = 'mini'
     version = self.request.get('version')
     if version != '':
@@ -409,7 +422,9 @@ class SignerAddService(webapp.RequestHandler):
     else:
       signer = models.PetitionSigner()
       logging.info("Unidentified signer, creating anyway.")
+    logging.info(signer.type)  
     new_voter = (not signer.type)
+    logging.info(new_voter)
     # defaults to a person
     if not self.request.get('org_name') or self.request.get('org_name') == '':
       signer.type = 'person'

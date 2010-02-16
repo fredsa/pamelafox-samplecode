@@ -245,7 +245,6 @@ def getContinentVotes(continentCode):
 def getCountryVotes(countryCode):
   votesMemcache = memcache.get(models.MEMCACHE_VOTES + countryCode)
   if votesMemcache is not None:
-    logging.info(countryCode + "memCache hit getCountryvotes votes" + votesMemcache)  
     return int(votesMemcache)
     
   elif not countryHasPostcodes(countryCode) and not countryHasStates(countryCode):

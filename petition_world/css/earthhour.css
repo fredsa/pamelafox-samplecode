@@ -49,6 +49,17 @@ p { margin: 10px 0; }
     margin-top: 7px;
 }
 
+.optinText
+{
+  font-size: 0.9em;
+  padding-left: 10px;  
+
+}
+#optin
+{
+  width: 17px;
+}
+
 .Search
 {
   
@@ -99,7 +110,6 @@ p { margin: 10px 0; }
 
 
 #explore_map {
-  width: 892px;
   height: 400px;
   background-color: red;
 }
