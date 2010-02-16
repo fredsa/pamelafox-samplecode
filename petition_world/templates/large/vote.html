@@ -21,98 +21,107 @@
         '" type="text/javascript"><\/script>'
       );
     </script>
+    <script src="/js/Earthhour.js"></script>
     <script src="/js/Large.js"></script>
     <script src="/js/markermanager.js"></script>
     <script src="/js/maptooltip.js"></script>
     <script src="/js/mapiconmaker.js"></script>
-    
+    <script src="/js/resize.js"></script>
     <!-- <script src="/js/explore.js"></script> -->
-
+  
+      
 
 {% endblock %}
 
 
 {% block content %}
  <!-- map -->
- <div id="MapContainer" class="left" style="background-color:{{bg_color}}">
+ <div id="MapContainer" class="left" style="width: {{mapWidth}};background-color:{{bg_color}}">
   <div id="MapTop">
        <div class="Search left" style="width:290px">
          <input type="text" id="searchInput" name="search" style="float: left; margin-right: 10px; font-size:10px">
            <div class="imageHolder" style="width:40px; float: left margin-bottom:10spx" >
              <input type="Image" id="searchButton" SRC="images/Large/search.png">
-             <span id="cancelLink" style="text-decoration: underline; display: none; font-size: 16px; cursor: pointer;">Cancel</span>
+             <span id="cancelLink" style="text-decoration: underline; display: none; font-size: 16px; cursor: pointer;">{{ localisedStrings.cancel }}</span>
            </div>
        </div>
        <div class="Totals right">
-           <span id="votes_span"><span id="votes"></span>&nbsp;Supporters</span>
+           <span id="votes_span"><span id="votes"></span>&nbsp;{{ localisedStrings.supporters }}</span>
         </div>
     </div>
-   <div id="vote_map" style="width: 598px; height: 395px; overflow:hidden;">
+   <div id="vote_map" style="width: {{mapWidth}}; height: 395px; overflow:hidden;">
         <!-- map element -->
 
     </div>
  
   </div>
   <div id="vote" class="left">
-  <h1> Show your vote </h1>
+  <h1> {{localisedStrings.showvote}}</h1>
     <form name="sign" id="sign" enctype="multipart/form-data" action="/add/signer" method="post" class="cmxform">
       <input type="hidden" name="website" value="{{ website }}" />
-     
       <fieldset id="VoteForm">
       <legend>
-        <p style="font-size:11px; margin-top:-5px"><b>On 27th March 2010, at 8.30pm people from all around the world will be switching off their lights for Earth Hour. Make sure you are one of them and pledge your support now by signing up below.</b></p>
+        <p style="font-size:11px; margin-top:0px"><b>{{ localisedStrings.aboveform }}</b></p>
       </legend>
-      <br />
+      <br>
         <ol style="font-size:11px">
           <li>
-            <label for="form_toggle">Are You An<em>*</em></label>
+            <label for="form_toggle">{{ localisedStrings.areyouan }}<em>*</em></label>
             <select id="form_toggle" onchange="toggleForm(jQuery(this).val())">
-              <option value="person">Individual</option>
-              <option value="org">Organization</option>
+              <option value="person">{{ localisedStrings.individual }}</option>
+              <option value="org">{{ localisedStrings.organization }}</option>
             </select>
           </li>
           <li class="org">
-            <label for="org_name">Organization<em>*</em></label>
+            <label for="org_name">{{ localisedStrings.organization }}<em>*</em></label>
             <input name="org_name" id="org_name" />
           </li>
-          <li class="org">
-            <label for="email">Email<em>*</em></label>
+          <li class="email">
+            <label for="email">{{ localisedStrings.email }}</label>
             <input name="email" id="email" class="email"/>
           </li>
+          <li class="loc phone earthhour">
+            <label for="phone">{{ localisedStrings.phone }}</label>
+            <input name="phone" id="phone" class="phone"/>
+          </li>
+          <li class="loc postcode">
+            <label for="postcode">{{ localisedStrings.postcode }}<em>*</em></label>
+            <input type="text" name="postcode" id="postcode"/>
+          </li>
           <li class="org">
-            <label for="org_icon" style="width:35px">Icon:</label>
+            <label for="org_icon" style="width:35px">{{ localisedStrings.icon }}:</label>
             <input type="file" name="org_icon">
           </li>
           <li class="loc country">
-            <label for="country">Country<em>*</em></label>
+            <label for="country">{{ localisedStrings.country }}<em>*</em></label>
             <select name="country" id="country" class="required">
-              <option value="">- Select Your Country -</option>
+              <option value="">- {{localisedStrings.selectcountry}} -</option>
             </select>
           </li>
           <li class="loc state">
-            <label for="state">State<em>*</em></label>
+            <label for="state">{{ localisedStrings.state }}<em>*</em></label>
             <select name="state" id="state">
-              <option value="">- Select Your State -</option>
+              <option value="">- {{localisedStrings.selectState}} -</option>
             </select>
           </li>
           <li class="loc org">
-            <label for="streetinfo">Street<em>*</em></label>
+            <label for="streetinfo">{{ localisedStrings.street }}<em>*</em></label>
             <input type="text" name="streetinfo" id="streetinfo"/>
           </li>
           <li class="loc">
-            <label for="city">City</label>
+            <label for="city">{{ localisedStrings.city }}</label>
             <input type="text" name="city" id="city"/>
           </li>
-          <li class="loc postcode">
-            <label for="postcode">Postcode<em>*</em></label>
-            <input type="text" name="postcode" id="postcode"/>
+          <li class="loc optin earthhour">
+            <input type="checkbox" name="optin" id="optin" value="true"/>
+            <span class="optinText">I would like to receive news and updates from Earth Hour and WWF</span>
           </li>
           <li class="loc optin">
             <label for="optin">optin<em>*</em></label>
             <input type="checkbox" name="optin" id="optin" value="yes"> 
           </li>
           <li>
-             <p style="font-size: 10px"><b>Required fields marked <em>*</em></b>
+             <p style="font-size: 10px"><b>{{ localisedStrings.required }}<em>*</em></b>
           </li>
         </ol>
         <input type="hidden" id="nonce" name="nonce" />
@@ -124,7 +133,7 @@
       </fieldset>
       
       <!--TODO: position this button -->
-      <input TYPE="image" id="Submit" SRC="images/SubmitButton.png" ALT="Submit Form" />
+      <input type="image" id="Submit" src="images/SubmitButton.png" alt="Submit Form" />
       <div id="errmsg" style="color:#ff0000"></div>
     </form>
   </div>
