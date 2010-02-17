@@ -4,7 +4,7 @@ $(document).ready(function()
 	if($("#vote_map").length > 0)
 	{
 		//40 is the padding and margin allowance
-		width += $("#vote").width() +40;
+		width += $("#vote").width() +140;
 		if(width < 892)
 		 	width = 892;
 	}

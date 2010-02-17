@@ -98,13 +98,34 @@ function loadNonce() {
   }
 }
 
+
+$("#sign").submit(function () {
+ if($('#sign').valid())
+ {
+  if ($.formLoading != false)
+  {
+    if(typeof extraSubmitAction == 'function')
+      {
+        extraSubmitAction($("#email").val(),$("#phone").val(),$('#optin').is(':checked'));
+        $.formLoading = false;
+        $("#Form").submit();
+      }  
+    return false;
+  }
+  else
+  {
+    return true;
+  }
+}
+});
+
 function handleSubmit()
 {
   if($('#sign').valid())
     {
       if(typeof extraSubmitAction == 'function')
       {
-        extraSubmitAction($("#email").val(),$("#phone").val());
+        extraSubmitAction($("#email").val(),$("#phone").val(),$('#optin').is(':checked'));
       }     
     }
   //perform call back

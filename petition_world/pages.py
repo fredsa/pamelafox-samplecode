@@ -54,9 +54,9 @@ class BasePage(webapp.RequestHandler):
 
     if len(mapWidth) == 0:
       if page_num == 1:
-        mapWidth = '550px'
+        mapWidth = '550'
       elif page_num == 2:
-        mapWidth == '892px'
+        mapWidth = '892'
     else:
       #blurgh but ensures a sane string
         mapWidth = mapWidth.replace("px","")
@@ -207,7 +207,7 @@ class AddLocalistation(webapp.RequestHandler):
         update[name] = self.request.get(name)
       
       util.updateTranslationTable(self.request.get('Language'),update)
-      
+      self.response.out.write(self.request.get('Language') + " has been updated, Thank You")
     
 class UploadPage(webapp.RequestHandler):
   def get(self):

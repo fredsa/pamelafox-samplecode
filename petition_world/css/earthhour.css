@@ -13,7 +13,7 @@ p { margin: 10px 0; }
 
 #show_your_vote {
   overflow: hidden;
-  width: 892px;
+  width: 100%;
   height: 442px;
   border: none;
   background-color: #F8EDD5;

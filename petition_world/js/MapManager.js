@@ -311,7 +311,7 @@ var MapManager = function(param) {
 
     var showTotals = function()
     {
-        window.setInterval(animateTotals, 4000);
+        //window.setInterval(animateTotals, 4000);
         jQuery.getJSON("/info/totals", processHandlers.processTotals);
     };
 
