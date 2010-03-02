@@ -1,6 +1,6 @@
 
    var extraSubmitAction = function(userEmail,userPhone,userOptin)
-    {w
+    {
         data = {};
         data.phone = userPhone;
         data.email = userEmail;

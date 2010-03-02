@@ -123,10 +123,11 @@ function handleSubmit()
 {
   if($('#sign').valid())
     {
+
       if(typeof extraSubmitAction == 'function')
       {
         extraSubmitAction($("#email").val(),$("#phone").val(),$('#optin').is(':checked'));
-      }     
+      }   
     }
   //perform call back
  
@@ -304,17 +305,13 @@ function geoError() {
 function toggleForm(formValue) {
   if (formValue == 'org') {
     jQuery('#email').rules('add', {required: true});
-    jQuery('#streetinfo').rules('add', {required: true});
     jQuery('#org_name').rules('add', {required: true});
     jQuery('.person').hide();
     jQuery('.org').show();
-    $(".earthhour").hide();
   } else {
     jQuery('.org').hide();
     jQuery('#email').rules('remove');
-    jQuery('#streetinfo').rules('remove');
     jQuery('#org_name').rules('remove');
-    jQuery('.earthhour').show();
   }
 }
 

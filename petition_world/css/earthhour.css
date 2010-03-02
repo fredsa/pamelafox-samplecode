@@ -284,6 +284,7 @@ form.cmxform label {
   vertical-align: top;
   width: 88px;
   font-size:  1.2em;
+  height: 17px;
 }
 
 form.cmxform fieldset ol {
@@ -294,11 +295,11 @@ form.cmxform fieldset ol {
 
 form.cmxform fieldset li {
   list-style: none;
-  margin: 0;
+  margin: -1px;
   -moz-background-clip:border;
   -moz-background-inline-policy:continuous;
   -moz-background-origin:padding;
-  padding: 3px 7px 5px;
+  padding: 1px 7px 5px;
 }
 
 form.cmxform fieldset li input {

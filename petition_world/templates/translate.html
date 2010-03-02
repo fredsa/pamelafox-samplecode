@@ -1,23 +1,113 @@
 <html>
 <head>
 <style type="text/css">
+body
+{
+      background-color: black;
+      background-repeat: repeat-x repeat-y;
+      background-image: url('images/bg.gif');
+      text-align: center
+}
+form
+{
+
+}
 .translateform
 {
-	list-style: none;
+	list-style: decimal;
+      color: black;
+          background-color: white;
+            border: 10px solid #006b91;
 }
 
-.translateform OL LI LABEL
+.translateform label
 {
 	width: 150px;
-	line-height: 10px;
+      display: inline-block;
+      height: 30px;
+  
+}
+.translateform select,
+.translateform input
+{
+      width: 247px;
+      line-height: 10px;
+}
+#formContainer
+{
+    
+      width: 620px;
+      height: 940px;
+      text-align: left;
+      margin: auto;
+  
+}
+.translateform LI
+{
+      padding-bottom: 10px;
+}
+.translateform textarea
+{
+      width: 401px;
+      height: 38px;
+      
+}
+
+
+.translateform label.long
+{
+      width: 561px;
+          line-height: 15px;
+      padding-bottom: 10px;
+}
+.translateform input.long
+{
+      width: 401px;
+      line-height: 15px;
+}
+#header
+{
+      background-repeat: no-repeat;
+       background-image: url('images/earthHourHeader.gif');  
+       width: 643px;
+       height: 134px;
+}
+.headingText
+{
+      font-size: 1.4em;
+      width: 575px;
+      color: #50c0e8;
+      border-bottom: 1px solid #cecece;
+      margin-left: 15px;
+      margin-right: 15px;
+      padding-top
+}
+
+.submitButton
+{
+      float:right;
+      overflow:hidden;
+      width: 69px !important;
+      height: 17px !important;    
+      margin-right: 155px;
+      margin-bottom: 15px;
 }
 </style>
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.js" type="text/javascript"></script>
 <script src="/js/translate.js" type="text/javascript"></script>
 </head>
 <body>
-   <form method="post" action="add/translation">
-   <ol class="translateform">
+   <div id="formContainer">
+
+   <div id="header">
+
+   </div>
+
+   <form method="post" action="add/translation" class="translateform">
+      <div class="headingText">
+      Show your support
+      </div>
+   <ol >
       <li>
       <label for="Language">Language</label>
       	<select id="Language" name="Language">
@@ -226,19 +316,32 @@
             <option value="za">Zhuang; Chuang</option>
             <option value="zh">Chinese</option>
             <option value="zu">Zulu</option>
-</select>
-      </li>  
+</select> 
       <li>
-          <label for="countries">Countries</label>
-          <input name="countries" id="countries" />
+                  <label for="supporters">Supporters</label>
+                  <input name="supporters" id="supporters" />
+      </li>
+
+       <li>
+                  <label for="showvote">Show your support</label>
+                   <input name="showvote" id="showvote" />
+      </li>  
+      
+       <li>
+                  <label class="long" for="aboveform">On 27th March 2010, at 8.30pm people from all around the world will be switching off their lights for Earth Hour. Make sure you are one of them and pledge your support now by signing up below.</label>
+            <textarea id="aboveform" name="aboveform"></textarea>
       </li>
       <li>
-          <label for="organizations">Organizations</label>
-          <input name="organizations" id="organizations" />
-      </li>  
-      <li>
-          <label for="areyouan">Are You An</label>
+          <label for="areyouan">I am an</label>
           <input name="areyouan" id="areyouan" />
+      </li>
+     <li>
+            <label for="individual">Individual</label>
+            <input name="individual" id="individual" />
+      </li>
+          <li>
+            <label for="organization">Organization</label>
+            <input name="organization" id="organization" />
       </li>
          <li>
           <label for="selectstate">Select your state</label>
@@ -248,84 +351,61 @@
           <label for="selectcountry">Select your country</label>
           <input name="selectcountry" id="selectcountry" />
       </li>
-      <li>
-      		<label for="icon">Icon</label>
-        	<input name="icon" id="icon" />
-      </li>
-      <li>
-      		<label for="email">Email</label>
-          	<input name="email" id="email" />
-      </li>
             <li>
-                  <label for="phone">Mobile</label>
+                  <label for="email">Email</label>
+            <input name="email" id="email" />
+      </li>
+      <li>
+             <label for="phone">Mobile</label>
             <input name="phone" id="phone" />
       </li>
       <li>
-          	<label for="organization">Organization</label>
-          	<input name="organization" id="organization" />
+            <label for="postcode">Postcode</label>
+            <input name="postcode" id="postcode" />
+      </li>
+     <li>
+                  <label for="country">Country</label>
+                  <input name="country" id="country" />
       </li>
       <li>
-			<label for="country">country</label>
-			<input name="country" id="country" />
+                  <label for="city">City</label>
+            <input name="city" id="city" />
       </li>
       <li>
-			<label for="state">state</label>
-			<input name="state" id="state" />
+                  <label for="state">State</label>
+                  <input name="state" id="state" />
       </li>
       <li>
-      		<label for="street">street</label>
-      		<input name="street" id="street" />
+            <label for="icon">Icon</label>
+            <input name="icon" id="icon" />
       </li>
       <li>
-		  	<label for="city">city</label>
-          	<input name="city" id="city" />
+                  <label for="street">Street</label>
+                  <input name="street" id="street" />
       </li>
       <li>
-		  	<label for="postcode">postcode</label>
-          	<input name="postcode" id="postcode" />
+                  <label class="long" for="optinText">I would like to receive news and updates from Earth Hour and WWF by email and mobile</label>
+                   <input class="long" name="optinText" id="optinText" />
+      </li>
+        
+      <li>
+                  <label for="required">Required fields marked</label>
+            <input name="required" id="required" />
+      </li>
+ 
+  
+      <li>
+            <label for="cancel">Cancel</label>
+             <input name="cancel" id="cancel" />
       </li>
       <li>
-		  	<label for="optin">optin</label>
-          	<input name="optin" id="optin" />
-      </li>
-      <li>
-		  	<label for="individual">individual</label>
-          	<input name="individual" id="individual" />
-      </li>
-      <li>
-			<label for="votes">votes</label>
-          	<input name="votes" id="votes" />
-      </li>
-        <li>
-                  <label for="supporters">supporters</label>
-            <input name="supporters" id="supporters" />
-      </li>
-      <li>
-      		<label for="cancel">cancel</label>
-         	 <input name="cancel" id="cancel" />
-      </li>
-      <li>
-      		<label for="showvote">Show your vote</label>
-          	<input name="showvote" id="showvote" />
-      </li>
-      <li>
-      		<label for="required">Required fields marked</label>
-          	<input name="required" id="required" />
-      </li>
-      <li>
-                  <label for="optinText">I would like to receive news and updates from Earth Hour and WWF</label>
-            <input name="optinText" id="optinText" />
-      </li>
-      <li>
-      <label for="pledge">Thank you for pledging your support. You have joined <number of votes> people and organisations who are already supporting the cause. Don't forget to turn your lights out on Saturday 27th March at 8.30pm</label>
-            <input name="pledge" id="pledge" />
-      </li>
-      <li>
-       		<label for="aboveform">On 27th March 2010, at 8.30pm people from all around the world will be switching off their lights for Earth Hour. Make sure you are one of them and pledge your support now by signing up below.</label>
-          	<textarea rows="2" cols="20" id="aboveform" name="aboveform"></textarea>
+      <label class="long" for="pledge">Thank you for pledging your support. You have joined people and organisations who are already supporting the cause. Don't forget to turn your lights out on Saturday 27th March at 8.30pm</label>
+            <textarea  name="pledge" id="pledge"></textarea>
       </li>
    </ol>
-    <input type="submit" value="submit" id="hello" name="hello" />
+    <input type="image" class="submitButton" src="/images/SubmitButtonOrange.gif" value="submit" id="submitform" name="submitform" />
+      <div style="clear:both"></div>
    </form>
+</div>
 </body>
 </html>

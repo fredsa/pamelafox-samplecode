@@ -5,10 +5,11 @@ form.cmxform fieldset {
 
 form.cmxform label {
   display: inline-block;
-  line-height: 1.0;
+  line-height: 1;
   vertical-align: top;
   width: 140px;
-  font-size: 12px;
+  font-size: 10px;
+  height: 13px;
 }
 
 form.cmxform fieldset ol {
@@ -22,7 +23,7 @@ form.cmxform fieldset li {
   -moz-background-clip:border;
   -moz-background-inline-policy:continuous;
   -moz-background-origin:padding;
-  padding: 3px 7px 5px;
+  padding: 1px 7px 5px;
 }
 
 form.cmxform fieldset li input {

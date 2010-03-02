@@ -47,7 +47,7 @@ class BasePage(webapp.RequestHandler):
     website = self.request.get('website')
     tabSet = self.request.get('tabSet')
     language = self.request.get('language')   
-    mapWidth = self.request.get('mapWidth')
+    mapWidth = self.request.get('mapwidth')
     
     if len(language) == 0:
       language = 'en'
@@ -369,6 +369,7 @@ class SignerAddService(webapp.RequestHandler):
     logging.info('adding a vote')
     skin = 'mini'
     version = self.request.get('version')
+    redirect = ''
     if version != '':
         version = "&version=%s" % version
     if self.request.get('skin') != '':
@@ -377,18 +378,19 @@ class SignerAddService(webapp.RequestHandler):
     hashedNonce = self.request.get('nonce')
     cachedVal = originalNonce and memcache.get(originalNonce)
     personName = self.request.get('person_name')
+    redirect = '/explore?bg_color=%s&location=%s&skin=%s%s' % (self.request.get('bg_color'),self.request.get('postcode'),skin,version)
     if (hashedNonce and originalNonce and cachedVal is not None and hashlib.sha1(originalNonce).hexdigest() == hashedNonce):
       logging.info("Signature accepted: " + personName)
       signer = self.createSignerFromParams(self.request)
       memcache.delete(originalNonce, 0)
       if signer is not None:
+        if signer.latlng is not None:
           self.response.headers.add_header('Set-Cookie', 'latlng=%s; expires=Fri, 31-Dec-2020 23:59:59 GMT; path=/' % (str(signer.latlng.lat) + ',' + str(signer.latlng.lon)))
       else:
         logging.info("Signer None vote details lat: %s long:%s country: %s" % (self.request.get('lat'), self.request.get('lng'), self.request.get('country')))
       # Remove the nonce cookie
-      self.response.headers.add_header('Set-Cookie', 'nonce=; expires=Fri, 31-Dec-1980 23:59:59 GMT; path=/')
+      #self.response.headers.add_header('Set-Cookie', 'nonce=; expires=Fri, 31-Dec-1980 23:59:59 GMT; path=/')
       #not set so chanes are it was not set  
-      redirect = '/explore?bg_color=%s&location=%s&skin=%s%s' % (self.request.get('bg_color'),self.request.get('postcode'),skin,version)
       if self.request.get('mapType') != '':
            redirect = '/visualisation?skin=large'
           
@@ -406,7 +408,7 @@ class SignerAddService(webapp.RequestHandler):
       else:
         logging.info("Marked as spam (unknown reason): " + personName)
      
-        self.redirect('/')
+        self.redirect(redirect)
 
   # test with: /add/signer?person_name=Pamela&country=AU&state=NSW&postcode=2009&lat=-33.869709&lng=151.19393
   def get(self):
