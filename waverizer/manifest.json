@@ -1,0 +1,19 @@
+{
+  "name": "Wave Note",
+  "version": "1.0",
+  "description": "Lets you wave bits of text.",
+  "background_page": "background.html",
+  "browser_action": {
+    "default_icon": "icon_wave.jpg", // required
+    "default_title": "Wave Note" // optional; shown in tooltip
+  },
+  "content_scripts": [
+    {
+      "matches": ["http://*/*"],
+      "js": ["content_script.js"]
+    }
+  ],
+  "permissions": [
+    "tabs", "http://*/*"
+  ]
+}
