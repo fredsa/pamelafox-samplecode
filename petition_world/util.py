@@ -129,10 +129,22 @@ def getCountryVotesInStore(countryCode):
     
 def getCountryMassVotes(countryCode):
     query = db.Query(models.MassVotes)
-    query.filter('country =',countryCode)
-    result = query.get()
+    result = query.filter('country =',countryCode)
+    orgs = []
+    for vote in result:
+      orgs.append(vote.org)
+
+    return orgs
     
 
+def updateOrg(orgName,campaignCode):
+  query = db.Query(models.MassVotes)
+  result = query.filter('org =',orgName)
+  for org in result:
+    org.campaign_code = campaignCode
+    org.put()
+  
+    
 def getCountryVotesPerStateInStore(countryCode):
   numVotesInCountry = 0
   for stateCode in geodata.countries[countryCode]['states']:
@@ -169,15 +181,16 @@ def getTranslation(languageCode,default=''):
     query = db.Query(models.LocalisationStrings)
     query.filter('languageCode =',languageCode)
     ret = query.get()
-    if len(default) == 0:
+    if len(default) is not 0:
       if ret is None:
         query = db.Query(models.LocalisationStrings)
         query.filter('languageCode =',default)
         ret = query.get()
-    return ret
+        languageCode = default
+    return ret,languageCode
 
 def updateTranslationTable(languageCode, resources):
-  currentValues = getTranslation(languageCode)
+  currentValues = getTranslation(languageCode)[0]
   if currentValues is None:
     currentValues = models.LocalisationStrings()
     currentValues.languageCode = languageCode
@@ -199,18 +212,18 @@ def getStateVotesInStore(countryCode, stateCode):
     numVotesInState += result.counter
   return numVotesInState
 
-def getTotals():
+def getTotals(campaignCode=''):
   # keep this memcached as much as possible
   # perhaps only re-calculate every 5 minutes?
-  orgsMemcache = memcache.get('ORGS_TOTAL')
+  orgsMemcache = memcache.get('ORGS_TOTAL'+campaignCode)
   if orgsMemcache is None:
     numOrgs = getTotalOrgs()
-    memcache.set('ORGS_TOTAL', str(numOrgs), 300)
+    memcache.set('ORGS_TOTAL' + campaignCode , str(numOrgs), 300)
   else:
     numOrgs = int(orgsMemcache)
 
-  votesMemcache = memcache.get(models.MEMCACHE_VOTES + 'TOTAL')
-  countriesMemcache = memcache.get(models.MEMCACHE_VOTES + 'COUNTRIES')
+  votesMemcache = memcache.get(models.MEMCACHE_VOTES + 'TOTAL' + campaignCode)
+  countriesMemcache = memcache.get(models.MEMCACHE_VOTES + 'COUNTRIES' + campaignCode)
   if votesMemcache is not None and countriesMemcache is not None:
     logging.info("Memcache total hit: votes: %s countries: %s Orgs: %s" % (votesMemcache, countriesMemcache,numOrgs))
     return int(votesMemcache), int(countriesMemcache), numOrgs
@@ -218,32 +231,33 @@ def getTotals():
     numVotesTotal = 0
     numCountries = 0
     for countryCode in geodata.countries:
-      numVotesInCountry = getCountryVotes(countryCode)
+      numVotesInCountry = getCountryVotes(countryCode,campaignCode)
       if numVotesInCountry > 0:
         numCountries += 1
         numVotesTotal += numVotesInCountry
 
-    memcache.set(models.MEMCACHE_VOTES + 'TOTAL', str(numVotesTotal), time=300)
-    memcache.set(models.MEMCACHE_VOTES + 'COUNTRIES', str(numCountries), time=300)
+    memcache.set(models.MEMCACHE_VOTES + 'TOTAL' + campaignCode, str(numVotesTotal), time=300)
+    memcache.set(models.MEMCACHE_VOTES + 'COUNTRIES'+campaignCode, str(numCountries), time=300)
     logging.info("Memcache total miss: votes: %s countries: %s Orgs: %s" % (numVotesTotal, numCountries,numOrgs))
     return numVotesTotal, numCountries, numOrgs
 
 
-def getContinentVotes(continentCode):
-  votesMemcache = memcache.get(models.MEMCACHE_VOTES + 'CONT_' + continentCode)
+def getContinentVotes(continentCode,campaignCode=''):
+  votesMemcache = memcache.get(models.MEMCACHE_VOTES + 'CONT_' + continentCode + campaignCode)
   if votesMemcache is not None:
     return int(votesMemcache)
   else:
     numVotesTotal = 0
     for countryCode in geodata.continents[continentCode]["countries"]:
-      numVotesTotal += getCountryVotes(countryCode)
+      numVotesTotal += getCountryVotes(countryCode,campaignCode)
     
     
-    memcache.set(models.MEMCACHE_VOTES + 'CONT_' + continentCode, str(numVotesTotal), 300)
+    memcache.set(models.MEMCACHE_VOTES + 'CONT_' + continentCode + campaignCode, str(numVotesTotal), 300)
     return numVotesTotal
 
-def getCountryVotes(countryCode):
-  votesMemcache = memcache.get(models.MEMCACHE_VOTES + countryCode)
+def getCountryVotes(countryCode,campaignCode=''):
+  logging.info('getCountryVotes campaignCode = ' + campaignCode)
+  votesMemcache = memcache.get(models.MEMCACHE_VOTES + countryCode + campaignCode)
   if votesMemcache is not None:
     return int(votesMemcache)
     
@@ -254,8 +268,8 @@ def getCountryVotes(countryCode):
   elif countryHasPostcodes(countryCode):
     votesInCountry = getCountryVotesPerPostcodeInStore(countryCode)
   
-  votesInCountry += getMassCountryVotes(countryCode)
-  memcache.set(models.MEMCACHE_VOTES + countryCode, str(votesInCountry),300)
+  votesInCountry += getMassCountryVotes(countryCode,campaignCode)
+  memcache.set(models.MEMCACHE_VOTES + countryCode + campaignCode, str(votesInCountry),300)
   return votesInCountry
 
 def getCountryBreakDown(countryCode):
@@ -268,21 +282,37 @@ def getCountryBreakDown(countryCode):
         memcache.set(models.genKeyForMassVote() + "orgs" + countryCode,result)
         return result
 
-def getMassCountryVotes(countryCode):
+def getMassCountryVotes(countryCode,campaignCode=''):
+  logging.info(campaignCode)
   votes = 0
-  votesMemcache = memcache.get(models.genKeyForMassVote() + countryCode)
+  votesMemcache = memcache.get(models.genKeyForMassVote() + countryCode + campaignCode)
   if votesMemcache is not None:
     logging.info(countryCode + " memCache hit mass votes " + votesMemcache)  
     return int(votesMemcache)
 
   query = db.Query(models.MassVotes)  
   result = query.filter('country =',countryCode)
+  if len(campaignCode) is not 0:
+    result = result.filter('campaign_code =',campaignCode)
+    
   for data in result:
     votes += int(data.counter)
 
-  memcache.set(models.genKeyForMassVote() + countryCode , str(votes),300)
+  memcache.set(models.genKeyForMassVote() + countryCode + campaignCode, str(votes),300)
   logging.info(countryCode + " memcache miss " + str(votes))  
   return votes
+
+
+def getMassVotesForCountry(countryCode):
+  query = db.Query(models.MassVotes)  
+  result = query.filter('country =',countryCode)
+  orgs =  {}
+  for massVote in result:
+    if massVote.org not in orgs:
+      orgs[massVote.org] = org
+    
+  return orgs
+  
 
 def getStateVotes(countryCode, stateCode):
   votesMemcache = memcache.get(models.MEMCACHE_VOTES + countryCode + stateCode)

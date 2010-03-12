@@ -76,7 +76,8 @@ class BasePage(webapp.RequestHandler):
             <area shape="rect" coords="219,10,400,39" href="vote?skin=mini&amp;bg_color=%s&amp;tabSet=Blue" /> </map>' % (bg_color,bg_color,bg_color,bg_color)
        imageColor = 'Blue'
     
-    localisedStrings = util.getTranslation(language,'en')
+    localisedStrings,language = util.getTranslation(language,'en')
+    
     template_values = {
       'page_title': page_title,
       'page_num': page_num,
@@ -90,7 +91,8 @@ class BasePage(webapp.RequestHandler):
       'explore_href': "/explore?skin=%s&amp;bg_color=%s&amp;website=%s" % (skin, bg_color, website),
       'learn_href': "/learn?skin=%s&amp;bg_color=%s&amp;website=%s" % (skin, bg_color, website),
       'localisedStrings': localisedStrings,
-      'mapWidth': mapWidth
+      'mapWidth': mapWidth,
+      'languageCode': language
     }
     return template_values
 
@@ -195,10 +197,39 @@ class CreateLocalisation(webapp.RequestHandler):
     # not the best solution, but the easiest to manage for now
     # Todo: these resource strings should really be loaded else where
     path = os.path.join(os.path.dirname(__file__), 'templates', 'translate.html')
-    logging.info(path)  
     template_values = {}
     self.response.out.write(template.render(path, template_values))
-  
+
+
+class EditMassVotes(webapp.RequestHandler):
+  def get(self):
+    path = os.path.join(os.path.dirname(__file__), 'templates', 'editmassvotes.html')
+    allOrgNames = []
+    #with out an org table this really is not optimal
+    for countryCode in geodata.countries:
+      orgsList = util.getCountryMassVotes(countryCode)
+      if len(orgsList) is not 0:
+        allOrgNames.extend(util.getCountryMassVotes(countryCode))
+      
+    allOrgNames = util.getUnique(allOrgNames)
+    logging.info(allOrgNames)
+    template_values = {'votes' : allOrgNames}
+    self.response.out.write(template.render(path, template_values))
+
+  def post(self):
+    allOrgNames = []
+    for countryCode in geodata.countries:
+      orgsList = util.getCountryMassVotes(countryCode)
+      if len(orgsList) is not 0:
+        allOrgNames.extend(util.getCountryMassVotes(countryCode))
+      
+      allOrgNames = util.getUnique(allOrgNames)
+      for orgName in allOrgNames:
+        campaignName = self.request.get(orgName)
+        util.updateOrg(orgName,campaignName)
+        
+    self.response.out.write("updated the mass votes, thank you")
+
 class AddLocalistation(webapp.RequestHandler):
   def post(self):
       update = {}
@@ -448,12 +479,14 @@ class SignerAddService(webapp.RequestHandler):
         #put an empty string in to stop it falling over
         signer.org_icon = str('')
   
+    
     logging.info("Signer adding common elements")
     signer.city = self.request.get('city')
     signer.state = self.request.get('state')
     signer.country = self.request.get('country')
     signer.postcode = self.request.get('postcode')
     signer.host_website = self.request.get('website')
+    signer.campaign_code = self.request.get('campaignCode')
     if self.request.get('lat') and self.request.get('lng'):
       #TODO: We used to get two lat/lngs. What happened?
       signer.latlng = db.GeoPt(float(self.request.get('lat')), float(self.request.get('lng')))

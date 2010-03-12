@@ -1,5 +1,6 @@
-
-   var extraSubmitAction = function(userEmail,userPhone,userOptin)
+    //globals, urgh, really need to port the entire application to run from mapmanager.js
+    var campaigncode = "EH10";    
+    var extraSubmitAction = function(userEmail,userPhone,userOptin,name)
     {
         data = {};
         data.phone = userPhone;

@@ -73,30 +73,33 @@ class ContinentsInfoService(webapp.RequestHandler):
   def get(self):
     self.response.headers.add_header('Cache-Control', 'no-cache, must-revalidate')
     self.response.headers.add_header('Expires', 'Sat, 26 Jul 1997 05:00:00 GMT')
-    cachedVal = memcache.get(models.genKeyForContinentsInfo())
+    campaignCode = self.request.get("campaignCode")
+    cachedVal = memcache.get(models.genKeyForContinentsInfo() + campaignCode)
+
     if cachedVal is not None:
       self.response.out.write(cachedVal)
     else:
       data = {}
       data['continents'] = copy.deepcopy(geodata.continents)
       for continentCode in geodata.continents:
-        data['continents'][continentCode]['count'] = util.getContinentVotes(continentCode)
+        data['continents'][continentCode]['count'] = util.getContinentVotes(continentCode,campaignCode)
       newVal = simplejson.dumps(data)
-      memcache.set(models.genKeyForContinentsInfo(), newVal, 300)
+      memcache.set(models.genKeyForContinentsInfo() + campaignCode, newVal, 300)
       self.response.out.write(newVal)
 
 class CountriesInfoService(webapp.RequestHandler):
   def get(self):
     self.response.headers.add_header('Cache-Control', 'no-cache, must-revalidate')
     self.response.headers.add_header('Expires', 'Sat, 26 Jul 1997 05:00:00 GMT')
-    cachedVal = memcache.get(models.genKeyForCountriesInfo())
+    campaignCode = self.request.get("campaignCode")
+    cachedVal = memcache.get(models.genKeyForCountriesInfo() + campaignCode)
     if cachedVal is not None:
       self.response.out.write(cachedVal)
     else:
       data = {}
       data['countries'] = copy.deepcopy(geodata.countries)
       for countryCode in geodata.countries:
-        count = util.getCountryVotes(countryCode)
+        count = util.getCountryVotes(countryCode,campaignCode)
         if count is 0:
           del data['countries'][countryCode]
         else:
@@ -107,7 +110,7 @@ class CountriesInfoService(webapp.RequestHandler):
             del data['countries'][countryCode]['states']
 
       newVal = simplejson.dumps(data)
-      memcache.set(models.genKeyForCountriesInfo(), newVal, 300)
+      memcache.set(models.genKeyForCountriesInfo() + campaignCode, newVal, 300)
       self.response.out.write(newVal)
 
 class StatesInfoService(webapp.RequestHandler):
@@ -178,22 +181,23 @@ class TotalsInfoService(webapp.RequestHandler):
   def get(self):
     self.response.headers.add_header('Cache-Control', 'no-cache, must-revalidate')
     self.response.headers.add_header('Expires', 'Sat, 26 Jul 1997 05:00:00 GMT')
-    cachedVal = memcache.get(models.genKeyForTotalsInfo())
+    campaignCode = self.request.get("campaignCode")
+    cachedVal = memcache.get(models.genKeyForTotalsInfo() + campaignCode)
     if cachedVal is not None:
       logging.info("Memcache hit: %s" % (cachedVal))
       self.response.out.write(cachedVal)
     else:
       data  = {}
-      totalVotes, totalCountries, totalOrgs = util.getTotals()
+      totalVotes, totalCountries, totalOrgs = util.getTotals(campaignCode)
       data['total'] = {'totalVotes': totalVotes, 'totalCountries': totalCountries, 'totalOrgs': totalOrgs}
       newVal = simplejson.dumps(data)
-      memcache.set(models.genKeyForTotalsInfo(), newVal, 30)
+      memcache.set(models.genKeyForTotalsInfo() + campaignCode, newVal, 30)
       self.response.out.write(newVal)
 
 class GetTranslation(webapp.RequestHandler):
   def get(self):
     code = self.request.get('languageCode')
-    localStrings = util.getTranslation(code)
+    localStrings = util.getTranslation(code)[0]
     logging.info(localStrings)
     value = {}
     response = simplejson.dumps(value)

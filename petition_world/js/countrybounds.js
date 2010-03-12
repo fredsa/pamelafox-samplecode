@@ -3414,6 +3414,21 @@ var countriesInfo = {
         },
         "name": "Ukraine"
     },
+     "AE": {
+        "hasPostcodes": false,
+        "hasStates": false,
+        "bounds": {
+            "southWest": [
+                22.69971,
+                51.58361
+            ],
+            "northEast": [
+                26.06555,
+                56.37352
+            ]
+        },
+        "name": "United Arab Emirates"
+    },
     "UG": {
         "hasPostcodes": false,
         "hasStates": false,

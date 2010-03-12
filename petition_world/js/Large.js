@@ -123,10 +123,9 @@ function handleSubmit()
 {
   if($('#sign').valid())
     {
-
       if(typeof extraSubmitAction == 'function')
       {
-        extraSubmitAction($("#email").val(),$("#phone").val(),$('#optin').is(':checked'));
+        extraSubmitAction($("#email").val(),$("#phone").val(),$('#optin').is(':checked'),$("#name").val());
       }   
     }
   //perform call back
@@ -205,6 +204,8 @@ function populateCountries() {
   var countrySelect = jQuery('#country');
   countrySelect.change(populateStates);
   for (var countryCode in countriesInfo) {
+    if(countryCode == 'AE')
+      debugger;
     var countryOption = jQuery(document.createElement('option'));
     countryOption.val(countryCode);
     countryOption.text(countriesInfo[countryCode].name);
@@ -294,7 +295,7 @@ function latLngHandler(point) {
     voteMap.addOverlay(marker);
     jQuery('#lat').val(point.lat());
     jQuery('#lng').val(point.lng());
-    jQuery('#submit').removeAttr('disabled');
+    jQuery('#Submit').removeAttr('disabled');
   }
 }
 
@@ -699,11 +700,11 @@ function processOrgs(json) {
 
 function handleZoomChange() {    
  if (voteMap.getZoom() > 2 && voteMap.getZoom() < 6 && !loadedCountries) {
-   jQuery.getJSON("/info/countries", processCountries);
+   jQuery.getJSON("/info/countries?campaignCode=" + campaigncode, processCountries);
    loadedCountries = true;
  }
  if (voteMap.getZoom() >= 0 && voteMap.getZoom() < 4 && !loadedContinents) {
-   jQuery.getJSON("/info/continents", processContinents);
+   jQuery.getJSON("/info/continents?campaignCode=" + campaigncode, processContinents);
    loadedContinents = true;
  }
 }
@@ -743,15 +744,13 @@ function handleBoundsChange() {
 
 
 function initExploreMap(exploreMap) {
- 
-
   markerManager = new MarkerManager(exploreMap);
   markerManagerSearch = new MarkerManager(exploreMap);
   GEvent.addListener(exploreMap, "zoomend", handleZoomChange);
   GEvent.addListener(exploreMap, "moveend", handleBoundsChange);
   handleZoomChange();
   handleBoundsChange();
-  jQuery.getJSON("/info/totals", processTotals);
+  jQuery.getJSON("/info/totals?campaignCode="+campaigncode, processTotals);
     
   GEvent.addListener(exploreMap, "infowindowopen", function() {
     var iw = exploreMap.getInfoWindow();

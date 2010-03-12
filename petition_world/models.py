@@ -52,8 +52,9 @@ class PetitionSigner(db.Model):
   media = db.StringProperty()
   freetext = db.StringProperty()
   host_website = db.StringProperty()
+  host_website = db.StringProperty()
+  campaign_code = db.StringProperty()
   
-
 class PetitionHost(db.Model):
   host_name = db.StringProperty()
   host_email = db.StringProperty()
@@ -75,9 +76,10 @@ class Country(db.Model):
   latlng = db.GeoPtProperty()
   
 class MassVotes(db.Model):
-    country = db.StringProperty()
-    counter = db.IntegerProperty(default=0)
-    org = db.StringProperty()
+  country = db.StringProperty()
+  counter = db.IntegerProperty(default=0)
+  org = db.StringProperty()
+  campaign_code = db.StringProperty()
     
 class TwitterFeed(db.Model):
     twitterFeedJson = db.StringProperty()

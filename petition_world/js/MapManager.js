@@ -312,7 +312,7 @@ var MapManager = function(param) {
     var showTotals = function()
     {
         //window.setInterval(animateTotals, 4000);
-        jQuery.getJSON("/info/totals", processHandlers.processTotals);
+        jQuery.getJSON("/info/totals?campaignCode=" + params.campaignCode,processHandlers.processTotals);
     };
 
     var addMarkers = function()
@@ -371,7 +371,7 @@ var MapManager = function(param) {
     {
         editParamsFromQuery();
         setPageDict();
-        processHandlers = new Processors(setUpMap(), setUpMarkerManager(), params.RYV);
+        processHandlers = new Processors(setUpMap(), setUpMarkerManager(), params.RYV,params.campaignCode);
         showTotals();
         setUpSearch();
         pageTypes[params.page]();
@@ -383,7 +383,7 @@ var MapManager = function(param) {
     }();
 };
 
-var Processors = function(map, markers, skin)
+var Processors = function(map, markers, skin,campaignCode)
  {
     var markerManager = markers;
     var markerCreator = new MarkerCreator(map, skin);
@@ -394,6 +394,7 @@ var Processors = function(map, markers, skin)
     var orgs;
     var geocodeInProgress;
     var util = new Util();
+    var campaignCode = campaignCode;
 
     this.addOrgs = function(searchOrgs)
     {
@@ -741,11 +742,11 @@ var Processors = function(map, markers, skin)
 
     this.handleZoomChange = function() {
         if (map.getZoom() > 2 && map.getZoom() < 6 && !loadedCountries) {
-            jQuery.getJSON("/info/countries", processCountries);
+            jQuery.getJSON("/info/countries?campaignCode=" + campaignCode, processCountries);
             loadedCountries = true;
         }
         if (map.getZoom() >= 0 && map.getZoom() < 4 && !loadedContinents) {
-            jQuery.getJSON("/info/continents", processContinents);
+            jQuery.getJSON("/info/continents?campaignCode=" + campaignCode, processContinents);
             loadedContinents = true;
         }
     };
