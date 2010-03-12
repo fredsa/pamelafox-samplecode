@@ -204,8 +204,6 @@ function populateCountries() {
   var countrySelect = jQuery('#country');
   countrySelect.change(populateStates);
   for (var countryCode in countriesInfo) {
-    if(countryCode == 'AE')
-      debugger;
     var countryOption = jQuery(document.createElement('option'));
     countryOption.val(countryCode);
     countryOption.text(countriesInfo[countryCode].name);
