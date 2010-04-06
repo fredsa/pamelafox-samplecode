@@ -194,8 +194,6 @@ class HostAddService(webapp.RequestHandler):
     
 class CreateLocalisation(webapp.RequestHandler):
   def get(self):
-    # not the best solution, but the easiest to manage for now
-    # Todo: these resource strings should really be loaded else where
     path = os.path.join(os.path.dirname(__file__), 'templates', 'translate.html')
     template_values = {}
     self.response.out.write(template.render(path, template_values))
@@ -209,25 +207,30 @@ class EditMassVotes(webapp.RequestHandler):
     for countryCode in geodata.countries:
       orgsList = util.getCountryMassVotes(countryCode)
       if len(orgsList) is not 0:
-        allOrgNames.extend(util.getCountryMassVotes(countryCode))
+        allOrgNames.extend(orgsList)
       
-    allOrgNames = util.getUnique(allOrgNames)
+    allOrgNames = util.getUnique(allOrgNames,lambda x : x[0])
+    templateData = []
     logging.info(allOrgNames)
-    template_values = {'votes' : allOrgNames}
+    #tuples not playing nice in django templates turn it into a dictionary for now
+    for org in allOrgNames:
+      item = {}
+      item['name'] = org[0]
+      item['campaign'] = org[1]
+      templateData.append(item)
+    template_values = {'votes' : templateData}
     self.response.out.write(template.render(path, template_values))
 
   def post(self):
     allOrgNames = []
-    for countryCode in geodata.countries:
-      orgsList = util.getCountryMassVotes(countryCode)
-      if len(orgsList) is not 0:
-        allOrgNames.extend(util.getCountryMassVotes(countryCode))
+    arguments = self.request.arguments()
+    for name in arguments:
+        if name != "update":
+          allOrgNames.append(name)
+
+    for org in allOrgNames: 
+      util.updateOrg(org,self.request.get(org))
       
-      allOrgNames = util.getUnique(allOrgNames)
-      for orgName in allOrgNames:
-        campaignName = self.request.get(orgName)
-        util.updateOrg(orgName,campaignName)
-        
     self.response.out.write("updated the mass votes, thank you")
 
 class AddLocalistation(webapp.RequestHandler):

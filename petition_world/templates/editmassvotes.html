@@ -9,7 +9,7 @@
       <form id="changeMassVotes" action="/edit/massVotes" method="post">
         <table>
             {% for o in votes %}
-            <tr><td>{{ o }}</td><td> <input type="text" name="{{ o }}" id="{{ o }}"/></td></tr>
+            <tr><td>{{ o.name }}</td><td> <input type="text" name="{{ o.name }}" id="{{ o.name }}" value="{{ o.campaign }}"/></td></tr>
             {% endfor %}
         </table>
       <input type="submit" name="update" value="update">

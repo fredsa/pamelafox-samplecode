@@ -132,18 +132,21 @@ def getCountryMassVotes(countryCode):
     result = query.filter('country =',countryCode)
     orgs = []
     for vote in result:
-      orgs.append(vote.org)
-
+      orgs.append((vote.org,vote.campaign_code))
+      
     return orgs
     
 
 def updateOrg(orgName,campaignCode):
-  query = db.Query(models.MassVotes)
-  result = query.filter('org =',orgName)
-  for org in result:
-    org.campaign_code = campaignCode
-    org.put()
-  
+  query = db.GqlQuery("SELECT * FROM MassVotes WHERE org = :1",orgName)
+  updateList = []
+  for org in query:
+    if org.campaign_code != campaignCode:
+      org.campaign_code = campaignCode
+      updateList.append(org)
+    
+  db.put(updateList)
+
     
 def getCountryVotesPerStateInStore(countryCode):
   numVotesInCountry = 0
@@ -488,7 +491,7 @@ def GetGeoTweets(old,loadedTweets):
         tweets = tweets[-len(geoTweets)]
    
 
-def addMassVotes(countryCode,countryVote,org):
+def addMassVotes(countryCode,countryVote,org,campaignCode='EH10'):
   memcache.delete(models.genKeyForMassVote() + countryCode)
   query = db.Query(models.MassVotes)
   result = query.filter('org=',org).filter('country =',countryCode).get()
@@ -498,6 +501,7 @@ def addMassVotes(countryCode,countryVote,org):
      mass.country = countryCode
      mass.counter = long(countryVote);
      mass.org = org
+     mass.campaign_code = campaignCode
      mass.put()
   else:
     result.counter += long(countryVote);

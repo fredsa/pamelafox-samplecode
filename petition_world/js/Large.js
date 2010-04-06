@@ -106,7 +106,7 @@ $("#sign").submit(function () {
   {
     if(typeof extraSubmitAction == 'function')
       {
-        extraSubmitAction($("#email").val(),$("#phone").val(),$('#optin').is(':checked'));
+        extraSubmitAction($("#email").val(),$("#phone").val(),$('#optin').is(':checked'),"");
         $.formLoading = false;
         $("#Form").submit();
       }  
@@ -125,7 +125,8 @@ function handleSubmit()
     {
       if(typeof extraSubmitAction == 'function')
       {
-        extraSubmitAction($("#email").val(),$("#phone").val(),$('#optin').is(':checked'),$("#name").val());
+        //add name back in
+        extraSubmitAction($("#email").val(),$("#phone").val(),$('#optin').is(':checked')," ");
       }   
     }
   //perform call back
@@ -203,12 +204,34 @@ function populateCountries() {
   jQuery('.state').hide();
   var countrySelect = jQuery('#country');
   countrySelect.change(populateStates);
+  var countryArray = [];
+    
+  
   for (var countryCode in countriesInfo) {
-    var countryOption = jQuery(document.createElement('option'));
-    countryOption.val(countryCode);
-    countryOption.text(countriesInfo[countryCode].name);
-    countrySelect.append(countryOption);
+    countryArray.push({
+            val: countryCode,
+            text: countriesInfo[countryCode].name
+        });
   }
+  
+  countryArray.sort(function(a, b){
+    if(a.text>b.text){
+        return 1;
+    }
+    else if (a.text==b.text){
+        return 0;
+    }
+    else {
+        return -1;
+    }
+  });
+    for (var i = 0, l = countryArray.length; i < l; i++) {
+      var countryOption = jQuery(document.createElement('option'));
+      countryOption.val(countryArray[i].val);
+      countryOption.text(countryArray[i].text);
+      countrySelect.append(countryOption);
+    }
+  
 }
 
 function populateStates() {
