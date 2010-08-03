@@ -96,7 +96,7 @@
 <EnumValue value="sv" display_value="swedish"/>
 </UserPref>
 <UserPref name="randomize_words"
-          display_name="Randomize words?"
+          display_name="Randomize words"
           default_value="false" datatype="bool" required="false"/>
 <UserPref name="image_size"
           display_name="Image Size"
@@ -175,6 +175,7 @@ var gadgetHelper = null;
 var prefs = null;
 var words = [];
 var wordHints = {};
+var searchHints = {};
 var currentWord = 0;
 
 _IG_RegisterOnloadHandler(loadVisualizationAPI);
@@ -223,9 +224,9 @@ function loadWords() {
     var rowObj = [];
     var formattedValue = data.getFormattedValue(row, 0);
     formattedValue = _hesc(formattedValue);
-    formattedValue = formattedValue.replace(/[^a-z,]/gi,"");
+    formattedValue.replace(/[\s]/gi,"");
     words.push(formattedValue); 
-    if (data.getNumberOfColumns() == 2) {
+    if (data.getNumberOfColumns() >= 2) {
       wordHints[formattedValue] = data.getFormattedValue(row, 1);
     } else {
       wordHints[formattedValue] = "No second column found."
@@ -259,6 +260,7 @@ function showNextWord() {
 } 
      
 function createGrid(word) {
+    var word = word.replace(" ", "_");
     var jumbledWord = word.randomize();
     while (jumbledWord == word) {
       jumbledWord = word.randomize();
@@ -268,7 +270,8 @@ function createGrid(word) {
     var backend = new Object();
     backend.data = [];
     for (var i = 0; i < jumbledWord.length; i++) {
-      backend.data.push(jumbledWord.charAt(i));
+      var char = jumbledWord.charAt(i);
+      backend.data.push(char);
     }
     
     backend._IGG_isDragSource = function(index) {
@@ -432,16 +435,16 @@ function clearCorrectIndicator() {
 }
 
 function addHintForWord(word) {
-  var hint_source = prefs.getString("hint_source");
-  if (hint_source == "image") {
+  var hintSource = prefs.getString("hint_source");
+  if (hintSource == "image") {
     _gel("attribution").innerHTML = "Images courtesy Google Image Search API."
     addHintForWordFromImageSearch(word);
-  } else if (hint_source == "translation") {
+  } else if (hintSource == "translation") {
     _gel("attribution").innerHTML = "Translations courtesy Google Language API."
     addHintForWordFromTranslation(word);
-  } else if (hint_source == "secondcolumn") {
+  } else if (hintSource == "secondcolumn") {
     addHintForWordFromSecondColumn(word);
-  } else if (hint_source == "definition") {
+  } else if (hintSource == "definition") {
     _gel("attribution").innerHTML = "Definitions from Wikipedia via the Fuktek API."
     addHintForWordFromDefinition(word);
   } 
@@ -451,7 +454,7 @@ function addHintForWordFromImageSearch(word) {
   var searcher = new GimageSearch();
   //searcher.setRestriction(GimageSearch.RESTRICT_IMAGESIZE, GimageSearch.IMAGESIZE_SMALL);
   searcher.setResultSetSize(GSearch.SMALL_RESULTSET);
-  searcher.execute(word);
+  searcher.execute(word.replace(" ", "+"));
   searcher.setSearchCompleteCallback(this, function() {
     _gel("hint").innerHTML = "";
     for (var i = 0; i < searcher.results.length; i++) {
