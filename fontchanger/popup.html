@@ -1,0 +1,93 @@
+<HTML>
+<HEAD>
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<link rel="stylesheet" type="text/css" href="fonts.css"> 
+<STYLE>
+body {
+  overflow: hidden;
+  margin: 0px;
+  padding: 0px;
+  background: white;
+}
+
+div:first-child {
+  margin-top: 0px;
+}
+
+div {
+  cursor: pointer;
+  text-align: center;
+  font-family: sans-serif;
+  font-size: 0.8em;
+  width: 100px;
+  margin-top: 1px;
+  background: #eee;
+}
+div:hover {
+  background: #aaaaaa;
+}
+</STYLE>
+<SCRIPT>
+
+var fonts =
+[
+'Calibri',
+'Cambria',
+'Cantal',
+'Cantarell',
+'Cardo',
+'Consolas',
+'Corsiva',
+'Crimson Text',
+'Droid Sans',
+'Droid Sans Mono',
+'Droid Serif',
+'Hanuman',
+'IM Fell',
+'Inconsolata',
+'Josefin Sans Std Light',
+'Lobster',
+'Molengo',
+'Nobile',
+'OFL Sorts Mill Goudy TT',
+'Old Standard TT',
+'Reenie Beanie',
+'Tangerine',
+'Vollkorn',
+'Yanone Kaffeesatz'
+];
+
+function changeFont(font) {
+  var fontName = font.replace(' ', '+');
+  var fontCode = 'document.body.innerHTML += \'<link href="http://fonts.googleapis.com/css?family=' + fontName + '" rel="stylesheet" type="text/css">\';';
+  fontCode += 'document.body.style.fontFamily = \'' + font + '\';';
+  fontCode += 'var items = document.getElementsByTagName("*"); for (var i=0, len=items.length; i < len; i++) { items[i].style.fontFamily = \'' + font + '\'; }';
+  chrome.tabs.executeScript(null, {code: fontCode});
+  window.close();
+}
+
+
+function addFont(font) {
+  var div = document.createElement('div');
+  div.style.fontFamily = font.replace(' ', '+');
+  div.style.fontStyle = 'normal';
+  div.style.fontWeight = 'normal';
+  div.innerHTML = font;
+  div.onclick = function () {
+    changeFont(font);
+  };
+  document.getElementById("options").appendChild(div);
+}
+
+function onLoad() {
+  for (var i = 0; i < fonts.length; i++) {
+    addFont(fonts[i]);
+  }
+}
+
+</SCRIPT>
+</HEAD>
+<BODY onload="onLoad()">
+<div id="options">
+</div>
+</BODY></HTML>

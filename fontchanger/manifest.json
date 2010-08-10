@@ -1,0 +1,14 @@
+{
+  "name": "Google Font API Tester",
+  "version": "1.0",
+  "description": "Lets you choose a font from the Google Font API directory, and apply that font to the entire page to see how it looks.",
+  "default_locale": "en",
+  "permissions": [
+    "tabs", "http://*/*", "https://*/*"
+  ],
+  "browser_action": {
+      "default_title": "Changes the page font to desired Google Font API face.",
+      "default_icon": "font_api.gif",
+      "popup": "popup.html"
+  }
+}
