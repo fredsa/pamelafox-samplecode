@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<!--
+Copyright 2010 The Closure Library Authors.
+
+Use of this source code is governed by an Apache 2.0 License.
+-->
+<head>
+  <title>goog.fx.DragListGroup Demo: Lyrics Remixer</title>
+  <meta charset="utf-8">
+  <script src="closure-draglist.js"></script>
+  <script>
+    goog.require('goog.dom');
+    goog.require('goog.fx.DragListGroup');
+    goog.require('goog.fx.DragListDirection');
+  </script>
+  <style>
+    body {
+      margin: 10px;
+      font-family: Arial, sans-serif;
+    }
+    ul {
+      padding: 0px;
+    }
+    li {
+      list-style: none;
+    }
+
+    li, div {
+      border: 1px solid blue;
+      margin: 1px;
+      padding: 0px 2px 0px 2px;
+      background: #F0F8FF;
+    }
+
+    .cursor_move {
+      cursor: move;
+      -moz-user-select: none;
+    }
+
+    .opacity_40 {
+      opacity: 0.4;
+      -moz-opacity: 0.4;
+      filter: alpha(opacity=40);
+    }
+
+  </style>
+</head>
+<body>
+<h1>goog.fx.DragDrop Demo: Lyrics Remixer</h1>
+
+<ul id="lyrics">
+ <li>Imagine there's no Heaven
+ <li>It's easy if you try
+ <li>No hell below us
+ <li>Above us only sky
+ <li>Imagine all the people
+ <li>Living for today
+ <li>Imagine there's no countries
+ <li>It isn't hard to do
+ <li>Nothing to kill or die for
+ <li>And no religion too
+ <li>Imagine all the people
+ <li>Living life in peace
+ <li>You may say that I'm a dreamer
+ <li>But I'm not the only one
+ <li>I hope someday you'll join us
+ <li>And the world will be as one
+ <li>Imagine no possessions
+ <li>I wonder if you can
+ <li>No need for greed or hunger
+ <li>A brotherhood of man
+ <li>Imagine all the people
+ <li>Sharing all the world
+ <li>You may say that I'm a dreamer
+ <li>But I'm not the only one
+ <li>I hope someday you'll join us
+ <li>And the world will live as one
+</ul>
+
+<script>
+  var dlg = new goog.fx.DragListGroup();
+  dlg.setDragItemHoverClass('cursor_move');
+  dlg.setDraggerElClass('cursor_move opacity_40');
+  dlg.addDragList(goog.dom.getElement('lyrics'), goog.fx.DragListDirection.DOWN);
+  dlg.init();
+</script>
+</body>
+</html>
