@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html>
+ <head>
+  <title>Europopped Explorer</title>
+  <script src="http://maps.google.com/maps/api/js?sensor=false"></script>
+  <script src="centerbox.js"></script>
+  <style type="text/css">
+body {
+  font-family: 'Helvetica Neue', Arial, Helvetica, Geneva, sans-serif;
+  background-color: #FEE035;
+}
+
+#map {
+  width: 100%;
+  height: 500px;
+  border: 2px solid black;
+}
+
+li {
+  margin-left: -22px;
+  font-size: 12px;
+  list-style: none;
+  margin-bottom: 5px;
+  font-weight: bold;
+}
+
+a {
+  text-decoration: none;
+}
+
+footer {
+  font-size: small;
+}
+
+  </style>
+ </head>
+ <body>
+  <header>
+   <h1>EUROPOPPED :: ON THE MAP</h1>
+   <p><a href="http://www.europopped.com">Europopped</a> is a blog that highlights Europo music videos from all over Europe, both the awesome and the awful.
+You can use this map to explore the blog posts by country, watch the embedded music videos, and read the full posts for whatever interests you. Enjoy!
+   </p>
+  </header>
+  <div id="map"></div>
+  <footer>
+   <p>Note: This map was created by a fan of Europopped.com, and is not officially endorsed by it.</p>
+  </footer>
+  <script>
+var countriesData = {
+'Germany': {latitude: 51.165691, longitude: 10.451526},
+'France': {latitude: 46.227638, longitude: 2.213749},
+'Sweden': {latitude: 60.128161, longitude: 18.643501},
+'Romania ': {latitude: 45.943161, longitude: 24.96676},
+'Russia': {latitude: 54.059388, longitude: 37.441406},
+'Italy': {latitude: 41.87194, longitude: 12.56738},
+'Poland': {latitude: 51.919438, longitude: 19.145136},
+'Holland': {latitude: 52.132633, longitude: 5.291266},
+'Denmark': {latitude: 56.26392, longitude: 9.501785},
+'Greece': {latitude: 39.074208, longitude: 21.824312},
+'Hungary': {latitude: 47.162494, longitude: 19.503304},
+'Belgium': {latitude: 50.503887, longitude: 4.469936},
+'Spain': {latitude: 40.463667, longitude: -3.74922},
+'Bulgaria': {latitude: 42.733883, longitude: 25.48583},
+'England': {latitude: 52.0190289, longitude: -0.7704274},
+'Norway': {latitude: 60.472024, longitude: 8.468946},
+'Portugal': {latitude: 39.399872, longitude: -8.224454},
+'Austria': {latitude: 47.516231, longitude: 14.550072},
+'Finland': {latitude: 61.92411, longitude: 25.748151},
+'Ukraine': {latitude: 48.379433, longitude: 31.16558},
+'Serbia': {latitude: 44.016521, longitude: 21.005859},
+'Switzerland': {latitude: 46.818188, longitude: 8.227512},
+'Albania': {latitude: 41.153332, longitude: 20.168331},
+'Croatia': {latitude: 45.1, longitude: 15.2},
+'Czech Republic': {latitude: 49.817492, longitude: 15.472962},
+'Slovakia': {latitude: 48.669026, longitude: 19.699024},
+'azerbaijan': {latitude: 40.143105, longitude: 47.576927},
+'Ibiza': {latitude: 38.9088566, longitude: 1.4323778},
+'Lithuania': {latitude: 55.169438, longitude: 23.881275},
+'Moldova': {latitude: 47.411631, longitude: 28.369885},
+'Slovenia': {latitude: 46.151241, longitude: 14.995463},
+'Turkey': {latitude: 38.963745, longitude: 35.24332}
+};
+
+var map, centerbox;
+
+function appendScript(url) {
+  var script = document.createElement('script');
+  script.src = url;
+  document.body.appendChild(script);
+}
+
+function callAPI(method, query, callback) {
+  var url = 'http://posterous-js.appspot.com/api/' + method + '?' + query + '&callback=' + callback;
+  appendScript(url);
+}
+
+function initMap() {
+  var latlng = new google.maps.LatLng(47.45, 14.76);
+  var myOptions = {
+   zoom: 4,
+   center: latlng,
+   mapTypeId: google.maps.MapTypeId.ROADMAP
+  };
+  var mapDiv = document.getElementById('map');
+  map = new google.maps.Map(mapDiv, myOptions);
+
+  // Create center box for location info
+  centerbox = new CenterBox(mapDiv);
+  map.controls[google.maps.ControlPosition.TOP_LEFT].push(centerbox.getDiv())
+
+  callAPI('gettags', 'hostname=europopped', 'onTagsLoaded');
+}
+
+function onTagsLoaded(json) {
+  var tags = json.tag || [];
+  for (var i = 0; i < tags.length; i++) {
+    var tag = tags[i];
+    var countryName = tag.tag_string;
+    var countryData = countriesData[countryName]
+    if (countryData) {
+      createCountryMarker(countryName, countryData, tag.count);
+    }
+  }
+}
+
+function createCountryMarker(countryName, countryData, tagCount) {
+  var iconUrl = "http://chart.apis.google.com/chart?cht=it&chs=30x30&chco=F1D532,000000ff,ffffff01&chl=" + tagCount + "&chx=000000,12&chf=bg,s,00000000&ext=.png";
+  var marker = new google.maps.Marker({position: new google.maps.LatLng(countryData.latitude, countryData.longitude),
+icon: iconUrl, title: countryName, map: map});
+  google.maps.event.addListener(marker, 'click', function() {
+    centerbox.setMain('Loading..');
+    centerbox.setSidebar('');
+    centerbox.setTitle(countryName.toUpperCase());
+    centerbox.show();
+    if (countriesData[countryName].posts) {
+       showCountryPosts(countryName);
+    } else {
+       callAPI('readposts', 'hostname=europopped&num_posts=50&tag=' + countryName, 'onPostsLoaded');
+    }
+  });
+}      
+
+function onPostsLoaded(json) {
+  var posts = json.post || [];
+  for (var i = 0; i < posts.length; i++) {
+    var post = posts[i];
+    var body = post.body;
+    var regex = new RegExp('http://www.youtube.com/v/[^(?|&)]*')
+    var urls = body.match(regex);
+    post.urls = urls;
+  }
+  var countryName = posts[0].tag;
+  countriesData[countryName].posts = posts;
+  showCountryPosts(countryName);
+}
+
+function showCountryPosts(countryName) {
+  var posts = countriesData[countryName].posts;
+  var postsList = document.createElement('ul');
+  for (var i = 0; i < posts.length; i++) {
+    var postItem = createPostItem(posts[i], !i);
+    postsList.appendChild(postItem);
+  }
+  centerbox.setSidebar(postsList);
+}
+
+function createPostItem(post, showNow) {
+  var postItem = document.createElement('li');
+  postItem.innerHTML = '<a href="#' + post.id + '">' + post.title + '</a>';
+  var videoUrl = post.urls[0];
+  var videoHtml = '<object width="350" height="221"><param name="movie" value="' + videoUrl + '?fs=1&amp;hl=en_US"></param><param name="allowFullScreen" value="true"></param><param name="allowscriptaccess" value="always"></param><embed src="' + videoUrl + '?fs=1&amp;hl=en_US" type="application/x-shockwave-flash" allowscriptaccess="always" allowfullscreen="true" width="350" height="221"></embed></object>';
+  videoHtml += '<h3>' + post.title + '</h3>' + '<a target="_blank" href="' + post.link + '">Read the blog post.</a>';
+  google.maps.event.addDomListener(postItem, 'click', function() {
+    centerbox.setMain(videoHtml);
+  });
+  if (showNow) centerbox.setMain(videoHtml);
+  return postItem;
+}
+
+initMap();
+  </script>
+ </body>
+</html>
