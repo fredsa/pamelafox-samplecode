@@ -24,7 +24,7 @@ window.CenterBox = function(mapDiv) {
   topDiv.appendChild(titleSpan);
 
   var closeImg = document.createElement('img');
-  closeImg.style.float = 'right';
+  closeImg.style.cssFloat = 'right';
   closeImg.style.width = '32px';
   closeImg.style.height = '32px';
   closeImg.style.cursor = 'pointer';
@@ -38,21 +38,21 @@ window.CenterBox = function(mapDiv) {
   });
 
   var sidebarDiv = document.createElement('div');
-  sidebarDiv.style.float = 'right';
+  sidebarDiv.style.cssFloat = 'right';
   sidebarDiv.style.marginRight = '7px';
-  sidebarDiv.style.width = '200px';
+  sidebarDiv.style.width = '190px';
   sidebarDiv.style.borderLeft = '2px solid black';
   sidebarDiv.style.paddingRight = '10px';
-  sidebarDiv.style.height = (boxHeight - 35) + 'px';
+  sidebarDiv.style.height = (boxHeight - 45) + 'px';
   sidebarDiv.style.overflow = 'auto';
   sidebarDiv.innerHTML = 'Loading...';
-  centerDiv.appendChild(sidebarDiv);
 
   var mainDiv = document.createElement('div');
   mainDiv.style.padding = '10px';
-  mainDiv.style.height = (boxHeight - 35) + 'px';
-  mainDiv.style.width = (boxWidth - 210) + 'px';
+  mainDiv.style.height = (boxHeight - 45) + 'px';
+  mainDiv.style.width = (boxWidth - 230) + 'px';
   mainDiv.style.textAlign = 'center';
+  centerDiv.appendChild(sidebarDiv);
   centerDiv.appendChild(mainDiv);
 
   this.div_ = centerDiv;
