@@ -129,10 +129,11 @@ function createLikers() {
   if (!supportsStorage) return;
 
   for (var i = 0; i < 10; i++) {
+    var id = 'localstoragelikerplus-' + i;
     document.body.appendChild(document.createTextNode('Do you like ' + i + '?'));
-    document.body.appendChild(LK_createLiker(i));
+    document.body.appendChild(LK_createLiker(id));
     document.body.appendChild(document.createElement('br'));
-    document.body.appendChild(LK_createLikerMini(i));
+    document.body.appendChild(LK_createLikerMini(id));
     document.body.appendChild(document.createElement('br'));
     document.body.appendChild(document.createElement('br'));
   }
