@@ -173,7 +173,7 @@ function createPostItem(post, showNow) {
 
   var videoUrl = post.urls[0];
   var postMain = document.createElement('div');
-  var videoHtml = '<object width="350" height="221"><param name="movie" value="' + videoUrl + '?fs=1&amp;hl=en_US"></param><param name="allowFullScreen" value="true"></param><param name="allowscriptaccess" value="always"></param><embed src="' + videoUrl + '?fs=1&amp;hl=en_US" type="application/x-shockwave-flash" allowscriptaccess="always" allowfullscreen="true" width="350" height="221"></embed></object>';
+  var videoHtml = '<embed src="' + videoUrl + '?fs=1&amp;autoplay=1&amp;hl=en_US" type="application/x-shockwave-flash" allowscriptaccess="always" allowfullscreen="true" width="350" height="221"></embed>';
   videoHtml += '<h3><a target="_blank" href="' + post.link + '">' + post.title + '</a>';
   postMain.innerHTML = videoHtml + '<br>';
   postMain.appendChild(LK_createLiker(localStorageId));
