@@ -1,0 +1,79 @@
+<!doctype HTML>
+<html>
+ <head>
+  <meta charset="utf-8">
+  <title>Local Storage Liker</title>
+ </head>
+ <body style="font-family: Arial, sans serif">
+   <h1>Local Storage Liker</h1>
+   <p>
+   This demo shows using HTML custom data attributes plus HTML5 localStorage to
+create simple "likers".
+   </p>
+ <script>
+function supportsStorage() {
+  return ('localStorage' in window) && window['localStorage'] !== null;
+}
+
+function createLiker(id) {
+  var div = document.createElement('div');
+  div.setAttribute('data-likegroup', id);
+  div.appendChild(createLikerOption(id, 'Yay', 1));
+  div.appendChild(createLikerOption(id, 'Meh', 0));
+  div.appendChild(createLikerOption(id, 'Nay', -1));
+  return div;
+}
+
+function createLikerOption(id, label, value) {
+  var span = document.createElement('span');
+  span.setAttribute('data-likegroup', id);
+  span.setAttribute('data-likevalue', value);
+  span.innerHTML = label;
+  span.onclick = function() {
+    likeIt(span);
+  };
+  span.style.cursor = 'pointer';
+  span.style.padding = '2px';
+  applyNormalStyle(span);
+  if (supportsStorage) {
+    if (localStorage[id] == value) {
+      applySelectedStyle(span);
+    }
+  }
+  return span;
+}
+
+function likeIt(elem) {
+  var likeGroup = elem.getAttribute('data-likegroup');
+  var likeValue = elem.getAttribute('data-likevalue');
+  var siblings = elem.parentNode.childNodes;
+  for (var i = 0; i < siblings.length; i++) {
+    if (siblings[i].style) { 
+      applyNormalStyle(siblings[i]);
+    }
+  }
+  applySelectedStyle(elem);
+  if (supportsStorage) {
+    localStorage[likeGroup] = likeValue;
+  }
+}
+
+function applyNormalStyle(elem) {
+  elem.style.fontWeight = 'normal';
+  elem.style.borderBottom = 'none';
+}
+
+function applySelectedStyle(elem) {
+  elem.style.fontWeight = 'bold';
+  elem.style.borderBottom = '1px solid black'
+}
+
+for (var i = 0; i < 10; i++) {
+  var id = 'localstorageliker' + i;
+  document.body.appendChild(document.createTextNode('Do you like ' + i + '?'));
+  document.body.appendChild(createLiker(id));
+  document.body.appendChild(document.createElement('br'));
+}
+ </script>
+ </body>
+</html>
