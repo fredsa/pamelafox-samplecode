@@ -9,7 +9,8 @@
 <p>This demo shows how you can use custom data attributes plus HTML5 local
 storage to create "likers" that people can use to express their feelings for
 something and "mini likers" that reflect the state of those feelings.
-The idea is that you could easily sprinkle a web app with likers, and the like
+The idea is that you could easily sprinkle a web app with likers tied to
+IDs of your choosing, and the like
 data would persist locally for the user.
 For an example of it in action, see the <a href="http://pamelafox-samplecode.googlecode.com/svn/trunk/europopped/europopped.html">Europopped</a> map.
 For a simpler example, see <a
@@ -47,9 +48,9 @@ var LIKER = function() {
   // Function called when liker option is clicked
   function handleValueClick(elem) {
     // Retrieve the ID of liker and value, save
-    var likeGroup = elem.getAttribute(DATA_LIKERID);
+    var likerId = elem.getAttribute(DATA_LIKERID);
     var likeValue = elem.getAttribute(DATA_LIKEVALUE);
-    localStorage[likeGroup] = likeValue;
+    localStorage[likerId] = likeValue;
 
     // Change the style of the liker nodes
     var siblings = elem.parentNode.childNodes;
@@ -64,7 +65,7 @@ var LIKER = function() {
     var allSpans = document.getElementsByTagName('span');
     for (var i = 0; i < allSpans.length; i++) {
       var span = allSpans[i];
-      if (span.getAttribute(DATA_LIKERID) == likeGroup 
+      if (span.getAttribute(DATA_LIKERID) == likerId 
           && span.getAttribute(DATA_LIKERTYPE) == 'mini') {
           span.innerHTML = likeValue;
           applySelectedStyle(span);
