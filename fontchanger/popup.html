@@ -4,40 +4,38 @@
 <link rel="stylesheet" type="text/css" href="fonts.css"> 
 <STYLE>
 body {
+  background-color: #eee;
+  width: 400px;
   overflow: hidden;
   margin: 0px;
   padding: 0px;
-  background: white;
+  font-family: Arial, sans-serif;
+  font-size: 11px;
 }
 
-div:first-child {
+label {
+  font-weight: bold;
+}
+
+#fonts {
+  float: left;
+  text-align: left;
+  font-size: 12px;
+  margin-top: 1px;
+  margin-right: 10px;
+}
+
+#fonts:first-child {
   margin-top: 0px;
 }
 
-div {
-  cursor: pointer;
-  text-align: center;
-  font-family: sans-serif;
-  font-size: 0.8em;
-  width: 100px;
-  margin-top: 1px;
-  background: #eee;
-}
-div:hover {
-  background: #aaaaaa;
-}
 </STYLE>
 <SCRIPT>
 
 var fonts =
 [
-'Calibri',
-'Cambria',
-'Cantal',
 'Cantarell',
 'Cardo',
-'Consolas',
-'Corsiva',
 'Crimson Text',
 'Droid Sans',
 'Droid Sans Mono',
@@ -57,26 +55,75 @@ var fonts =
 'Yanone Kaffeesatz'
 ];
 
-function changeFont(font) {
-  var fontName = font.replace(' ', '+');
+var fontOptions = {};
+var fontOptionIds = 
+            ['fontFamily',
+             'fontSize',
+             'fontStyle', 
+             'fontWeight',
+             'textShadow',
+             'textDecoration',
+             'textTransform',
+             'letterSpacing',
+             'wordSpacing',
+             'lineHeight'];
+             
+function changeFont() {
+  var fontFamily = fontOptions['fontFamily'] || fonts[0];
+  var fontName = fontFamily.replace(' ', '+');
   var fontCode = 'document.body.innerHTML += \'<link href="http://fonts.googleapis.com/css?family=' + fontName + '" rel="stylesheet" type="text/css">\';';
-  fontCode += 'document.body.style.fontFamily = \'' + font + '\';';
-  fontCode += 'var items = document.getElementsByTagName("*"); for (var i=0, len=items.length; i < len; i++) { items[i].style.fontFamily = \'' + font + '\'; }';
+  for (var i = 0; i < fontOptionIds.length; i++) {
+    var fontOptionId = fontOptionIds[i];
+    if (fontOptions[fontOptionId]) {
+     fontCode += 'document.body.style.' + fontOptionId + ' = \'' + fontOptions[fontOptionId] + '\';'; 
+    }
+  }
+  if (document.getElementById('applyAll').checked) {
+      fontCode += 'var items = document.getElementsByTagName("*"); for (var i=0, len=items.length; i < len; i++) {';
+      for (var i = 0; i < fontOptionIds.length; i++) {
+        var fontOptionId = fontOptionIds[i];
+        if (fontOptions[fontOptionId]) {
+         fontCode += 'if (items[i].style.' + fontOptionId + '.length != 0) {';
+         fontCode += 'items[i].style.' + fontOptionId + ' = \'' + fontOptions[fontOptionId] + '\''; 
+         fontCode += '}';
+        }
+      }
+      fontCode += '}';
+  }
   chrome.tabs.executeScript(null, {code: fontCode});
-  window.close();
 }
 
 
 function addFont(font) {
   var div = document.createElement('div');
+  var input = document.createElement('input');
+  input.type = 'radio';
+  input.name = 'fontFamily';
+  input.value = font;
+  input.onchange = function () {
+    fontOptions['fontFamily'] = font;
+    changeFont();
+  };
+  div.appendChild(input);
   div.style.fontFamily = font.replace(' ', '+');
   div.style.fontStyle = 'normal';
   div.style.fontWeight = 'normal';
-  div.innerHTML = font;
-  div.onclick = function () {
-    changeFont(font);
-  };
-  document.getElementById("options").appendChild(div);
+  div.appendChild(document.createTextNode(font));
+  document.getElementById("fontfamily").appendChild(div);
+}
+
+function changeOption(elem) {
+  var id = elem.id;
+  var value = elem.value;
+  if (id == 'fontSize') {
+    value += '%';
+  }
+  if (id == 'lineHeight' || id == 'wordSpacing' || id == 'letterSpacing') {
+    value = value * .01;
+    value += 'em';
+  }
+  fontOptions[id] = value;
+  changeFont();
 }
 
 function onLoad() {
@@ -88,6 +135,84 @@ function onLoad() {
 </SCRIPT>
 </HEAD>
 <BODY onload="onLoad()">
-<div id="options">
+
+<p>Select font family and options below to preview them on the current tab.
+To start from scratch, reload the page.</p>
+
+<div style="clear:both">
+<div id="fonts">
+  <label>Font family:</label>
+  <div id="fontfamily"></div>
 </div>
+
+  <div>
+  <p><label>Size:<br>
+   <select id="fontSize" onchange="changeOption(this)">
+    <option>50%</option>
+    <option selected>100%</option>
+    <option>150%</option>
+    <option>200%</option>
+  </select></label>
+   </p>
+  <p>
+  <label>Style: <br>
+  <select id="fontStyle" onchange="changeOption(this)">
+    <option selected>regular</option>
+    <option>italic</option>
+  </select></label>
+  </p>
+  <p>
+  <label>Weight: <br>
+  <select id="fontWeight" onchange="changeOption(this)">
+    <option selected>regular</option>
+    <option>bold</option>
+  </select></label>
+  </p>
+  <p>
+  <label>Shadow:<br>
+  <select id="textShadow" onchange="changeOption(this)">
+    <option selected>none</option>
+    <option>2px 2px 2px #aaa</option>
+    <option>4px 4px 4px #bbb</option>
+    <option>6px 6px 6px #ccc</option>
+    <option>8px 8px 8px #ddd</option>
+   </select></label>
+  <p>
+  <p>
+  <label>Transform:<br>
+  <select id="textTransform" onchange="changeOption(this)">
+    <option selected>none</option>
+    <option>capitalize</option>
+    <option>uppercase</option>
+    <option>lowercase</option>
+  </select></label>
+  </p>
+  <p>
+  <label>Decoration:<br>
+  <select id="textDecoration" onchange="changeOption(this)">
+    <option selected>none</option>
+    <option>underline</option>
+    <option>line-through</option>
+    <option>overline</option>
+  </select></label>
+  </p>
+  <br>
+  <label style="border-top:1px solid black; padding-top: 10px">Apply to all DOM nodes?
+  <input type="checkbox" id="applyAll" onchange="changeOption(this)" checked>
+  </label>
+  <p><em>This can slow down the preview on long/highly-styled pages. Turning it off will apply them only to the body tag.</em></p>
+  
+  </div>
+  <!--
+  <p><label>Letter:<br>
+    <input id="letterSpacing" type="range" min="0" max="100" step="1" onchange="changeOption(this)" value="0"></label></p>
+  <p><label>Word:<br>
+    <input id="wordSpacing" type="range" min="-20" max="100" step="1" onchange="changeOption(this)" value="0"></label></p>
+  <p><label>Line:<br>
+    <input id="lineHeight" type="range" min="60" max="200" step="1" onchange="changeOption(this)" value="100"></label></p>
+   -->
+   
+</div>
+
+
 </BODY></HTML>
