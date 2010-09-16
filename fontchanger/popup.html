@@ -57,17 +57,49 @@ var fonts =
 
 var fontOptions = {};
 var fontOptionIds = 
-            ['fontFamily',
-             'fontSize',
-             'fontStyle', 
-             'fontWeight',
-             'textShadow',
-             'textDecoration',
-             'textTransform',
-             'letterSpacing',
-             'wordSpacing',
-             'lineHeight'];
-             
+['fontFamily',
+ 'fontSize',
+ 'fontStyle', 
+ 'fontWeight',
+ 'textShadow',
+ 'textDecoration',
+ 'textTransform',
+ 'letterSpacing',
+ 'wordSpacing',
+ 'lineHeight'];
+            
+
+function onLoad() {
+  for (var i = 0; i < fonts.length; i++) {
+    addFont(fonts[i]);
+  }
+}
+
+function addFont(font) {
+  var div = document.createElement('div');
+  var input = document.createElement('input');
+  input.type = 'radio';
+  input.name = 'fontFamily';
+  input.value = font;
+  input.onchange = function () {
+    fontOptions['fontFamily'] = font;
+    changeFont();
+  };
+  div.appendChild(input);
+  div.style.fontFamily = font.replace(' ', '+');
+  div.style.fontStyle = 'normal';
+  div.style.fontWeight = 'normal';
+  div.appendChild(document.createTextNode(font));
+  document.getElementById("fontfamily").appendChild(div);
+}
+
+function onOptionChange(elem) {
+  var id = elem.id;
+  var value = elem.value;
+  fontOptions[id] = value;
+  changeFont();
+}
+
 function changeFont() {
   var fontFamily = fontOptions['fontFamily'] || fonts[0];
   var fontName = fontFamily.replace(' ', '+');
@@ -93,45 +125,6 @@ function changeFont() {
   chrome.tabs.executeScript(null, {code: fontCode});
 }
 
-
-function addFont(font) {
-  var div = document.createElement('div');
-  var input = document.createElement('input');
-  input.type = 'radio';
-  input.name = 'fontFamily';
-  input.value = font;
-  input.onchange = function () {
-    fontOptions['fontFamily'] = font;
-    changeFont();
-  };
-  div.appendChild(input);
-  div.style.fontFamily = font.replace(' ', '+');
-  div.style.fontStyle = 'normal';
-  div.style.fontWeight = 'normal';
-  div.appendChild(document.createTextNode(font));
-  document.getElementById("fontfamily").appendChild(div);
-}
-
-function changeOption(elem) {
-  var id = elem.id;
-  var value = elem.value;
-  if (id == 'fontSize') {
-    value += '%';
-  }
-  if (id == 'lineHeight' || id == 'wordSpacing' || id == 'letterSpacing') {
-    value = value * .01;
-    value += 'em';
-  }
-  fontOptions[id] = value;
-  changeFont();
-}
-
-function onLoad() {
-  for (var i = 0; i < fonts.length; i++) {
-    addFont(fonts[i]);
-  }
-}
-
 </SCRIPT>
 </HEAD>
 <BODY onload="onLoad()">
@@ -140,14 +133,15 @@ function onLoad() {
 To start from scratch, reload the page.</p>
 
 <div style="clear:both">
+
 <div id="fonts">
   <label>Font family:</label>
   <div id="fontfamily"></div>
 </div>
 
-  <div>
+<div>
   <p><label>Size:<br>
-   <select id="fontSize" onchange="changeOption(this)">
+   <select id="fontSize" onchange="onOptionChange(this)">
     <option>50%</option>
     <option selected>100%</option>
     <option>150%</option>
@@ -156,21 +150,21 @@ To start from scratch, reload the page.</p>
    </p>
   <p>
   <label>Style: <br>
-  <select id="fontStyle" onchange="changeOption(this)">
+  <select id="fontStyle" onchange="onOptionChange(this)">
     <option selected>regular</option>
     <option>italic</option>
   </select></label>
   </p>
   <p>
   <label>Weight: <br>
-  <select id="fontWeight" onchange="changeOption(this)">
+  <select id="fontWeight" onchange="onOptionChange(this)">
     <option selected>regular</option>
     <option>bold</option>
   </select></label>
   </p>
   <p>
   <label>Shadow:<br>
-  <select id="textShadow" onchange="changeOption(this)">
+  <select id="textShadow" onchange="onOptionChange(this)">
     <option selected>none</option>
     <option>2px 2px 2px #aaa</option>
     <option>4px 4px 4px #bbb</option>
@@ -180,7 +174,7 @@ To start from scratch, reload the page.</p>
   <p>
   <p>
   <label>Transform:<br>
-  <select id="textTransform" onchange="changeOption(this)">
+  <select id="textTransform" onchange="onOptionChange(this)">
     <option selected>none</option>
     <option>capitalize</option>
     <option>uppercase</option>
@@ -189,7 +183,7 @@ To start from scratch, reload the page.</p>
   </p>
   <p>
   <label>Decoration:<br>
-  <select id="textDecoration" onchange="changeOption(this)">
+  <select id="textDecoration" onchange="onOptionChange(this)">
     <option selected>none</option>
     <option>underline</option>
     <option>line-through</option>
@@ -198,21 +192,12 @@ To start from scratch, reload the page.</p>
   </p>
   <br>
   <label style="border-top:1px solid black; padding-top: 10px">Apply to all DOM nodes?
-  <input type="checkbox" id="applyAll" onchange="changeOption(this)" checked>
+  <input type="checkbox" id="applyAll" onchange="onOptionChange(this)" checked>
   </label>
   <p><em>This can slow down the preview on long/highly-styled pages. Turning it off will apply them only to the body tag.</em></p>
-  
-  </div>
-  <!--
-  <p><label>Letter:<br>
-    <input id="letterSpacing" type="range" min="0" max="100" step="1" onchange="changeOption(this)" value="0"></label></p>
-  <p><label>Word:<br>
-    <input id="wordSpacing" type="range" min="-20" max="100" step="1" onchange="changeOption(this)" value="0"></label></p>
-  <p><label>Line:<br>
-    <input id="lineHeight" type="range" min="60" max="200" step="1" onchange="changeOption(this)" value="100"></label></p>
-   -->
-   
 </div>
 
+</div>
 
-</BODY></HTML>
+</BODY>
+</HTML>
