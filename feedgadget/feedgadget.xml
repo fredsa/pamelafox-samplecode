@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<Module>
+  <ModulePrefs title="RSS Feed Control" height="400"/> 
+  <UserPref name="feedurl" display_name="Feed" default_value="https://groups.google.com/group/wave-protocol/feed/atom_v1_0_msgs.xml"/>
+   <Content type="html"><![CDATA[
+   <div id="feed" style="font-size: small"></div>
+   <script type="text/javascript" src="http://www.google.com/jsapi"></script>
+   <script type="text/javascript">
+   google.load("feeds", "1");
+
+   function initialize() {
+     var prefs = new gadgets.Prefs();
+     var feedControl = new google.feeds.FeedControl();
+     feedControl.addFeed(prefs.getString("feedurl"), "");
+     feedControl.draw(document.getElementById("feed"), {});
+   }
+   google.setOnLoadCallback(initialize);
+   </script> 
+   ]]>  
+  </Content>
+</Module>
