@@ -14,6 +14,7 @@
      var prefs = new gadgets.Prefs();
      var feedControl = new google.feeds.FeedControl();
      feedControl.addFeed(prefs.getString("feedurl"), "");
+     feedControl.setLinkTarget(google.feeds.LINK_TARGET_BLANK);
      feedControl.draw(document.getElementById("feed"), {});
    }
    google.setOnLoadCallback(initialize);
