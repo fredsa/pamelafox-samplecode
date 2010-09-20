@@ -3,7 +3,9 @@
   <ModulePrefs title="RSS Feed Control" height="400"/> 
   <UserPref name="feedurl" display_name="Feed" default_value="https://groups.google.com/group/wave-protocol/feed/atom_v1_0_msgs.xml"/>
    <Content type="html"><![CDATA[
-   <div id="feed" style="font-size: small"></div>
+   <div style="padding:10px">
+   <div id="feed" style="font-size: small;"></div>
+   </div>
    <script type="text/javascript" src="http://www.google.com/jsapi"></script>
    <script type="text/javascript">
    google.load("feeds", "1");
