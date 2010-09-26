@@ -1,0 +1,66 @@
+<html> 
+  <head> 
+    <!--[if gte IE 9]>
+      <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <![endif]--> 
+    <!--[if lt IE 9]>
+      <meta http-equiv="X-UA-Compatible" content="IE=edge;chrome=1" />
+    <![endif]--> 
+    <meta charset="utf-8" /> 
+    <title>Google JS APIs Talk</title> 
+    <link href="http://fonts.googleapis.com/css?family=Droid+Sans|Droid+Sans+Mono|Tangerine" rel="stylesheet" type="text/css" /> 
+    <link href="slideshow.css" rel="stylesheet" type="text/css" /> 
+  </head> 
+  <body> 
+  <div class="presentation"> 
+    <div id="presentation-counter"></div> 
+    <div id="slides" class="slides"> 
+        <div class="slide cover"> 
+          <section> 
+            <p>This presentation is an HTML5 website</p> 
+            <p>Press <span class="key">&rarr;</span> key to advance.</p> 
+            <p>Zoom in/out: <span class="key">Ctrl or Command</span> + <span class="key">+/-</span></p> 
+          </section> 
+        </div>
+    </div> 
+  </div> 
+  <script src="slideshow.js"></script> 
+  <script>
+function onSpreadsheetLoad(json) {
+  var slidesBlock = document.getElementById('slides');
+  var rows = json.feed.entry || [];
+  for (var i = 0; i < rows.length; i++) {
+    var row = rows[i];
+    var slideTitle = row.gsx$title.$t;
+    var slideContent = row.gsx$content.$t;
+    var slideFootnote = row.gsx$footnote.$t;
+    var slideNotes = row.gsx$notes.$t;
+    var slideType = row.gsx$type.$t;
+    var slideBlock = document.createElement('div');
+    slideBlock.className = 'slide ' + slideType;
+    
+    var slideHeader = document.createElement('header');
+    var slideHeading = document.createElement('h1');
+    slideHeading.innerHTML = slideTitle;
+    slideHeader.appendChild(slideHeading);
+    slideBlock.appendChild(slideHeader);
+    
+    var slideSection = document.createElement('section');
+    slideSection.className = 'content';
+    slideSection.innerHTML = slideContent;
+    slideBlock.appendChild(slideSection);
+    
+    slidesBlock.appendChild(slideBlock);
+  }
+  var slideshow = new SlideShow(query('.slide'));
+}     
+
+  </script>
+  <script src="https://spreadsheets.google.com/feeds/list/0Ah0xU81penP1dDZWcmxjUjdhOTMyOGxxWXAxMnpKUWc/od6/public/values?alt=json-in-script&callback=onSpreadsheetLoad"></script>
+  <!--[if lt IE 9]>
+  <script 
+  src="http://ajax.googleapis.com/ajax/libs/chrome-frame/1/CFInstall.min.js"></script>
+  <script>CFInstall.check({ mode: "overlay" });</script>
+  <![endif]--> 
+  </body> 
+</html> 
