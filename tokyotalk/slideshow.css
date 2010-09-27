@@ -32,12 +32,6 @@ body {
   -moz-transition: -moz-transform 1s ease-in-out;
   -o-transition: -o-transform 1s ease-in-out;
   transition: transform 1s ease-in-out;
-
-  /* so it's visible in the iframe. */
-  -webkit-transform: scale(0.8);
-  -moz-transform: scale(0.8);
-  -o-transform: scale(0.8);
-  transform: scale(0.8);
 }
 
 .slide {
@@ -88,6 +82,8 @@ body {
 
 .content {
   font-size: 140%;
+  text-align: center;
+  padding-top: 30px;
 }
 
 .content input, button {
@@ -118,11 +114,12 @@ body {
 
 .slide li {
   margin-bottom: 10px;
+  list-style: none;
 }
 
 .slide img {
   max-height: 90%;
-  border: 1px solid white;
+  border: 1px solid black;
   box-shadow: rgba(0, 0, 0, 0.1) 0 2px 5px;
   -webkit-box-shadow: rgba(0, 0, 0, 0.1) 0 2px 5px;
   -moz-box-shadow: rgba(0, 0, 0, 0.1) 0 2px 5px;
@@ -174,6 +171,7 @@ body {
   visibility: visible;
   display: block;
   margin-left: -1400px;
+  opacity: .5;
 }
 
 .slide.current {
@@ -186,6 +184,7 @@ body {
   visibility: visible;
   display: block;
   margin-left: 500px;
+  opacity: .5;
 }
 
 .slide.far-future {
@@ -247,10 +246,11 @@ a {
 }
 
 pre {
+  clear: both;
   text-align: left;
   font-size: 80%;
   padding: 10px 20px;
-  background: rgba(255, 0, 0, 0.05);
+  background-color: #d0f0fc;
   -webkit-border-radius: 8px;
   -khtml-border-radius: 8px;
   -moz-border-radius: 8px;
@@ -347,4 +347,16 @@ div:not(.current).reduced {
 .no-gradients {
   background: none;
   background-color: #fff;
+}
+
+.demolink {
+  text-align: center;
+  background-color: #ffdd86;
+  border-radius: 3px;
+  padding: 10px;
+  
+}
+
+.demolink a {
+  text-decoration: none;
 }
