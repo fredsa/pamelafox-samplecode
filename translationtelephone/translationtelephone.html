@@ -1,0 +1,134 @@
+<!DOCTYPE html> 
+<html> 
+  <head> 
+    <meta charset="utf-8"/> 
+    <title>Translation Party</title> 
+    <script type="text/javascript" src="http://www.google.com/jsapi"></script> 
+    <script type="text/javascript">
+    google.load("language", "1");
+    
+    // Valid languages for translation pairs
+    var allLangs = [
+    'AFRIKAANS',
+    'ALBANIAN',
+    'ARABIC',
+    'BELARUSIAN',
+    'BULGARIAN',
+    'CATALAN', 
+    'CHINESE',
+    'CROATIAN',
+    'CZECH',
+    'DANISH',
+    'DUTCH',
+    'ENGLISH',
+    'ESTONIAN',
+    'FILIPINO',
+    'FINNISH',
+    'FRENCH',
+    'GALICIAN',
+    'GERMAN',
+    'GREEK',
+    'HAITIAN_CREOLE',
+    'HEBREW',
+    'HINDI',
+    'HUNGARIAN',
+    'ICELANDIC',
+    'INDONESIAN',
+    'IRISH',
+    'ITALIAN',
+    'JAPANESE',
+    'KOREAN',
+    'LATVIAN',
+    'LITHUANIAN',
+    'MACEDONIAN',
+    'MALAY',
+    'MALTESE',
+    'NORWEGIAN',
+    'PERSIAN',
+    'POLISH',
+    'PORTUGUESE',
+    'ROMANIAN',
+    'RUSSIAN',
+    'SERBIAN',
+    'SLOVAK',
+    'SLOVENIAN',
+    'SPANISH',
+    'SWAHILI',
+    'SWEDISH',
+    'THAI',
+    'TURKISH',
+    'UKRAINIAN',
+    'VIETNAMESE',
+    'WELSH',
+    'YIDDISH'
+    ];
+   
+    var currentLang;
+    var currentMessage;
+    var targetLangs;
+ 
+    function start() {
+      // Clear previous translation
+      document.getElementById('translation').innerHTML = '';
+      // Set new globals
+      currentMessage = document.getElementById('message').value;
+      currentLang = 0;
+      
+      var startLanguage = 'ENGLISH';
+      
+      // Try to detect non-english language
+      google.language.detect(currentMessage, function(result) {
+        if (!result.error) {
+          for (l in google.language.Languages) {
+            if (google.language.Languages[l] == result.language) {
+              startLanguage = l;
+              break;
+            }
+          }
+        }
+      
+        // Pick X random languages
+        allLangs.sort(function() {
+          return (Math.round(Math.random())-0.5);
+        });
+        targetLangs = allLangs.slice(0, 20);
+        targetLangs.push(startLanguage);
+        
+        // Start the translation!
+        translateNextMessage();
+      });
+    }
+    
+    function translateNextMessage() {
+      currentLang++;
+      if (currentLang > targetLangs.length) return;
+      
+      var srcLang = google.language.Languages[targetLangs[currentLang]];
+      var destLang = google.language.Languages[targetLangs[currentLang+1]];
+      google.language.translate(currentMessage, srcLang, destLang, function(result) {
+        if (!result.error) {
+          currentMessage = result.translation;
+          document.getElementById('translation').innerHTML += '<tr><td>' + targetLangs[currentLang+1] + '</td><td>' + currentMessage + '</td></tr>';
+        } 
+        translateNextMessage();
+      });
+    }
+    </script> 
+  </head> 
+  <body style="font-family: Arial, sans-serif">
+    <h1>Translation Telephone</h1>
+    <p>Ever played the <a href="http://en.wikipedia.org/wiki/Chinese_whispers">"Telephone" game</a>, where you send a message around a circle of people and see how it turns out? This is an online version which translates the message from one language to the other using the Google Language API, and finally translates it to the original language. Have fun!
+    </p>
+    <p>
+    <label>Enter your message: <br>
+    <input id="message" type="text" size="80" value="The massive monster ate 100 hot dogs and then puked orange junk all over his wife.">
+    </label>
+    <button onclick="start()">Pass it around</button>
+    </p>
+    
+    <table>
+      <tbody id="translation">
+      </tbody>
+    </table> 
+  </body> 
+</html> 
