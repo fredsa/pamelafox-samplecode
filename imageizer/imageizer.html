@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8"/>
+    <title>Google Image-izer</title>
+    <script src="http://www.google.com/jsapi?key=AIzaSyA5m1Nc8ws2BbmPRwKu5gFradvD_hgq6G0" type="text/javascript"></script>
+    <style>
+    #imagized div {
+      float: left;
+      width: 100px;
+      height: 100px;
+      text-align: center;
+      font-size: 24px;
+      font-weight: bold;
+      border: 1px solid black;
+      line-height: 4em;
+    }
+    #imagized img {
+      width: 100px;
+      height: 100px;
+    }
+    </style>
+    <script>
+    google.load('search', '1');
+    
+    var imageSearch;
+    var words, wordCounter;
+    var wordsToIgnore = ['want', 'need', 'like', 'in', 'for', 'by', 'and', 'of', 'my', 'lets', 'have', 'the'];
+    
+    function oc(a) {
+      var o = {};
+      for(var i=0;i<a.length;i++) {
+       o[a[i]]='';
+      }
+      return o;
+    }
+
+    function searchComplete() {
+      if (imageSearch.results && imageSearch.results.length > 0) {
+        var contentDiv = document.getElementById('imagized');
+        var firstResult = imageSearch.results[0];
+        var imgContainer = document.createElement('div');
+        var newImg = document.createElement('img');
+        newImg.src = firstResult.tbUrl;
+        imgContainer.appendChild(newImg);
+        contentDiv.appendChild(imgContainer);
+      }
+      
+      convertNextWord();
+    }
+    
+    
+    function convertNextWord() {
+      wordCounter++;
+      if (wordCounter >= words.length) return;
+      
+      var word = words[wordCounter];
+      if (word in oc(wordsToIgnore)) {
+        var contentDiv = document.getElementById('imagized');
+        var wordContainer = document.createElement('div');
+        wordContainer.innerHTML = '<span>' + word + '</span>';
+        contentDiv.appendChild(wordContainer);
+        convertNextWord();
+      } else {
+        if (word.length == 1) { 
+          word = word + ' letter';
+        }
+        imageSearch.execute(word);
+      }
+    }
+    
+    
+    function convertToImages() {
+      document.getElementById('imagized').innerHTML = '';
+      
+      imageSearch = new google.search.ImageSearch();
+      imageSearch.setSearchCompleteCallback(this, searchComplete, null);
+      
+      words = document.getElementById('words').value.split(' ');
+      wordCounter = -1;
+      convertNextWord();
+    }
+    
+    </script>
+  </head>
+  <body style="font-family: Arial;border: 0 none;">
+    <p>
+     Enter a short phrase, sentence, or poem:<br>
+    <input id="words" type="text" size="68">
+    <button onclick="convertToImages()">Image-ize!</button>
+    </p>
+    <div id="imagized"></div>
+  </body>
+</html>
