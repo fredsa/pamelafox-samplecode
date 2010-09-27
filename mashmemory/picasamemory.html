@@ -1,0 +1,171 @@
+<html> 
+ <head> 
+ <title>Picasa Memory</title> 
+ <style> 
+body {
+  font-family: Arial, sans-serif;
+}
+ 
+.thumb {
+  width: 72px;
+  height: 72px;
+}
+
+td {
+  width: 75px;
+  height: 75px;
+  border: 1px solid grey;
+  text-align: center;
+  background: url('buzzicon.jpg') no-repeat center;
+  overflow: none;
+}
+
+#score {
+  font-weight: bold;
+  font-size: larger;
+}
+
+ </style> 
+ <script> 
+var boardWidth = 4;
+var boardHeight = 4;
+var numPhotos = (boardWidth * boardHeight)/2;
+var photos = [];
+var flipped = [];
+var numTries = 0;
+var numCorrect = 0;
+
+function showUser(username) {
+  document.getElementById('username').value = username;
+  getPhotos();
+}
+
+function getPhotos(name) {
+  // Reset globals
+  photos = [];
+  flipped = [];
+  numTries = 0;
+  numCorrect = 0;
+  document.getElementById('game').innerHTML = '';
+  document.getElementById('score').innerHTML = '';
+  
+  // Fetch photos for indicated username
+  var username = document.getElementById('username').value;
+  var url = 'http://picasaweb.google.com/data/feed/api/user/' + username + '?kind=photo&max-results=' + numPhotos + '&alt=jsonc&callback=onPhotosLoad';
+  var script = document.createElement('script');
+  script.src = url;
+  document.body.appendChild(script);
+}
+ 
+function onPhotosLoad(obj) {
+  if (obj.error || (obj.data && obj.data.totalItems == 0)) {
+    alert('Sorry, couldnt find any photos for them. Try again.');
+    return;
+  }
+  var results = obj.data.items;
+  for (var i = 0; i < results.length; i++) {
+    var result = results[i];
+    var pic = result.media.thumbnails[1];
+    var name = result.title;
+    var id = result.id;
+    photos.push({id: id, name: name, pic: pic});
+  }
+  makeBoard();
+}
+ 
+function makeBoard() {
+  // create the board for photos length * 2
+  var boardTable = document.createElement('table');
+  document.getElementById('game').appendChild(boardTable);
+  for (var row = 0, cell = 0; row < boardWidth; row++) {
+    var boardRow = document.createElement('tr');
+    boardTable.appendChild(boardRow);
+    for (var col = 0; col < boardHeight; col++, cell++) {
+      var boardCell = document.createElement('td');
+      boardCell.id = 'boardcell-' + cell;
+      boardRow.appendChild(boardCell);
+    }
+  }
+  // Get random positions
+  var cellArray = [];
+  for (var i = 0; i < (numPhotos*2); i++) {
+    cellArray[i] = i;
+  }
+  cellArray.sort(randOrd);
+ 
+  // Add photos to board
+  for (var i = 0, c = 0; i < numPhotos; i++) {
+    addPhotoCell(photos[i], cellArray[c++]);
+    addPhotoCell(photos[i], cellArray[c++]);
+  }
+}
+ 
+function randOrd(){
+  return (Math.round(Math.random())-0.5);
+}
+ 
+function addPhotoCell(peep, cellNumber) {
+  var boardCell = document.getElementById('boardcell-' + cellNumber);
+  boardCell.innerHTML = '<img style="display:none" class="thumb" src="' + peep.pic + '" title="' + peep.name + '">';
+  boardCell.peepId = peep.id;
+  boardCell.onclick = function() {
+    numTries++;
+    // If there are already two flipped over, flip them back over
+    if (flipped.length == 2) {
+      turnOff(flipped[0]);
+      turnOff(flipped[1]);
+      flipped.length = 0;
+    } 
+    turnOn(boardCell);
+    flipped.push(boardCell);
+    
+    // Check if weve got a match!
+    if (flipped.length == 2 && flipped[0].peepId == flipped[1].peepId) {
+      numCorrect++;
+      flipped[0].style.border = '1px solid gold';
+      flipped[1].style.border = '1px solid gold';
+      flipped.length = 0;
+    }
+    updateScore();
+  };
+}
+ 
+function turnOff(cell) {
+  cell.getElementsByTagName('img')[0].style.display = 'none';
+}
+ 
+function turnOn(cell) {
+  cell.getElementsByTagName('img')[0].style.display = 'block';
+}
+
+function updateScore() {
+  document.getElementById('score').innerHTML = numCorrect + ' matches / ' + numTries + ' tries';
+}
+
+ </script> 
+ </head> 
+ <body> 
+<h1>Picasa Memory</h1>
+<div> 
+  <form action="javascript:getPhotos()"> 
+    Enter a Google username*:
+   <input type="text" id="username" placeholder="e.g. pamela.fox"> 
+   <input type="submit" onclick="getPhotos()" value="Start Game"> 
+   <br>
+   Or try these suggested users:
+   <a href="javascript:showUser('pamela.fox')">Pamela Fox</a>,
+   <a href="javascript:showUser('tmaesaka')">Toru Maesaka</a>,
+   <a href="javascript:showUser('fredsa')">Fred Sauer</a>
+   <br>
+   <em>*Must have public photos.</em>
+  </form> 
+</div> 
+
+<div id="game"> 
+</div> 
+<br>
+<div id="score">
+</div>
+
+</body> 
+</html> 

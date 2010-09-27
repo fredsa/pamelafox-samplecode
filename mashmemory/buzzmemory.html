@@ -1,0 +1,135 @@
+<html> 
+ <head> 
+ <title>Buzz Memory</title> 
+ <style> 
+body {
+  margin: auto;
+  font-family: Arial, sans-serif;
+}
+ 
+.thumb {
+  width: 50px;
+  height: 50px;
+}
+td {
+  width: 51px;
+  height: 51px;
+  border: 1px solid grey;
+  text-align: center;
+  background: url('buzzicon.jpg');
+ }
+ </style> 
+ <script> 
+var peeps = [];
+var boardWidth = 4;
+var boardHeight = 4;
+var numPeeps = (boardWidth * boardHeight)/2;
+var flipped = [];
+ 
+function appendScript(url, callback) {
+  var script = document.createElement('script');
+  script.src = url + "&callback=" + callback;
+  document.body.appendChild(script);
+}
+ 
+function getPeeps(name) {
+  peeps = [];
+  var name = document.getElementById('name').value;
+  var url = 'https://www.googleapis.com/buzz/v1/people/search?q=' + name + '&alt=json&max-results=' + numPeeps;
+  var url = 'https://www.googleapis.com/buzz/v1/people/' + name + '/@groups/@following?alt=json&max-results=' + numPeeps;
+  appendScript(url, 'receivePeeps');
+}
+ 
+function receivePeeps(obj) {
+  document.getElementById('game').innerHTML = '';
+  if (obj.error || (obj.data && obj.data.totalResults == 0)) {
+    alert('Sorry, couldnt find followers. Try again.');
+    return;
+  }
+  var results = obj.data.entry;
+  for (var i = 0; i < results.length; i++) {
+    var result = results[i];
+    var pic = result.thumbnailUrl || 'http://www.gstatic.com/s2/profiles/images/googleyeyes96.png';
+    var name = result.displayName;
+    var id = result.id;
+    peeps.push({id: id, name: name, pic: pic});
+  }
+  makeBoard();
+}
+ 
+function makeBoard() {
+  // create the board for peeps length * 2
+  var boardTable = document.createElement('table');
+  document.getElementById('game').appendChild(boardTable);
+  for (var row = 0, cell = 0; row < boardWidth; row++) {
+    var boardRow = document.createElement('tr');
+    boardTable.appendChild(boardRow);
+    for (var col = 0; col < boardHeight; col++, cell++) {
+      var boardCell = document.createElement('td');
+      boardCell.id = 'boardcell-' + cell;
+      boardRow.appendChild(boardCell);
+    }
+  }
+  // Get random positions
+  var cellArray = [];
+  for (var i = 0; i < (numPeeps*2); i++) {
+    cellArray[i] = i;
+  }
+  cellArray.sort(randOrd);
+ 
+  // Add peeps to board
+  for (var i = 0, c = 0; i < numPeeps; i++) {
+    addPeep(peeps[i], cellArray[c++]);
+    addPeep(peeps[i], cellArray[c++]);
+  }
+}
+ 
+function randOrd(){
+  return (Math.round(Math.random())-0.5);
+}
+ 
+function addPeep(peep, cellNumber) {
+  var boardCell = document.getElementById('boardcell-' + cellNumber);
+  boardCell.innerHTML = '<img style="display:none" class="thumb" src="' + peep.pic + '">';
+  boardCell.peepId = peep.id;
+  boardCell.onclick = function() {
+    // If there are already two flipped over, flip them back over
+    if (flipped.length == 2) {
+      turnOff(flipped[0]);
+      turnOff(flipped[1]);
+      flipped.length = 0;
+    } 
+    turnOn(boardCell);
+    flipped.push(boardCell);
+    // Check if weve got a match!
+    if (flipped.length == 2 && flipped[0].peepId == flipped[1].peepId) {
+      flipped[0].style.border = '1px solid gold';
+      flipped[1].style.border = '1px solid gold';
+      flipped.length = 0;
+    }
+      
+  };
+}
+ 
+function turnOff(cell) {
+  cell.getElementsByTagName('img')[0].style.display = 'none';
+}
+ 
+function turnOn(cell) {
+  cell.getElementsByTagName('img')[0].style.display = 'block';
+}
+ </script> 
+ </head> 
+ <body> 
+<div> 
+<form action="javascript:getPeeps()"> 
+Enter your Google username: <input type="text" id="name" placeholder="e.g. pamela.fox"> 
+ <input type="submit" onclick="getPeeps()" value="Start Game"> 
+<p>*Must be following atleast 8 people.</p> 
+</form> 
+</div> 
+<div id="game"> 
+</div> 
+<div id="score"></div> 
+</body> 
+</html> 
