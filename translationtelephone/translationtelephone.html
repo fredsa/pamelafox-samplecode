@@ -87,6 +87,14 @@
           }
         }
       
+        
+        // Remove start language from possible languages
+        for (var i = 0; i < allLangs.length; i++) {
+          if (allLangs[i] == startLanguage) {
+            allLangs.splice(i, 1);
+          }
+        }
+        
         // Pick X random languages
         allLangs.sort(function() {
           return (Math.round(Math.random())-0.5);
