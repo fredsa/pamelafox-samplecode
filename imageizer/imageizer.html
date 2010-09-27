@@ -74,6 +74,7 @@
       document.getElementById('imagized').innerHTML = '';
       
       imageSearch = new google.search.ImageSearch();
+      imageSearch.setRestriction(google.search.Search.RESTRICT_SAFESEARCH, google.search.Search.SAFESEARCH_STRICT);
       imageSearch.setSearchCompleteCallback(this, searchComplete, null);
       
       words = document.getElementById('words').value.split(' ');
@@ -83,12 +84,17 @@
     
     </script>
   </head>
-  <body style="font-family: Arial;border: 0 none;">
+  <body style="font-family: Arial;">
+    <h1>Google Image-izer</h1>
     <p>
-     Enter a short phrase, sentence, or poem:<br>
-    <input id="words" type="text" size="68">
+     Enter a short phrase, sentence, or poem (or use the sample provided):<br>
+    <input id="words" type="text" size="68" value="I want sushi and sake in my stomach">
     <button onclick="convertToImages()">Image-ize!</button>
     </p>
     <div id="imagized"></div>
+    <br>
+    <div style="clear:both; padding-top: 20px">
+    <em>Inspired by Douwe Osinga's <a href="http://douweosinga.com/projects/visualpoetry">Visual Poetry</a></em>
+    </div>
   </body>
 </html>
