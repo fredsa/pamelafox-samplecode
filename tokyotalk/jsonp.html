@@ -3,12 +3,12 @@
 <head>
  <meta charset="utf-8">
  <title>JSONP Example</title>
- <script src="http://imagine-it.org/jshacks/getjson.php?callback=parseResponse"></script>
  <script>
  function parseResponse(json) {
-   alert(json['Name']);
+   document.write(json['Name']);
  }
  </script>
+ <script src="http://imagine-it.org/google/jshacks/getjson.php?callback=parseResponse"></script>
 </head>
 <body>
 </body>
