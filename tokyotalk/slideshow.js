@@ -198,7 +198,7 @@
       }
       removeClass(this._buildList.shift(), 'to-build');
       return true;
-    },
+    }
   };
 
   //
@@ -325,7 +325,7 @@
       } else if (delta< -SWIPE_SIZE) {
          this.prev();
        }
-    },
+    }
   };
   window['SlideShow'] = SlideShow;
   window['query'] = query;
