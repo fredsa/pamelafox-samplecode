@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<Module>
+  <ModulePrefs title="hello world example" /> 
+  <Content type="html">
+     <![CDATA[ 
+       <b>This is a basic gadget!</b>
+       <style>
+         body {
+           font-family: Arial, sans-serif;
+         }
+       </style>
+       <script>
+       document.body.innerHTML += "..and it does Javascript!";
+       </script>
+     ]]>
+  </Content> 
+</Module>
