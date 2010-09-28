@@ -1,0 +1,25 @@
+<!doctype html>
+<html>
+<head>
+ <meta charset="utf-8">
+ <title>JSONP Example</title>
+ <script>
+ function loadScript() {
+   var callback = 'parseResponse';
+   var script = document.createElement('script');
+   script.src = 'http://imagine-it.org/google/jshacks/getjson.php?callback=' + callback;
+   document.body.appendChild(script);
+ }
+   
+ function parseResponse(json) {
+   document.body.innerHTML += json['Name'];
+ }
+ </script>
+</head>
+<body>
+<button onclick="loadScript();">Load JSON</button>
+<br>
+The name is...
+<br>
+</body>
+</html>
