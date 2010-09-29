@@ -26,6 +26,14 @@
   </div> 
   <script src="slideshow.js"></script> 
   <script>
+  
+function getURLParam(name) {
+  var regexS = "[\\?&]" + name + "([^&#]*)";
+  var regex = new RegExp(regexS);
+  var results = regex.exec(window.location.href);
+  return results;
+}
+ 
 function onSpreadsheetLoad(json) {
   var slidesBlock = document.getElementById('slides');
   var rows = json.feed.entry || [];
@@ -35,8 +43,9 @@ function onSpreadsheetLoad(json) {
     var slideContent = row.gsx$content.$t;
     var slideFootnote = row.gsx$footnote.$t;
     var slideNotes = row.gsx$notes.$t;
+    var slideNarration = row.gsx$narration.$t;
     var slideType = row.gsx$type.$t;
-    var slideBlock = document.createElement('div');
+    var slideBlock = document.createElement('section');
     slideBlock.className = 'slide ' + slideType;
     
     var slideHeader = document.createElement('header');
@@ -45,10 +54,17 @@ function onSpreadsheetLoad(json) {
     slideHeader.appendChild(slideHeading);
     slideBlock.appendChild(slideHeader);
     
-    var slideSection = document.createElement('section');
-    slideSection.className = 'content';
-    slideSection.innerHTML = slideContent;
-    slideBlock.appendChild(slideSection);
+    var slideContentBlock = document.createElement('div');
+    slideContentBlock.className = 'content';
+    slideContentBlock.innerHTML = slideContent;
+    slideBlock.appendChild(slideContentBlock);
+    
+    if (getURLParam('narration')) {
+      var slideNarrationBlock = document.createElement('div');
+      slideNarrationBlock.className = 'narration';
+      slideNarrationBlock.innerHTML = slideNarration;
+      slideBlock.appendChild(slideNarrationBlock);
+    }
     
     slidesBlock.appendChild(slideBlock);
   }
