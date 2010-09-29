@@ -1,0 +1,13 @@
+To get this project running, you should download the
+Python Client Library for the Google Data APIs here:
+http://code.google.com/p/gdata-python-client/downloads/list
+
+And you should download the djangoappengine project:
+http://www.allbuttonspressed.com/projects/djangoappengine
+
+You should then have these folders under the root:
+- atom
+- gdata
+- djangoappengine
+- djangotoolbox
+
