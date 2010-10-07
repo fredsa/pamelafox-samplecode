@@ -1,0 +1,11 @@
+{
+  "name": "Retro Blink",
+  "version": "1.0",
+  "description": "Makes <BLINK> tags actually blink. Bring back the 80s!",
+  "content_scripts": [
+    { "matches": ["http://*/*"], "js": ["content_script.js"] }
+  ],
+  "permissions": [
+    "http://api.flickr.com/"
+  ]
+}
