@@ -3,7 +3,7 @@
   font-family: 'Calibri';
   font-style: normal;
   font-weight: normal;
-  src: local('Calibri'), url('http://themes.googleusercontent.com/font?kit=WEpwESq_E0tzw2RjdJXAWg') format('truetype');
+  src: local('Calibri'), url('http://themes.googleusercontent.com/font?kit=9coX2bxtmeZhxv91CXw7qQ') format('truetype');
 }
 }
 @media screen {
@@ -11,7 +11,7 @@
   font-family: 'Cambria';
   font-style: normal;
   font-weight: normal;
-  src: local('Cambria'), url('http://themes.googleusercontent.com/font?kit=eO9YsaJYBNE6Wx0xZaqTwg') format('truetype');
+  src: local('Cambria'), url('http://themes.googleusercontent.com/font?kit=qOP3jt5fC7RVkXxxuZ0KQA') format('truetype');
 }
 }
 @media screen {
@@ -19,7 +19,7 @@
   font-family: 'Cantal';
   font-style: normal;
   font-weight: normal;
-  src: local('Cantal'), url('http://themes.googleusercontent.com/font?kit=vQJ41dtL-HWXb7BRYZ6wtQ') format('truetype');
+  src: local('Cantal'), url('http://themes.googleusercontent.com/font?kit=NAfbn9W_xwYYvigv5DvR5A') format('truetype');
 }
 }
 @media screen {
@@ -27,7 +27,7 @@
   font-family: 'Cantarell';
   font-style: normal;
   font-weight: normal;
-  src: local('Cantarell'), url('http://themes.googleusercontent.com/font?kit=8M5pTRlYxX_94Xw5Pue40g') format('truetype');
+  src: local('Cantarell'), url('http://themes.googleusercontent.com/font?kit=3Nki8PupXAA4kQiyg-v-S6CWcynf_cDxXwCLxiixG1c') format('truetype');
 }
 }
 @media screen {
@@ -35,7 +35,7 @@
   font-family: 'Cardo';
   font-style: normal;
   font-weight: normal;
-  src: local('Cardo'), url('http://themes.googleusercontent.com/font?kit=_dqEb_MWMIea2KHDx0KLgw') format('truetype');
+  src: local('Cardo'), url('http://themes.googleusercontent.com/font?kit=Z7XaG2PO65IzXiEGdsRLHQ') format('truetype');
 }
 }
 @media screen {
@@ -43,7 +43,7 @@
   font-family: 'Consolas';
   font-style: normal;
   font-weight: normal;
-  src: local('Consolas'), url('http://themes.googleusercontent.com/font?kit=QEKHMQjUQJK0gbC5JyzkzA') format('truetype');
+  src: local('Consolas'), url('http://themes.googleusercontent.com/font?kit=AHTQE2f8E-7C4Fagw1YmbfesZW2xOQ-xsNqO47m55DA') format('truetype');
 }
 }
 @media screen {
@@ -51,7 +51,15 @@
   font-family: 'Corsiva';
   font-style: normal;
   font-weight: normal;
-  src: local('Corsiva'), url('http://themes.googleusercontent.com/font?kit=L-qy2kjad7uyXUSjpMB0og') format('truetype');
+  src: local('Corsiva'), url('http://themes.googleusercontent.com/font?kit=cJrGG4Js3mYb0ayrvsDybQ') format('truetype');
+}
+}
+@media screen {
+@font-face {
+  font-family: 'Courier New';
+  font-style: normal;
+  font-weight: normal;
+  src: local('Courier New'), local('CourierNewPSMT'), url('http://themes.googleusercontent.com/font?kit=p0pJArTTK5Heq6xbYtNwnmeudeTO44zf-ht3k-KNzwg') format('truetype');
 }
 }
 @media screen {
@@ -59,7 +67,15 @@
   font-family: 'Crimson Text';
   font-style: normal;
   font-weight: normal;
-  src: local('Crimson Text'), url('http://themes.googleusercontent.com/font?kit=3IFMwfRa07i-auYR-B-zNXcb0-y5aqlkwbjMCIduOHM') format('truetype');
+  src: local('Crimson Text'), url('http://themes.googleusercontent.com/font?kit=3IFMwfRa07i-auYR-B-zNfXvv67LPsgjo12DOhGlfyc') format('truetype');
+}
+}
+@media screen {
+@font-face {
+  font-family: 'Cuprum';
+  font-style: normal;
+  font-weight: normal;
+  src: local('Cuprum'), url('http://themes.googleusercontent.com/font?kit=iek7hUBa3xH6jp_JEguivQ') format('truetype');
 }
 }
 @media screen {
@@ -67,7 +83,7 @@
   font-family: 'Droid Sans';
   font-style: normal;
   font-weight: normal;
-  src: local('Droid Sans'), url('http://themes.googleusercontent.com/font?kit=vk1xBJHzOPMZIrllGO7pBPesZW2xOQ-xsNqO47m55DA') format('truetype');
+  src: local('Droid Sans'), url('http://themes.googleusercontent.com/font?kit=vk1xBJHzOPMZIrllGO7pBC3USBnSvpkopQaUR-2r7iU') format('truetype');
 }
 }
 @media screen {
@@ -75,7 +91,7 @@
   font-family: 'Droid Sans Mono';
   font-style: normal;
   font-weight: normal;
-  src: local('Droid Sans Mono'), url('http://themes.googleusercontent.com/font?kit=ns-m2xQYezAtqh7ai59hJRMAE_m2XjLvPA1PHdleNSI') format('truetype');
+  src: local('Droid Sans Mono'), url('http://themes.googleusercontent.com/font?kit=ns-m2xQYezAtqh7ai59hJUsQ01YfuFoDulpCjPeMo4M') format('truetype');
 }
 }
 @media screen {
@@ -83,15 +99,7 @@
   font-family: 'Droid Serif';
   font-style: normal;
   font-weight: normal;
-  src: local('Droid Serif'), url('http://themes.googleusercontent.com/font?kit=0AKsP294HTD-nvJgucYTaPY6323mHUZFJMgTvxaG2iE') format('truetype');
-}
-}
-@media screen {
-@font-face {
-  font-family: 'Hanuman';
-  font-style: normal;
-  font-weight: normal;
-  src: local('Hanuman'), url('http://themes.googleusercontent.com/font?kit=vSxKHSuq7yYYxKmF65OC1A') format('truetype');
+  src: local('Droid Serif'), local('DroidSerif'), url('http://themes.googleusercontent.com/font?kit=0AKsP294HTD-nvJgucYTaGeudeTO44zf-ht3k-KNzwg') format('truetype');
 }
 }
 @media screen {
@@ -99,79 +107,7 @@
   font-family: 'IM Fell DW Pica';
   font-style: normal;
   font-weight: normal;
-  src: local('IM Fell DW Pica'), url('http://themes.googleusercontent.com/font?kit=W81bfaWiUicLSPbJhW-ATkbCmjG2PyP8M1QylvNa2BY') format('truetype');
-}
-}
-@media screen {
-@font-face {
-  font-family: 'IM Fell DW Pica SC';
-  font-style: normal;
-  font-weight: normal;
-  src: local('IM Fell DW Pica SC'), url('http://themes.googleusercontent.com/font?kit=xBKKJV4z2KsrtQnmjGO17EPMyTeXIBNz8-bFgz_Vsno') format('truetype');
-}
-}
-@media screen {
-@font-face {
-  font-family: 'IM Fell Double Pica';
-  font-style: normal;
-  font-weight: normal;
-  src: local('IM Fell Double Pica'), url('http://themes.googleusercontent.com/font?kit=yN1wY_01BkQnO0LYAhXdUketuCfLmv1upjOTaYXsrnA') format('truetype');
-}
-}
-@media screen {
-@font-face {
-  font-family: 'IM Fell Double Pica SC';
-  font-style: normal;
-  font-weight: normal;
-  src: local('IM Fell Double Pica SC'), url('http://themes.googleusercontent.com/font?kit=jkrUtrLFpMw4ZazhfkKsGx_WQHmeko_uuvb7ivwv2XY') format('truetype');
-}
-}
-@media screen {
-@font-face {
-  font-family: 'IM Fell English';
-  font-style: normal;
-  font-weight: normal;
-  src: local('IM Fell English'), url('http://themes.googleusercontent.com/font?kit=xwIisCqGFi8pff-oa9uSVPwP8Swr9TiMe6jzVMiYka0') format('truetype');
-}
-}
-@media screen {
-@font-face {
-  font-family: 'IM Fell English SC';
-  font-style: normal;
-  font-weight: normal;
-  src: local('IM Fell English SC'), url('http://themes.googleusercontent.com/font?kit=h3Tn6yWfw4b5qaLD1RWvz2-UbNalN5hWG2bi4kWH6dQ') format('truetype');
-}
-}
-@media screen {
-@font-face {
-  font-family: 'IM Fell French Canon';
-  font-style: normal;
-  font-weight: normal;
-  src: local('IM Fell French Canon'), url('http://themes.googleusercontent.com/font?kit=iKB0WL1BagSpNPz3NLMdsAsHEdl4-UH8xow_I6JdQ2o') format('truetype');
-}
-}
-@media screen {
-@font-face {
-  font-family: 'IM Fell French Canon SC';
-  font-style: normal;
-  font-weight: normal;
-  src: local('IM Fell French Canon SC'), url('http://themes.googleusercontent.com/font?kit=kA3bS19-tQbeT_iG32EZmRcuimzuY3jw3CVEhQh_i1g') format('truetype');
-}
-}
-@media screen {
-@font-face {
-  font-family: 'IM Fell Great Primer';
-  font-style: normal;
-  font-weight: normal;
-  src: local('IM Fell Great Primer'), url('http://themes.googleusercontent.com/font?kit=AL8ALGNthei20f9Cu3e93g-37IvXbo0239cHM53bnzk') format('truetype');
-}
-}
-@media screen {
-@font-face {
-  font-family: 'IM Fell Great Primer SC';
-  font-style: normal;
-  font-weight: normal;
-  src: local('IM Fell Great Primer SC'), url('http://themes.googleusercontent.com/font?kit=A313vRj97hMMGFjt6rgSJoBl2qzzsXUz2xIsivOt1AI') format('truetype');
+  src: local('IM Fell DW Pica'), url('http://themes.googleusercontent.com/font?kit=W81bfaWiUicLSPbJhW-ATpXqw2sdSdulDu6GtSo9pME') format('truetype');
 }
 }
 @media screen {
@@ -179,7 +115,7 @@
   font-family: 'Inconsolata';
   font-style: normal;
   font-weight: normal;
-  src: local('Inconsolata'), url('http://themes.googleusercontent.com/font?kit=BjAYBlHtW3CJxDcjzrnZCPY6323mHUZFJMgTvxaG2iE') format('truetype');
+  src: local('Inconsolata'), url('http://themes.googleusercontent.com/font?kit=BjAYBlHtW3CJxDcjzrnZCGeudeTO44zf-ht3k-KNzwg') format('truetype');
 }
 }
 @media screen {
@@ -187,7 +123,7 @@
   font-family: 'Josefin Sans Std Light';
   font-style: normal;
   font-weight: normal;
-  src: local('Josefin Sans Std Light'), url('http://themes.googleusercontent.com/font?kit=doRWK9Qks0OQGenH-kW8nvHOcnsXK5nenwFmwR94nvg') format('truetype');
+  src: local('Josefin Sans Std Light'), url('http://themes.googleusercontent.com/font?kit=doRWK9Qks0OQGenH-kW8nu95PAQP1LWy5wle1AF-w4I') format('truetype');
 }
 }
 @media screen {
@@ -195,7 +131,7 @@
   font-family: 'Lobster';
   font-style: normal;
   font-weight: normal;
-  src: local('Lobster'), url('http://themes.googleusercontent.com/font?kit=WfMdgA8G9OWPFWyruSspgg') format('truetype');
+  src: local('Lobster'), url('http://themes.googleusercontent.com/font?kit=W5XCwtadT21TrRIKsJ4ZiA') format('truetype');
 }
 }
 @media screen {
@@ -203,7 +139,23 @@
   font-family: 'Molengo';
   font-style: normal;
   font-weight: normal;
-  src: local('Molengo'), url('http://themes.googleusercontent.com/font?kit=4hJ5ARulfMSLe6L31xUp7Q') format('truetype');
+  src: local('Molengo'), url('http://themes.googleusercontent.com/font?kit=cUnzjmblsoKvIHa1afI_3A') format('truetype');
+}
+}
+@media screen {
+@font-face {
+  font-family: 'Neucha';
+  font-style: normal;
+  font-weight: normal;
+  src: local('Neucha'), url('http://themes.googleusercontent.com/font?kit=yWGs99JiQMyYaTEwDoCGTw') format('truetype');
+}
+}
+@media screen {
+@font-face {
+  font-family: 'Neuton';
+  font-style: normal;
+  font-weight: normal;
+  src: local('Neuton'), url('http://themes.googleusercontent.com/font?kit=ssUvIdAfEYBoNAeWwpNFZA') format('truetype');
 }
 }
 @media screen {
@@ -211,7 +163,7 @@
   font-family: 'Nobile';
   font-style: normal;
   font-weight: normal;
-  src: local('Nobile'), url('http://themes.googleusercontent.com/font?kit=eDcxDKAntnjlXW4ge1A-bA') format('truetype');
+  src: local('Nobile'), url('http://themes.googleusercontent.com/font?kit=MeJRC1qXHhLn4LvQ0mIbmQ') format('truetype');
 }
 }
 @media screen {
@@ -219,7 +171,7 @@
   font-family: 'OFL Sorts Mill Goudy TT';
   font-style: normal;
   font-weight: normal;
-  src: local('OFL Sorts Mill Goudy TT'), url('http://themes.googleusercontent.com/font?kit=9ZZVVBRCceNnPBXqWLH8IHfhUZ7Gb91WMHHHFtNc16Y') format('truetype');
+  src: local('OFL Sorts Mill Goudy TT'), url('http://themes.googleusercontent.com/font?kit=9ZZVVBRCceNnPBXqWLH8IHK7mAYWbTEfDn8ejxzzy6I') format('truetype');
 }
 }
 @media screen {
@@ -227,7 +179,23 @@
   font-family: 'Old Standard TT';
   font-style: normal;
   font-weight: normal;
-  src: local('Old Standard TT'), url('http://themes.googleusercontent.com/font?kit=n6RTCDcIPWSE8UNBa4k-DNhw4jIWq9fRsKwkMYifV3k') format('truetype');
+  src: local('Old Standard TT'), url('http://themes.googleusercontent.com/font?kit=n6RTCDcIPWSE8UNBa4k-DH-ToUytvUoCLEir8lQbELo') format('truetype');
+}
+}
+@media screen {
+@font-face {
+  font-family: 'PT Sans';
+  font-style: normal;
+  font-weight: normal;
+  src: local('PT Sans'), local('PTSans-Regular'), url('http://themes.googleusercontent.com/font?kit=TUeFkf0FuzjhW0PAC_YDVg') format('truetype');
+}
+}
+@media screen {
+@font-face {
+  font-family: 'Philosopher';
+  font-style: normal;
+  font-weight: normal;
+  src: local('Philosopher'), url('http://themes.googleusercontent.com/font?kit=OttjxgcoEsufOGSINYBGLWeudeTO44zf-ht3k-KNzwg') format('truetype');
 }
 }
 @media screen {
@@ -235,7 +203,7 @@
   font-family: 'Reenie Beanie';
   font-style: normal;
   font-weight: normal;
-  src: local('Reenie Beanie'), url('http://themes.googleusercontent.com/font?kit=ljpKc6CdXusL1cnGUSamX6wzc92RfTBAot09G711UR8') format('truetype');
+  src: local('Reenie Beanie'), url('http://themes.googleusercontent.com/font?kit=ljpKc6CdXusL1cnGUSamX-SG1Vhs6WuJu5OMHVi2V1g') format('truetype');
 }
 }
 @media screen {
@@ -243,7 +211,7 @@
   font-family: 'Tangerine';
   font-style: normal;
   font-weight: normal;
-  src: local('Tangerine'), url('http://themes.googleusercontent.com/font?kit=0D2fHMdihTYC-hZzWwu96A') format('truetype');
+  src: local('Tangerine'), url('http://themes.googleusercontent.com/font?kit=N3tHuUrQVE3FJr1SnuxxwqCWcynf_cDxXwCLxiixG1c') format('truetype');
 }
 }
 @media screen {
@@ -251,15 +219,7 @@
   font-family: 'Vollkorn';
   font-style: normal;
   font-weight: normal;
-  src: local('Vollkorn'), url('http://themes.googleusercontent.com/font?kit=3GopPtwEmXOR52JCb1O0rQ') format('truetype');
-}
-}
-@media screen {
-@font-face {
-  font-family: 'Yanone Kaffeesatz';
-  font-style: normal;
-  font-weight: 200;
-  src: local('Yanone Kaffeesatz'), url('http://themes.googleusercontent.com/font?kit=We_iSDqttE3etzfdfhuPRcc5tgZuEvrIb3LKfnkSWn4') format('truetype');
+  src: local('Vollkorn Regular'), local('Vollkorn-Regular'), url('http://themes.googleusercontent.com/font?kit=6OKk9MDjV18ttdu12jHbHfesZW2xOQ-xsNqO47m55DA') format('truetype');
 }
 }
 @media screen {
@@ -267,22 +227,6 @@
   font-family: 'Yanone Kaffeesatz';
   font-style: normal;
   font-weight: 400;
-  src: local('Yanone Kaffeesatz'), url('http://themes.googleusercontent.com/font?kit=YDAoLskQQ5MOAgvHUQCcLZFn4H7osP5XUHOWeMNBXkc') format('truetype');
-}
-}
-@media screen {
-@font-face {
-  font-family: 'Yanone Kaffeesatz';
-  font-style: normal;
-  font-weight: 300;
-  src: local('Yanone Kaffeesatz'), url('http://themes.googleusercontent.com/font?kit=We_iSDqttE3etzfdfhuPRe7GXtB_CgXfNYg_VUrNn5c') format('truetype');
-}
-}
-@media screen {
-@font-face {
-  font-family: 'Yanone Kaffeesatz';
-  font-style: normal;
-  font-weight: 700;
-  src: local('Yanone Kaffeesatz'), url('http://themes.googleusercontent.com/font?kit=We_iSDqttE3etzfdfhuPRRp7E8oIiiapoBGY1m0MP3k') format('truetype');
+  src: local('Yanone Kaffeesatz'), url('http://themes.googleusercontent.com/font?kit=YDAoLskQQ5MOAgvHUQCcLYm9380oneTkZmZG9kSa0Fs') format('truetype');
 }
 }

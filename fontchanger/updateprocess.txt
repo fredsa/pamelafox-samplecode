@@ -1,0 +1,3 @@
+Grab CSS from http://code.google.com/webfonts
+Replace ::Menu with '' 
+Grab JSOn from http://code.google.com/webfonts/preview

@@ -5,7 +5,8 @@
 <STYLE>
 body {
   background-color: #eee;
-  width: 400px;
+  width: 380px;
+  height: 340px;
   overflow: hidden;
   margin: 0px;
   padding: 0px;
@@ -23,6 +24,9 @@ label {
   font-size: 12px;
   margin-top: 1px;
   margin-right: 10px;
+  height: 100%;
+  overflow: auto;
+  border-right: 1px solid black;
 }
 
 #fonts:first-child {
@@ -33,50 +37,32 @@ label {
 <SCRIPT>
 
 var fonts =
-[
-'Cantarell',
-'Cardo',
-'Crimson Text',
-'Droid Sans',
-'Droid Sans Mono',
-'Droid Serif',
-'Hanuman',
-'IM Fell',
-'Inconsolata',
-'Josefin Sans Std Light',
-'Lobster',
-'Molengo',
-'Nobile',
-'OFL Sorts Mill Goudy TT',
-'Old Standard TT',
-'Reenie Beanie',
-'Tangerine',
-'Vollkorn',
-'Yanone Kaffeesatz'
-];
+{Cantarell:{alt:'serif',designer:'Dave Crossland',designerUrl:'/webfonts/designer?designer\75Dave+Crossland',familyUrl:'Cantarell',subset:'latin',url:'http://fonts.googleapis.com/css?family\75Cantarell:regular,italic,bold,bolditalic\46subset\75latin'},Cardo:{alt:'serif',designer:'David Perry',designerUrl:'/webfonts/designer?designer\75David+Perry',familyUrl:'Cardo',subset:'latin',url:'http://fonts.googleapis.com/css?family\75Cardo:regular\46subset\75latin'},'Crimson Text':{alt:'serif',designer:'Sebastian Kosch',designerUrl:'/webfonts/designer?designer\75Sebastian+Kosch',familyUrl:'Crimson Text',subset:'latin',url:'http://fonts.googleapis.com/css?family\75Crimson+Text:regular\46subset\75latin'},Cuprum:{alt:'serif',designer:'Jovanny Lemonad',designerUrl:'/webfonts/designer?designer\75Jovanny+Lemonad',familyUrl:'Cuprum',subset:'cyrillic',url:'http://fonts.googleapis.com/css?family\75Cuprum:regular\46subset\75cyrillic'},'Droid Sans':{alt:'serif',designer:'Steve Matteson',designerUrl:'/webfonts/designer?designer\75Steve+Matteson',familyUrl:'Droid Sans',subset:'latin',url:'http://fonts.googleapis.com/css?family\75Droid+Sans:regular,bold\46subset\75latin'},'Droid Sans Mono':{alt:'serif',designer:'Steve Matteson',designerUrl:'/webfonts/designer?designer\75Steve+Matteson',familyUrl:'Droid Sans Mono',subset:'latin',url:'http://fonts.googleapis.com/css?family\75Droid+Sans+Mono:regular\46subset\75latin'},'Droid Serif':{alt:'serif',designer:'Steve Matteson',designerUrl:'/webfonts/designer?designer\75Steve+Matteson',familyUrl:'Droid Serif',subset:'latin',url:'http://fonts.googleapis.com/css?family\75Droid+Serif:regular,italic,bold,bolditalic\46subset\75latin'},'GFS Didot':{alt:'serif',designer:'Greek Font Society',familyUrl:'GFS Didot',subset:'greek',url:'http://fonts.googleapis.com/css?family\75GFS+Didot:regular\46subset\75greek'},'GFS Neohellenic':{alt:'serif',designer:'Greek Font Society',familyUrl:'GFS Neohellenic',subset:'greek',url:'http://fonts.googleapis.com/css?family\75GFS+Neohellenic:regular,italic,bold,bolditalic\46subset\75greek'},'IM Fell DW Pica':{alt:'serif',designer:'Igino Marini',designerUrl:'/webfonts/designer?designer\75Igino+Marini',familyUrl:'IM Fell DW Pica',subset:'latin',url:'http://fonts.googleapis.com/css?family\75IM+Fell+DW+Pica:regular,italic\46subset\75latin'},'IM Fell DW Pica SC':{alt:'serif',designer:'Igino Marini',designerUrl:'/webfonts/designer?designer\75Igino+Marini',familyUrl:'IM Fell DW Pica SC',subset:'latin',url:'http://fonts.googleapis.com/css?family\75IM+Fell+DW+Pica+SC:regular\46subset\75latin'},'IM Fell Double Pica':{alt:'serif',designer:'Igino Marini',designerUrl:'/webfonts/designer?designer\75Igino+Marini',familyUrl:'IM Fell Double Pica',subset:'latin',url:'http://fonts.googleapis.com/css?family\75IM+Fell+Double+Pica:regular,italic\46subset\75latin'},'IM Fell Double Pica SC':{alt:'serif',designer:'Igino Marini',designerUrl:'/webfonts/designer?designer\75Igino+Marini',familyUrl:'IM Fell Double Pica SC',subset:'latin',url:'http://fonts.googleapis.com/css?family\75IM+Fell+Double+Pica+SC:regular\46subset\75latin'},'IM Fell English':{alt:'serif',designer:'Igino Marini',designerUrl:'/webfonts/designer?designer\75Igino+Marini',familyUrl:'IM Fell English',subset:'latin',url:'http://fonts.googleapis.com/css?family\75IM+Fell+English:regular,italic\46subset\75latin'},'IM Fell English SC':{alt:'serif',designer:'Igino Marini',designerUrl:'/webfonts/designer?designer\75Igino+Marini',familyUrl:'IM Fell English SC',subset:'latin',url:'http://fonts.googleapis.com/css?family\75IM+Fell+English+SC:regular\46subset\75latin'},'IM Fell French Canon':{alt:'serif',designer:'Igino Marini',designerUrl:'/webfonts/designer?designer\75Igino+Marini',familyUrl:'IM Fell French Canon',subset:'latin',url:'http://fonts.googleapis.com/css?family\75IM+Fell+French+Canon:regular,italic\46subset\75latin'},'IM Fell French Canon SC':{alt:'serif',designer:'Igino Marini',designerUrl:'/webfonts/designer?designer\75Igino+Marini',familyUrl:'IM Fell French Canon SC',subset:'latin',url:'http://fonts.googleapis.com/css?family\75IM+Fell+French+Canon+SC:regular\46subset\75latin'},'IM Fell Great Primer':{alt:'serif',designer:'Igino Marini',designerUrl:'/webfonts/designer?designer\75Igino+Marini',familyUrl:'IM Fell Great Primer',subset:'latin',url:'http://fonts.googleapis.com/css?family\75IM+Fell+Great+Primer:regular,italic\46subset\75latin'},'IM Fell Great Primer SC':{alt:'serif',designer:'Igino Marini',designerUrl:'/webfonts/designer?designer\75Igino+Marini',familyUrl:'IM Fell Great Primer SC',subset:'latin',url:'http://fonts.googleapis.com/css?family\75IM+Fell+Great+Primer+SC:regular\46subset\75latin'},Inconsolata:{alt:'serif',designer:'Raph Levien',designerUrl:'/webfonts/designer?designer\75Raph+Levien',familyUrl:'Inconsolata',subset:'latin',url:'http://fonts.googleapis.com/css?family\75Inconsolata:regular\46subset\75latin'},'Josefin Sans Std Light':{alt:'serif',designer:'Santiago Orozco',designerUrl:'/webfonts/designer?designer\75Santiago+Orozco',familyUrl:'Josefin Sans Std Light',subset:'latin',url:'http://fonts.googleapis.com/css?family\75Josefin+Sans+Std+Light:regular\46subset\75latin'},Lobster:{alt:'serif',designer:'Pablo Impallari',designerUrl:'/webfonts/designer?designer\75Pablo+Impallari',familyUrl:'Lobster',subset:'latin',url:'http://fonts.googleapis.com/css?family\75Lobster:regular\46subset\75latin'},Molengo:{alt:'serif',designer:'Denis Jacquerye',designerUrl:'/webfonts/designer?designer\75Denis+Jacquerye',familyUrl:'Molengo',subset:'latin',url:'http://fonts.googleapis.com/css?family\75Molengo:regular\46subset\75latin'},Neucha:{alt:'serif',designer:'Jovanny Lemonad',designerUrl:'/webfonts/designer?designer\75Jovanny+Lemonad',familyUrl:'Neucha',subset:'cyrillic',url:'http://fonts.googleapis.com/css?family\75Neucha:regular\46subset\75cyrillic'},Neuton:{alt:'serif',designer:'Brian Zick',designerUrl:'/webfonts/designer?designer\75Brian+Zick',familyUrl:'Neuton',subset:'latin',url:'http://fonts.googleapis.com/css?family\75Neuton:regular\46subset\75latin'},Nobile:{alt:'serif',designer:'Vernon Adams',designerUrl:'/webfonts/designer?designer\75Vernon+Adams',familyUrl:'Nobile',subset:'latin',url:'http://fonts.googleapis.com/css?family\75Nobile:regular,italic,bold,bolditalic\46subset\75latin'},'OFL Sorts Mill Goudy TT':{alt:'serif',designer:'Barry Schwartz',familyUrl:'OFL Sorts Mill Goudy TT',subset:'latin',url:'http://fonts.googleapis.com/css?family\75OFL+Sorts+Mill+Goudy+TT:regular,italic\46subset\75latin'},'Old Standard TT':{alt:'serif',designer:'Alexey Kryukov',familyUrl:'Old Standard TT',subset:'latin',url:'http://fonts.googleapis.com/css?family\75Old+Standard+TT:regular,italic,bold\46subset\75latin'},'PT Sans':{alt:'serif',designer:'multiple designers',familyUrl:'PT Sans',subset:'cyrillic',url:'http://fonts.googleapis.com/css?family\75PT+Sans:regular,italic,bold,bolditalic\46subset\75cyrillic'},'PT Sans Caption':{alt:'serif',designer:'multiple designers',familyUrl:'PT Sans Caption',subset:'cyrillic',url:'http://fonts.googleapis.com/css?family\75PT+Sans+Caption:regular,bold\46subset\75cyrillic'},'PT Sans Narrow':{alt:'serif',designer:'multiple designers',familyUrl:'PT Sans Narrow',subset:'cyrillic',url:'http://fonts.googleapis.com/css?family\75PT+Sans+Narrow:regular,bold\46subset\75cyrillic'},Philosopher:{alt:'serif',designer:'Jovanny Lemonad',designerUrl:'/webfonts/designer?designer\75Jovanny+Lemonad',familyUrl:'Philosopher',subset:'cyrillic',url:'http://fonts.googleapis.com/css?family\75Philosopher:regular\46subset\75cyrillic'},'Reenie Beanie':{alt:'serif',designer:'James Grieshaber',designerUrl:'/webfonts/designer?designer\75James+Grieshaber',familyUrl:'Reenie Beanie',subset:'latin',url:'http://fonts.googleapis.com/css?family\75Reenie+Beanie:regular\46subset\75latin'},Tangerine:{alt:'serif',designer:'Toshi Omagari',designerUrl:'/webfonts/designer?designer\75Toshi+Omagari',familyUrl:'Tangerine',subset:'latin',url:'http://fonts.googleapis.com/css?family\75Tangerine:regular,bold\46subset\75latin'},Vollkorn:{alt:'serif',designer:'Friedrich Althausen',designerUrl:'/webfonts/designer?designer\75Friedrich+Althausen',familyUrl:'Vollkorn',subset:'latin',url:'http://fonts.googleapis.com/css?family\75Vollkorn:regular,italic,bold,bolditalic\46subset\75latin'},'Yanone Kaffeesatz':{alt:'serif',designer:'Yanone',designerUrl:'/webfonts/designer?designer\75Yanone',familyUrl:'Yanone Kaffeesatz',subset:'latin',url:'http://fonts.googleapis.com/css?family\75Yanone+Kaffeesatz:200,300,400,700\46subset\75latin'}};
 
 var fontOptions = {};
-var fontOptionIds = 
-['fontFamily',
- 'fontSize',
- 'fontStyle', 
- 'fontWeight',
- 'textShadow',
- 'textDecoration',
- 'textTransform',
- 'letterSpacing',
- 'wordSpacing',
- 'lineHeight'];
+var fontOptionIds =
+{'fontFamily': 'font-family',
+ 'fontSize': 'font-size',
+ 'fontStyle': 'font-style', 
+ 'fontWeight': 'font-weight',
+ 'textShadow': 'text-shadow',
+ 'textDecoration': 'text-decoration',
+ 'textTransform': 'text-transform',
+ 'letterSpacing': 'letter-spacing',
+ 'wordSpacing': 'word-spacing',
+ 'lineHeight': 'line-height'
+};
             
 
 function onLoad() {
-  for (var i = 0; i < fonts.length; i++) {
-    addFont(fonts[i]);
+  for (var fontName in fonts) {
+    addFont(fontName);
   }
 }
 
 function addFont(font) {
   var div = document.createElement('div');
+  var label = document.createElement('label');
   var input = document.createElement('input');
   input.type = 'radio';
   input.name = 'fontFamily';
@@ -85,12 +71,12 @@ function addFont(font) {
     fontOptions['fontFamily'] = font;
     changeFont();
   };
-  div.appendChild(input);
-  div.style.fontFamily = font.replace(' ', '+');
-  div.style.fontStyle = 'normal';
-  div.style.fontWeight = 'normal';
-  div.appendChild(document.createTextNode(font));
-  document.getElementById("fontfamily").appendChild(div);
+  label.appendChild(input);
+  label.style.fontFamily = font;
+  label.style.fontWeight = 'normal';
+  label.appendChild(document.createTextNode(font));
+  div.appendChild(label);
+  document.getElementById('fontfamily').appendChild(div);
 }
 
 function onOptionChange(elem) {
@@ -100,43 +86,88 @@ function onOptionChange(elem) {
   changeFont();
 }
 
+function resetFont() {
+  document.forms[0].reset();
+/**
+  var dropdowns = document.getElementsByTagName('select');
+  for (var i = 0; i < dropdowns.length; i++) {
+    dropdowns[i].selectedIndex = 0;
+  }
+  document.getElementById('fontSize').selectedIndex = 1;
+**/
+
+  var fontCode = '';
+  fontCode += 
+  'var items = document.getElementsByClassName("fontchangermodified");' + 
+  'for (var i = 0, len=items.length; i < len; i++) {' +
+    'var item = items[i];';
+  for (var fontOptionId in fontOptionIds) {
+    fontCode +=
+      'if (item.hasAttribute("data-' + fontOptionId + '")) {' + 
+        'if (item.getAttribute("data-' + fontOptionId + '") != "undefined") {' + 
+          'item.style.' + fontOptionId + ' = item.getAttribute("data-' + fontOptionId + '");' +
+        '} else {' +
+          'item.style.' + fontOptionId + ' = null;' + 
+        '}' + 
+      '}';
+  }
+  fontCode += '}';
+  
+  chrome.tabs.executeScript(null, {code: fontCode});
+}
+
+// Horrible
 function changeFont() {
+  
   var fontFamily = fontOptions['fontFamily'] || fonts[0];
   var fontName = fontFamily.replace(' ', '+');
-  var fontCode = 'document.body.innerHTML += \'<link href="http://fonts.googleapis.com/css?family=' + fontName + '" rel="stylesheet" type="text/css">\';';
-  for (var i = 0; i < fontOptionIds.length; i++) {
-    var fontOptionId = fontOptionIds[i];
+  var fontCode = 'document.body.innerHTML += \'<link href="' + fonts[fontFamily].url + '" rel="stylesheet" type="text/css">\';';
+  var fontHtml = '&lt;link href="' + fonts[fontFamily].url + '" rel="stylesheet" type="text/css" &gt;\n';
+  fontHtml += '&lt;style&gt;\nbody {\n';
+  fontHtml += '  font-family: \'' + fontFamily + '\', ' + fonts[fontFamily].alt + ';\n';
+  for (var fontOptionId in fontOptionIds) {
     if (fontOptions[fontOptionId]) {
-     fontCode += 'document.body.style.' + fontOptionId + ' = \'' + fontOptions[fontOptionId] + '\';'; 
+     if (fontOptionId != 'fontFamily') {
+      fontHtml += '  ' + fontOptionIds[fontOptionId] + ': ' + fontOptions[fontOptionId] + ';\n';
+     }
     }
   }
-  if (document.getElementById('applyAll').checked) {
-      fontCode += 'var items = document.getElementsByTagName("*"); for (var i=0, len=items.length; i < len; i++) {';
-      for (var i = 0; i < fontOptionIds.length; i++) {
-        var fontOptionId = fontOptionIds[i];
-        if (fontOptions[fontOptionId]) {
-         fontCode += 'if (items[i].style.' + fontOptionId + '.length != 0) {';
-         fontCode += 'items[i].style.' + fontOptionId + ' = \'' + fontOptions[fontOptionId] + '\''; 
-         fontCode += '}';
-        }
-      }
-      fontCode += '}';
+  fontHtml += '}\n&lt;/style&gt;';
+  document.getElementById('fontHtml').innerHTML = fontHtml;
+  
+  fontCode += 'var items = document.getElementsByTagName("*"); for (var i=0, len=items.length; i < len; i++) { var item = items[i];';
+  for (var fontOptionId in fontOptionIds) {
+    if (fontOptions[fontOptionId]) {
+     fontCode += 'if (item.tagName != "BODY" && item.tagName != "HEAD" && item.tagName != "LINK" && item.tagName != "HTML") {';
+     fontCode += 'if (item.className.indexOf("fontchangermodified") == -1) {' +                        'item.className += " fontchangermodified";' +
+                  '}';
+     fontCode += 'if (item.getAttribute("data-' + fontOptionId + '") == undefined) {' + 
+                    'item.setAttribute("data-' + fontOptionId + '", item.style.fontOptionId);' +
+                  '}';
+     fontCode += 'item.style.' + fontOptionId + ' = \'' + fontOptions[fontOptionId] + '\';'; 
+     fontCode += '}';
+    }
   }
+  fontCode += '}';
+      
   chrome.tabs.executeScript(null, {code: fontCode});
 }
 
 </SCRIPT>
 </HEAD>
 <BODY onload="onLoad()">
-
-<p>Select font family and options below to preview them on the current tab.
-To start from scratch, reload the page.</p>
+<!--
+<p>Select font family and options below to preview them on the current tab.</p>
+-->
 
 <div style="clear:both">
-
+<form>
 <div id="fonts">
   <label>Font family:</label>
-  <div id="fontfamily"></div>
+  <div id="fontfamily">
+   <input type="radio" name="fontFamily" checked value="" style="display:none">
+   
+  </div>
 </div>
 
 <div>
@@ -191,13 +222,23 @@ To start from scratch, reload the page.</p>
   </select></label>
   </p>
   <br>
-  <label style="border-top:1px solid black; padding-top: 10px">Apply to all DOM nodes?
+  <!--<label style="border-top:1px solid black; padding-top: 10px">Apply to all DOM nodes?
   <input type="checkbox" id="applyAll" onchange="onOptionChange(this)" checked>
   </label>
-  <p><em>This can slow down the preview on long/highly-styled pages. Turning it off will apply them only to the body tag.</em></p>
+  <p><em>This can slow down preview on somepages. Diabling will apply styles only to the body tag.</em></p>
+  -->
+  If you want to start over, <a href="javascript:resetFont()">click here</a>.
 </div>
 
 </div>
+
+<div style="clear:both; width: 100%;">
+<textarea id="fontHtml" style="width:100%; height: 100px;">
+After you select a font, HTML will appear here and you can paste that into your site.
+</textarea>
+</div>
+
+</form>
 
 </BODY>
 </HTML>
