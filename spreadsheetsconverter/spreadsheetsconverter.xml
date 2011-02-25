@@ -122,8 +122,7 @@ function convertToSQL(data) {
   var html = [""];
   var columnLabels = [];
   for (var col = 0; col < data.getNumberOfColumns(); col++) {
-    var columnLabel = data.getColumnLabel(col);
-    columnLabels.push("`" + columnLabel + "`");
+    columnLabels.push(data.getFormattedValue(0, col));
   }
   for (var row = 0; row < data.getNumberOfRows(); row++) {
     var rowObj = [];
