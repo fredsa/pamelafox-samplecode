@@ -1,0 +1,655 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Module>
+<ModulePrefs title="Wordsearch Gadget"
+             description="Lets you create a word search from a column of words in your spreadsheet, and play it inside the spreadsheet."
+             author="Pamela Fox"
+             author_affiliation="Google Inc."
+             author_email="pamela.fox+coolgadget@gmail.com"
+             screenshot="http://pamela.fox.googlepages.com/screenshot_wordsearchgadget.jpg"
+             thumbnail="http://pamela.fox.googlepages.com/thumbnail_wordsearchgadget.jpg" > 
+<Require feature="idi"/>
+<Require feature="locked-domain" />
+</ModulePrefs>
+<UserPref name="_table_query_url" display_name="Data source url" 
+          required="true"/>
+<UserPref name="_table_query_refresh_interval" 
+          display_name="Data refresh interval (minutes)" 
+          default_value="0" datatype="enum" required="false">
+<EnumValue value="0" display_value="Do not refresh"/>
+<EnumValue value="60" display_value="1"/>
+<EnumValue value="300" display_value="5"/>
+<EnumValue value="1800" display_value="30"/>
+</UserPref>
+<UserPref name="num_rows" display_name="Number of Rows" 
+          default_value="10" required="false"/>
+<UserPref name="num_cols" display_name="Number of Columns" 
+          default_value="10" required="false"/>
+<Content type="html"><![CDATA[
+<link href="http://fonts.googleapis.com/css?family=Droid+Sans+Mono:regular" rel="stylesheet" type="text/css" >
+<style type="text/css">
+
+html,body {
+  font-family: 'Droid Sans Mono', monospace;
+  cursor: crosshair;
+}
+
+tr,td {
+  padding:5px;
+}
+
+.tablist {
+  border:1px solid black;
+  border-bottom:0px;
+  margin-left:5px;
+  padding-left:5px;
+  padding-right:5px;
+}
+
+.tabcontent {
+  padding:5px;
+}
+
+.inputTitle {
+  font-weight:bold;
+  font-size:12px;
+}
+
+</style>
+<script src="http://www.google.com/jsapi" type="text/javascript"></script>
+
+<div id="puzzle" style="display:block;">
+  <table border="0"><tr><td style="text-align:center;border:0px;">
+    <div id="puzzleText"></div>
+  </td></tr></table>
+</div>
+
+
+<script>
+/**
+ * jsWordsearch Lite
+ * Version:	0.1
+ * Author:	Robert
+ * Email:	brathna@gmail.com
+ * Website:	http://jswordsearch.sourceforge.net/
+ * 
+ * jsWordsearch, prints out a letter grid with words hidden inside.
+ * Copyright (C) Robert Klein
+ * 
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License as
+ * published by the Free Software Foundation; either version 2 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the
+ * Free Software Foundation, Inc.
+ * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+ * or visit the following website:
+ * http://www.opensource.org/licenses/gpl-license.php
+*/
+  
+var retries = 55;
+var fontColor = 'black';
+var backgroundColor = 'white';
+var highlightColor = 'yellow';
+
+var createdMain = '';
+var createdTitle = '';
+
+var prev = 'main';
+var grid = new Array();
+var gridWords = new Array();
+var xyArray = new Array();
+var inserted = new Array();
+var wordsArray = new Array();
+var words = [];
+var a = 0;
+var d = 0;
+var xnum = 0;
+var ynum = 0;
+var dir = 0;
+var mouseIsDown = 0;
+var xy = '';
+var revealed = '';
+var mistakes = 0;
+var puzzleActive = 0;
+var inputActive = 0;
+
+var rows;
+var cols;
+var fontSize;
+
+/**
+ * Load the APIs and run sendQuery when the load is complete
+ */
+var gadgetHelper = null;
+var prefs = null;
+
+_IG_RegisterOnloadHandler(loadVisualizationAPI);
+function loadVisualizationAPI() { 
+  google.load("visualization", "1");
+  google.setOnLoadCallback(sendQuery);
+  eventHandle();
+}
+
+/**
+ * Create a query (shaped by the Gadget's user preferences), then 
+ * send it to the spreadsheet data source. Also give the name of a 
+ * function ("handleQueryResponse") to run once the spreadsheet data 
+ * is retrieved:
+ */
+function sendQuery() {
+  prefs = new _IG_Prefs(); // User preferences 
+  gadgetHelper = new google.visualization.GadgetHelper(); 
+  var query = gadgetHelper.createQueryFromPrefs(prefs);
+  query.send(handleQueryResponse);
+} 
+
+/**
+ * The core logic. Process the spreadsheet data however you want. 
+ * In this case, we create HTML to be presented back to the user. 
+ * We'll use inline comments to provide a step-by-step description 
+ * of what we're doing:
+ */
+function handleQueryResponse(response) {
+
+  /**
+   * Use the visualization GadgetHelper class to handle errors 
+   */
+  if (!gadgetHelper.validateResponse(response)) {
+    return;     // Default error handling was done, just leave. 
+  }
+  data = response.getDataTable();
+  
+  loadWords();
+  createPuzzle();
+}
+
+function createPuzzle() {
+
+  puzzleActive = 1;
+
+  var chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+
+  if(createdMain) {
+    document.getElementById('puzzleText').removeChild(createdMain);
+    inserted = new Array();
+  }
+
+  rows = prefs.getInt("num_rows");
+  cols = prefs.getInt("num_cols");
+  fontSize = 4.0;
+  
+  var echoThis = '';
+
+  for(var x=1;x<=rows;x++) {
+    for(var y=1;y<=cols;y++) {
+      a = ((x-1)*cols)+y;
+      grid[a] = '';
+      gridWords[a] = '';
+      xyArray[a] = '';
+    }
+  }
+
+  d = 0;
+  var tempInserted = new Array();
+  for(var ab=(words.length-1);ab>=0;ab--) {
+    for(var tries=1;tries<=retries;tries++) {
+      if(words[ab]!='') {
+        make_random();
+        if(check(words[ab],1)) { tempInserted[d]=words[ab]; xyArray[tempInserted[d]]=xy; d++; break; }
+      }
+    }
+  }
+
+  inserted = tempInserted;
+  tempInserted = words = new Array();
+
+  echoThis += '<table border="0" style="margin-left:auto;margin-right:auto;font-size:'+fontSize+'mm"><tr><td style="vertical-align:top;border:0px;">';
+
+  var t = 1;
+  var ran = 0;
+  for(var x=1;x<=rows;x++) {
+    for(var y=1;y<=cols;y++) {
+      a = ((x-1)*cols)+y;
+      var gridWordsTemp = new Array();
+      var gridTemp = '';
+      var xyTemp = '';
+      if(gridWords[a]!='') {
+        gridWordsTemp = gridWords[a].split(',');
+        var c = gridWordsTemp.length-1;
+
+        gridTemp = 'w=new Array(\''+gridWordsTemp[0]+'\'';
+
+        xyTemp = 'x=new Array(\''+xyArray[gridWordsTemp[0]].replace(/,/gi,'|')+'\'';
+
+        for(var z=1;z<c;z++) { gridTemp += ',\''+gridWordsTemp[z]+'\''; xyTemp += ',\''+xyArray[gridWordsTemp[0]].replace(/,/gi,'|')+'\''; }
+
+        gridTemp += ')';
+        xyTemp += ')';
+      }
+
+      ran = Math.floor(Math.random()*chars.length);
+
+      var gridChar = grid[t].toUpperCase();
+      var ranChar = chars.charAt(ran).toUpperCase();
+
+      if(grid[t]) { echoThis += '<span id="_'+t+'" style="font-family:Courier New;padding:0px '+(fontSize+1)+'px 0px '+(fontSize+1)+'px;" onmouseover="if(mouseIsDown) cellHighlight('+t+');" onmousedown="mouseIsDown=1;cellHighlight('+t+');" onmouseup="'+gridTemp+';'+xyTemp+';clearHighlighted(x,w);">'+gridChar+'</span>'; }
+      else { echoThis += '<span id="_'+t+'" style="font-family:Courier New;padding:0px '+(fontSize+1)+'px 0px '+(fontSize+1)+'px;" onmouseover="if(mouseIsDown) cellHighlight('+t+');" onmousedown="mouseIsDown=1;cellHighlight('+t+');" onmouseup="var w,x=0;clearHighlighted(x,w);">'+ranChar+'</span>'; }
+
+      if((t%cols)==0) echoThis += '<br />';
+
+      t++;
+    }
+  }
+
+  echoThis += '</td><td style="width:0px;border:0px;">&nbsp;</td><td style="padding-left:20px;vertical-align:top;border:0px;border-left:1px solid '+fontColor+';font-family:Courier New;">';
+
+  echoThis += '<span style="float:left;">';
+
+  a=(inserted.length-1);
+  for(var i=0;i<=a;i++) {
+    var xyArrayTemp = xyArray[inserted[i]].split(',');
+    var xyTemp = 'v=\''+xyArrayTemp+'\'';
+
+    var inWord = inserted[i].toUpperCase();
+
+    echoThis += '<div id="'+inserted[i]+'"><span id="'+inserted[i]+'r" onmousedown="'+xyTemp+';r(\''+inserted[i]+'\',v);"> (?) </span>'+inWord+'</div>';
+    if(((i+1)%rows)==0) echoThis += '</span><span style="float:left;">';
+  }
+
+  echoThis += '</span>';
+
+  echoThis += '</td></tr></table>';
+
+  createdMain = document.createElement("DIV");
+  createdMain.innerHTML = echoThis;
+  document.getElementById('puzzleText').appendChild(createdMain);
+}
+
+function make_random() {
+  direction();
+
+  xnum = Math.ceil(Math.random()*rows);
+  ynum = Math.ceil(Math.random()*cols);
+}
+
+function direction() {
+  dir = Math.ceil(Math.random()*8);
+}
+
+
+function check(word,add) {
+  xy = '';
+  var count = word.length;
+
+  var x = xnum;
+  var y = ynum;
+
+  if(dir==1) {
+    if((xnum-count)>=0 && (ynum-count)>=0) {
+      for(var i=0;i<count;i++) {
+        a = ((x-1)*cols)+y;
+        if(grid[a]!='' && grid[a]!=word.charAt(i)) return 0;
+        x--; y--;
+      }
+      x = xnum; y = ynum;
+      for(var i=0;i<count;i++) {
+        a = ((x-1)*cols)+y;
+        grid[a] = word.charAt(i);
+        xy += a+',';
+        gridWords[a]+=word+',';
+        x--; y--;
+      }
+    } else {
+      return 0;
+    }
+  }
+  else if(dir==2) {
+    if((xnum-count)>=0) {
+      for(var i=0;i<count;i++) {
+        a = ((x-1)*cols)+y;
+        if(grid[a]!='' && grid[a]!=word.charAt(i)) return 0;
+        x--;
+      }
+      x = xnum; y = ynum;
+      for(var i=0;i<count;i++) {
+        a = ((x-1)*cols)+y;
+        grid[a] = word.charAt(i);
+        xy += a+',';
+        gridWords[a]+=word+',';
+        x--;
+      }
+    } else {
+      return 0;
+    }
+  }
+  else if(dir==3) {
+    if((xnum-count)>=0 && (ynum+(count-1))<=cols) {
+      for(var i=0;i<count;i++) {
+        a = ((x-1)*cols)+y;
+        if(grid[a]!='' && grid[a]!=word.charAt(i)) return 0;
+        x--; y++;
+      }
+      x = xnum; y = ynum;
+      for(var i=0;i<count;i++) {
+        a = ((x-1)*cols)+y;
+        grid[a] = word.charAt(i);
+        xy += a+',';
+        gridWords[a]+=word+',';
+        x--; y++;
+      }
+    } else {
+      return 0;
+    }
+  }
+  else if(dir==4) {
+    if((ynum-count)>=0) {
+      for(var i=0;i<count;i++) {
+        a = ((x-1)*cols)+y;
+        if(grid[a]!='' && grid[a]!=word.charAt(i)) return 0;
+        y--;
+      }
+      x = xnum; y = ynum;
+      for(var i=0;i<count;i++) {
+        a = ((x-1)*cols)+y;
+        grid[a] = word.charAt(i);
+        xy += a+',';
+        gridWords[a]+=word+',';
+        y--;
+      }
+    } else {
+      return 0;
+    }
+  }
+  else if(dir==5) {
+    if((ynum+(count-1))<=cols) {
+      for(var i=0;i<count;i++) {
+        a = ((x-1)*cols)+y;
+        if(grid[a]!='' && grid[a]!=word.charAt(i)) return 0;
+        y++;
+      }
+      x = xnum; y = ynum;
+      for(var i=0;i<count;i++) {
+        a = ((x-1)*cols)+y;
+        grid[a] = word.charAt(i);
+        xy += a+',';
+        gridWords[a]+=word+',';
+        y++;
+      }
+    } else {
+      return 0;
+    }
+  }
+  else if(dir==6) {
+    if((xnum+(count-1))<=rows && (ynum-count)>=0) {
+      for(var i=0;i<count;i++) {
+        a = ((x-1)*cols)+y;
+        if(grid[a]!='' && grid[a]!=word.charAt(i)) return 0;
+        x++; y--;
+      }
+      x = xnum; y = ynum;
+      for(var i=0;i<count;i++) {
+        a = ((x-1)*cols)+y;
+        grid[a] = word.charAt(i);
+        xy += a+',';
+        gridWords[a]+=word+',';
+        x++; y--;
+      }
+    } else {
+      return 0;
+    }
+  }
+  else if(dir==7) {
+    if((xnum+(count-1))<=rows) {
+      for(var i=0;i<count;i++) {
+        a = ((x-1)*cols)+y;
+        if(grid[a]!='' && grid[a]!=word.charAt(i)) return 0;
+        x++;
+      }
+      x = xnum; y = ynum;
+      for(var i=0;i<count;i++) {
+        a = ((x-1)*cols)+y;
+        grid[a] = word.charAt(i);
+        xy += a+',';
+        gridWords[a]+=word+',';
+        x++;
+      }
+    } else {
+      return 0;
+    }
+  }
+  else if(dir==8) {
+    if((xnum+(count-1))<=rows && (ynum+(count-1))<=cols) {
+      for(var i=0;i<count;i++) {
+        a = ((x-1)*cols)+y;
+        if(grid[a]!='' && grid[a]!=word.charAt(i)) return 0;
+        x++; y++;
+      }
+      x = xnum; y = ynum;
+      for(var i=0;i<count;i++) {
+        a = ((x-1)*cols)+y;
+        grid[a] = word.charAt(i);
+        xy += a+',';
+        gridWords[a]+=word+',';
+        x++; y++;
+      }
+    } else {
+      return 0;
+    }
+  }
+
+  return 1;
+}
+
+var highlighted = new Array();
+var startingCell = 0;
+var endingCell = 0;
+var startX = 0;
+var startY = 0;
+function cellHighlight(cell) {
+
+  var good = true;
+  var x = Math.ceil(cell/cols);
+  var y = (cols-((x*cols)-cell));
+
+  endingCell = cell;
+  if(startingCell==0) {
+    startingCell = cell;
+    startX = Math.ceil(cell/cols);
+    startY = (cols-((x*cols)-cell));
+  }
+
+  var relX = x - startX;
+  var relY = y - startY;
+
+  if(startingCell==endingCell) {
+    document.getElementById('_'+cell).style.backgroundColor = highlightColor;
+    highlighted[highlighted.length]=cell;
+  } else if(relY==0 && relX<0) {
+    cleanUp();
+    for(var a=startingCell;;a=(a-cols)) {
+      highlightMe(a);
+      if(a==endingCell) break;
+    }
+  } else if(relY==0 && relX>0) {
+    cleanUp();
+    for(var a=startingCell;;a=(a+cols)) {
+      highlightMe(a);
+      if(a==endingCell) break;
+    }
+  } else if(relX==0 && relY<0) {
+    cleanUp();
+    for(var a=startingCell;;a=(a-1)) {
+      highlightMe(a);
+      if(a==endingCell) break;
+    }
+  } else if(relX==0 && relY>0) {
+    cleanUp();
+    for(var a=startingCell;;a=(a+1)) {
+      highlightMe(a);
+      if(a==endingCell) break;
+    }
+  } else if(Math.abs(relX)==Math.abs(relY)) {
+    cleanUp();
+    if(relX<0 && relY<0) {
+      for(var a=startingCell;;a=(a-(cols+1))) {
+        highlightMe(a);
+        if(a==endingCell) break;
+      }
+    } else if(relX<0 && relY>0) {
+      for(var a=startingCell;;a=(a-(cols-1))) {
+        highlightMe(a);
+        if(a==endingCell) break;
+      }
+    } else if(relX>0 && relY<0) {
+      for(var a=startingCell;;a=(a+cols-1)) {
+        highlightMe(a);
+        if(a==endingCell) break;
+      }
+    } else if(relX>0 && relY>0) {
+      for(var a=startingCell;;a=(a+cols+1)) {
+        highlightMe(a);
+        if(a==endingCell) break;
+      }
+    }
+  } else { good = false; }
+}
+
+function clearHighlighted(xy,word) {
+  var good = false;
+  var temp = 0;
+  if(xy!=0) {
+    for(var x=xy.length-1;x>=0;x--) {
+      var xyTemp = xy[x].split("|");
+      var xyt = '';
+      if(highlighted.length==xyTemp.length-1) {
+        for(var a=xyTemp.length-1;a>=0;a--) {
+          for(var b=xyTemp.length-2;b>=0;b--) {
+            var highTemp = highlighted[b].toString();
+            if(highTemp.charAt(0)=='x') xyt='x'+xyTemp[a];
+            else xyt = xyTemp[a];
+            if(xyt==highlighted[b]) { temp++; break; }
+          }
+        }
+        if(temp==xyTemp.length-1) {
+          if(document.getElementById(word[x]).style.textDecoration!='line-through') {
+            wordsArray[wordsArray.length] = word[x];
+            hideQM(word[x]+'r');
+            lineme(word[x],0);
+            good = true;
+          } else if(document.getElementById('_'+highlighted[0]).style.color=='red') {
+            good = false;
+          } else { good = true; }
+        }
+      }
+    }
+  }
+
+  if(!good) {
+    if(highlighted.length>0) mistakes++;
+    for(var a=highlighted.length-1;a>=0;a--) {
+      var highTemp = highlighted[a].toString();
+      if(highTemp.charAt(0)!='x') {
+        document.getElementById('_'+highlighted[a]).style.backgroundColor = backgroundColor;
+      }
+    }
+  }
+  highlighted = new Array();
+  startingCell = 0;
+  savedGame = 0;
+}
+
+function cleanUp() {
+  for(var a=highlighted.length-1;a>=0;a--) {
+    var highTemp = highlighted[a].toString();
+    if(highTemp.charAt(0)!='x') {
+      document.getElementById('_'+highlighted[a]).style.backgroundColor = backgroundColor;
+    }
+  }
+  highlighted = new Array();
+}
+
+function highlightMe(a) {
+  if(document.getElementById('_'+a).style.backgroundColor != highlightColor) {
+    document.getElementById('_'+a).style.backgroundColor = highlightColor;
+    highlighted[highlighted.length]=a;
+  } else {
+    highlighted[highlighted.length]='x'+a;
+  }
+}
+
+function hideQM(id) {
+  document.getElementById(id).style.visibility = 'hidden';
+}
+
+function lineme(id,revealed) {
+  document.getElementById(id).style.textDecoration = 'line-through';
+}
+
+function eventHandle() {
+  document.onkeypress=keycheck;
+  document.onmousedown=omd;
+  document.onmouseup=omu;
+  document.onselectstart=omd;
+}
+
+function omd() { if(!puzzleActive) { return true; } mouseIsDown = 1; return false; }
+
+function omu() { if(!puzzleActive) { return true; } mouseIsDown = 0; if(highlighted.length) clearHighlighted(0,0); return false; }
+
+var menuToggle = 1;
+function keycheck(e) {
+  var code;
+  if (!e) var e = window.event;
+  if (e.keyCode) code = e.keyCode;
+  else if (e.which) code = e.which;
+  if(code==13) { // Enter key
+    if(puzzleActive) {
+    } else if(!inputActive) {
+      if(!document.getElementById('inputWords').focus()) {
+        document.getElementById('create').onclick();
+      }
+    }
+  }
+}
+
+function showMenu() {
+  document.getElementById('puzzle').style.display = 'none';
+  document.getElementById('menuButton').style.display = 'none';
+  document.getElementById('menu').style.display = 'block';
+  document.getElementById('buttons').style.display = 'block';
+  document.getElementById('returnToGame').style.visibility = 'visible';
+  puzzleActive = 0;
+}
+
+function returnToGame() {
+  document.getElementById('menuButton').style.display = 'block';
+  document.getElementById('puzzle').style.display = 'block';
+  document.getElementById('menu').style.display = 'none';
+  document.getElementById('buttons').style.display = 'none';
+  document.getElementById('returnToGame').style.visibility = 'hidden';
+  puzzleActive = 1;
+}
+
+function loadWords() {
+  for (var row = 0; row < data.getNumberOfRows(); row++) {
+    var rowObj = [];
+    for (var col = 0; col < data.getNumberOfColumns(); col++) {
+      var formattedValue = data.getFormattedValue(row, col);
+      formattedValue = _hesc(formattedValue);
+      formattedValue = formattedValue.replace(/[^a-z,]/gi,"");
+      words.push(formattedValue); 
+    }
+  }
+}
+
+</script> 
+]]>
+</Content>
+</Module>
