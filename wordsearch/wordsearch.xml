@@ -25,7 +25,7 @@
 <UserPref name="num_cols" display_name="Number of Columns" 
           default_value="10" required="false"/>
 <Content type="html"><![CDATA[
-<link href="http://fonts.googleapis.com/css?family=Droid+Sans+Mono:regular" rel="stylesheet" type="text/css" >
+<link href="http://fonts.googleapis.com/css?family=Droid+Sans+Mono:regular" rel="stylesheet" type="text/css">
 <style type="text/css">
 
 html,body {
@@ -239,8 +239,8 @@ function createPuzzle() {
       var gridChar = grid[t].toUpperCase();
       var ranChar = chars.charAt(ran).toUpperCase();
 
-      if(grid[t]) { echoThis += '<span id="_'+t+'" style="font-family:Courier New;padding:0px '+(fontSize+1)+'px 0px '+(fontSize+1)+'px;" onmouseover="if(mouseIsDown) cellHighlight('+t+');" onmousedown="mouseIsDown=1;cellHighlight('+t+');" onmouseup="'+gridTemp+';'+xyTemp+';clearHighlighted(x,w);">'+gridChar+'</span>'; }
-      else { echoThis += '<span id="_'+t+'" style="font-family:Courier New;padding:0px '+(fontSize+1)+'px 0px '+(fontSize+1)+'px;" onmouseover="if(mouseIsDown) cellHighlight('+t+');" onmousedown="mouseIsDown=1;cellHighlight('+t+');" onmouseup="var w,x=0;clearHighlighted(x,w);">'+ranChar+'</span>'; }
+      if(grid[t]) { echoThis += '<span id="_'+t+'" style="padding:0px '+(fontSize+1)+'px 0px '+(fontSize+1)+'px;" onmouseover="if(mouseIsDown) cellHighlight('+t+');" onmousedown="mouseIsDown=1;cellHighlight('+t+');" onmouseup="'+gridTemp+';'+xyTemp+';clearHighlighted(x,w);">'+gridChar+'</span>'; }
+      else { echoThis += '<span id="_'+t+'" style="padding:0px '+(fontSize+1)+'px 0px '+(fontSize+1)+'px;" onmouseover="if(mouseIsDown) cellHighlight('+t+');" onmousedown="mouseIsDown=1;cellHighlight('+t+');" onmouseup="var w,x=0;clearHighlighted(x,w);">'+ranChar+'</span>'; }
 
       if((t%cols)==0) echoThis += '<br />';
 
@@ -248,7 +248,7 @@ function createPuzzle() {
     }
   }
 
-  echoThis += '</td><td style="width:0px;border:0px;">&nbsp;</td><td style="padding-left:20px;vertical-align:top;border:0px;border-left:1px solid '+fontColor+';font-family:Courier New;">';
+  echoThis += '</td><td style="width:0px;border:0px;">&nbsp;</td><td style="padding-left:20px;vertical-align:top;border:0px;border-left:1px solid '+fontColor+';">';
 
   echoThis += '<span style="float:left;">';
 
