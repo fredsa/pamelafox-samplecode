@@ -23,6 +23,12 @@
   src: local('Amaranth'), url('http://themes.googleusercontent.com/font?kit=OzIi_mBnVCrgb3ydNoQtVnYhjbSpvc47ee6xR_80Hnw') format('woff');
 }
 @font-face {
+  font-family: 'Annie Use Your Telescope';
+  font-style: normal;
+  font-weight: normal;
+  src: local('Annie Use Your Telescope'), local('AnnieUseYourTelescope'), url('http://themes.googleusercontent.com/font?kit=2cuiO5VmaR09C8SLGEQjGlGTa8B2F_YbbwnYdWaKJUB2IY20qb3OO3nusUf_NB58') format('woff');
+}
+@font-face {
   font-family: 'Anonymous Pro';
   font-style: normal;
   font-weight: normal;
@@ -57,6 +63,12 @@
   font-style: normal;
   font-weight: normal;
   src: local('Astloch'), url('http://themes.googleusercontent.com/font?kit=BuG6rWNfSNB2cuYXEsse_ALUuEpTyoUstqEm5AMlJo4') format('woff');
+}
+@font-face {
+  font-family: 'Bangers';
+  font-style: normal;
+  font-weight: normal;
+  src: local('Bangers'), url('http://themes.googleusercontent.com/font?kit=_Z6gfjM7xLNKy_J-AtnTIALUuEpTyoUstqEm5AMlJo4') format('woff');
 }
 @font-face {
   font-family: 'Bentham';
@@ -191,6 +203,12 @@
   src: local('Dancing Script'), local('DancingScript'), url('http://themes.googleusercontent.com/font?kit=DK0eTGXiZjN6yA8zAEyM2T3YhDbrqBPJmia6ohwevn0') format('woff');
 }
 @font-face {
+  font-family: 'Dawning of a New Day';
+  font-style: normal;
+  font-weight: normal;
+  src: local('Dawning of a New Day'), local('DawningofaNewDay'), url('http://themes.googleusercontent.com/font?kit=JiDsRhiKZt8uz3NJ5xA06nQDhz64YJWIGxdZhK8XRUv3rGVtsTkPsbDajuO5ueQw') format('woff');
+}
+@font-face {
   font-family: 'Droid Sans';
   font-style: normal;
   font-weight: normal;
@@ -207,6 +225,12 @@
   font-style: normal;
   font-weight: normal;
   src: local('Droid Serif'), local('DroidSerif'), url('http://themes.googleusercontent.com/font?kit=0AKsP294HTD-nvJgucYTaJXfdieUyyORoM9wGrfggHw') format('woff');
+}
+@font-face {
+  font-family: 'EB Garamond';
+  font-style: normal;
+  font-weight: normal;
+  src: local('EB Garamond'), local('EBGaramond'), url('http://themes.googleusercontent.com/font?kit=kYZt1bJ8UsGAPRGnkXPeFZXfdieUyyORoM9wGrfggHw') format('woff');
 }
 @font-face {
   font-family: 'Expletus Sans';
@@ -347,6 +371,12 @@
   src: local('Luckiest Guy'), local('LuckiestGuy-Regular'), url('http://themes.googleusercontent.com/font?kit=5718gH8nDy3hFVihOpkY5LyZXjRt7DtCfnhPeGk_nvY') format('woff');
 }
 @font-face {
+  font-family: 'Maiden Orange';
+  font-style: normal;
+  font-weight: normal;
+  src: local('Maiden Orange'), local('MaidenOrange-Regular'), url('http://themes.googleusercontent.com/font?kit=ZhKIA2SPisEwdhW7g0RUWsfG1V76d0nCGWWT2gcvXUQ') format('woff');
+}
+@font-face {
   font-family: 'Meddon';
   font-style: normal;
   font-weight: normal;
@@ -363,6 +393,18 @@
   font-style: normal;
   font-weight: normal;
   src: local('Merriweather'), url('http://themes.googleusercontent.com/font?kit=RFda8w1V0eDZheqfcyQ4ELyZXjRt7DtCfnhPeGk_nvY') format('woff');
+}
+@font-face {
+  font-family: 'Michroma';
+  font-style: normal;
+  font-weight: normal;
+  src: local('Michroma'), url('http://themes.googleusercontent.com/font?kit=lePg5ruZngxtI0g55AdBjnYhjbSpvc47ee6xR_80Hnw') format('woff');
+}
+@font-face {
+  font-family: 'Miltonian';
+  font-style: normal;
+  font-weight: normal;
+  src: local('Miltonian'), url('http://themes.googleusercontent.com/font?kit=hkE98IWF36YVRdVQyliTmrO3LdcAZYWl9Si6vvxL-qU') format('woff');
 }
 @font-face {
   font-family: 'Molengo';
@@ -395,6 +437,12 @@
   src: local('Nobile'), url('http://themes.googleusercontent.com/font?kit=AlLX-n-j58cM1xlVAbCztevvDin1pK8aKteLpeZ5c0A') format('woff');
 }
 @font-face {
+  font-family: 'Nova Cut';
+  font-style: normal;
+  font-weight: normal;
+  src: local('NovaCut'), url('http://themes.googleusercontent.com/font?kit=JXoEY-idi4hXoQnt-dYHo3YhjbSpvc47ee6xR_80Hnw') format('woff');
+}
+@font-face {
   font-family: 'OFL Sorts Mill Goudy TT';
   font-style: normal;
   font-weight: normal;
@@ -411,6 +459,12 @@
   font-style: normal;
   font-weight: 400;
   src: local('Orbitron-Light'), local('Orbitron-Regular'), url('http://themes.googleusercontent.com/font?kit=m-CC1zds5DpDkivU6L-nonYhjbSpvc47ee6xR_80Hnw') format('woff');
+}
+@font-face {
+  font-family: 'Oswald';
+  font-style: normal;
+  font-weight: normal;
+  src: local('Oswald '), local('Oswald'), url('http://themes.googleusercontent.com/font?kit=Qsv-D59w7tTCsbuefgF49uvvDin1pK8aKteLpeZ5c0A') format('woff');
 }
 @font-face {
   font-family: 'PT Sans';
@@ -485,6 +539,12 @@
   src: local('Schoolbell'), url('http://themes.googleusercontent.com/font?kit=g-t5IiQJyfkOFjTMuyK0p73hpw3pgy2gAi-Ip7WPMi0') format('woff');
 }
 @font-face {
+  font-family: 'Six Caps';
+  font-style: normal;
+  font-weight: normal;
+  src: local('Six Caps'), local('SixCaps'), url('http://themes.googleusercontent.com/font?kit=52yPNT0DASSnXko4YVQitnYhjbSpvc47ee6xR_80Hnw') format('woff');
+}
+@font-face {
   font-family: 'Slackey';
   font-style: normal;
   font-weight: normal;
@@ -495,6 +555,12 @@
   font-style: normal;
   font-weight: 800;
   src: local('Sniglet'), url('http://themes.googleusercontent.com/font?kit=jFSXjDTbyikKfr47vK6GtL3hpw3pgy2gAi-Ip7WPMi0') format('woff');
+}
+@font-face {
+  font-family: 'Sue Ellen Francisco';
+  font-style: normal;
+  font-weight: normal;
+  src: local('Sue Ellen Francisco '), local('SueEllenFrancisco'), url('http://themes.googleusercontent.com/font?kit=TwHX4vSxMUnJUdEz1JIgrqdzq0fUh7ouBN_maM9b3Ho') format('woff');
 }
 @font-face {
   font-family: 'Sunshiney';
@@ -513,6 +579,12 @@
   font-style: normal;
   font-weight: normal;
   src: local('Tangerine'), url('http://themes.googleusercontent.com/font?kit=N3tHuUrQVE3FJr1SnuxxwrO3LdcAZYWl9Si6vvxL-qU') format('woff');
+}
+@font-face {
+  font-family: 'Terminal Dosis Light';
+  font-style: normal;
+  font-weight: normal;
+  src: local('Terminal Dosis Light'), local('TerminalDosis-Light'), url('http://themes.googleusercontent.com/font?kit=UyNOlq8pwXsdXFw6uDx3EsXbY0iXaoMp6EGhlHctYiP3rGVtsTkPsbDajuO5ueQw') format('woff');
 }
 @font-face {
   font-family: 'Tinos';
@@ -561,6 +633,12 @@
   font-style: normal;
   font-weight: normal;
   src: local('Vollkorn Regular'), local('Vollkorn-Regular'), url('http://themes.googleusercontent.com/font?kit=rU7EMjjC0m87qY-M4N8od3YhjbSpvc47ee6xR_80Hnw') format('woff');
+}
+@font-face {
+  font-family: 'Waiting for the Sunrise';
+  font-style: normal;
+  font-weight: normal;
+  src: local('Waiting for the Sunrise'), local('WaitingfortheSunrise'), url('http://themes.googleusercontent.com/font?kit=eNfH7kLpF1PZWpsetF-hayVgNOVxIbaSxCZW-Bk8TwAC1LhKU8qFLLahJuQDJSaO') format('woff');
 }
 @font-face {
   font-family: 'Walter Turncoat';
