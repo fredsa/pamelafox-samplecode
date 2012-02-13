@@ -2,7 +2,7 @@
 var LK_MAPPINGS = {
   '1': {
     label: 'Yay',
-    color: 'green'},
+    color: '#00FF00'},
   '0': {
     label: 'Meh',
     color: 'orange'},
@@ -54,7 +54,7 @@ function LK_createLikerMini(id) {
   var span = document.createElement('span');
   span.setAttribute(LK_LIKEGROUP, id);
   span.setAttribute(LK_LIKETYPE, 'mini');
-  span.style.borderRadius = '2px';
+  span.style.borderRadius = '.3em';
   span.style.padding = '2px';
   var value = localStorage[id];
   if (value) {

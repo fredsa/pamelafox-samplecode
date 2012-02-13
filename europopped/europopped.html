@@ -83,6 +83,7 @@ var countriesData = {
 };
 
 var map, centerbox;
+var currentCountryName;
 
 function appendScript(url) {
   var script = document.createElement('script');
@@ -90,8 +91,15 @@ function appendScript(url) {
   document.body.appendChild(script);
 }
 
-function callAPI(method, query, callback) {
+function callOldAPI(method, query, callback) {
   var url = 'http://posterous-js.appspot.com/api/' + method + '?' + query + '&callback=' + callback;
+  appendScript(url);
+}
+
+function callNewAPI(resource, query, callback) {
+  var url = 'http://posterous.com/api/2/sites/europopped/' + resource + '?';
+  if (query) url += query + '&';
+  url += 'callback=' + callback;
   appendScript(url);
 }
 
@@ -109,7 +117,7 @@ function initMap() {
   centerbox = new CenterBox(mapDiv);
   map.controls[google.maps.ControlPosition.TOP_LEFT].push(centerbox.getDiv())
 
-  callAPI('gettags', 'hostname=europopped', 'onTagsLoaded');
+  callOldAPI('gettags', 'hostname=europopped', 'onTagsLoaded');
 }
 
 function onTagsLoaded(json) {
@@ -136,21 +144,23 @@ icon: iconUrl, title: countryName, map: map});
     if (countriesData[countryName].posts) {
        showCountryPosts(countryName);
     } else {
-       callAPI('readposts', 'hostname=europopped&num_posts=50&tag=' + countryName, 'onPostsLoaded');
+       currentCountryName = countryName;
+       callNewAPI('posts/public', 'num_posts=50&tag=' + countryName, 'onPostsLoaded');
     }
   });
 }      
 
 function onPostsLoaded(json) {
-  var posts = json.post || [];
+  var posts = json;
   for (var i = 0; i < posts.length; i++) {
     var post = posts[i];
-    var body = post.body;
-    var regex = new RegExp('http://www.youtube.com/v/[^(?|&)]*')
+    var body = post.body_html;
+    var regex = new RegExp('http://www.youtube.com/embed/[a-zA-Z0-9]*');
     var urls = body.match(regex);
     post.urls = urls;
   }
-  var countryName = posts[0].tag;
+  // Shitty but oh well. Tag IDs dont match tag names in this API.
+  var countryName = currentCountryName;
   countriesData[countryName].posts = posts;
   showCountryPosts(countryName);
 }
@@ -173,7 +183,7 @@ function createPostItem(post, showNow) {
 
   var videoUrl = post.urls[0];
   var postMain = document.createElement('div');
-  var videoHtml = '<embed src="' + videoUrl + '?fs=1&amp;autoplay=1&amp;hl=en_US" type="application/x-shockwave-flash" allowscriptaccess="always" allowfullscreen="true" width="350" height="221"></embed>';
+  var videoHtml = '<iframe allowfullscreen="true" src="' + videoUrl + '?autoplay=1" frameborder="0" height="221" width="350"></iframe>';
   videoHtml += '<h3><a target="_blank" href="' + post.link + '">' + post.title + '</a>';
   postMain.innerHTML = videoHtml + '<br>';
   postMain.appendChild(LK_createLiker(localStorageId));
