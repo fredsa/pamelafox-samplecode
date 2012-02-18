@@ -108,12 +108,12 @@ function convertToJSON(data) {
       var formattedValue = data.getFormattedValue(row, col);
       formattedValue = escapeHtml(formattedValue);
       var comma = (col + 1 != numCols) ? ", " : " ";
-      rowObj.push("'" + columnLabel + "'" + " : '" + formattedValue + "'" + comma);
+      rowObj.push("\"" + columnLabel + "\"" + " : \"" + formattedValue + "\"" + comma);
     }
     var comma = (row + 1 != numRows) ? "," : "]";
-    html.push("{" + rowObj.join("") + "}" + comma +" ");
+    html.push("{" + rowObj.join("") + "}" + comma + "\n");
   }
-  return html.join("\n");
+  return html.join("");
 }
 
 function convertToSQL(data) {
