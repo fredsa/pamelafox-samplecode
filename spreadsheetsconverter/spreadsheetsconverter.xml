@@ -117,9 +117,6 @@ function convertToJSON(data) {
 }
 
 function convertToXML(data) {
-  var numRows = data.getNumberOfRows();
-  var numCols = data.getNumberOfColumns();
-
   var html = ["&lt;rows&gt;"]; // start the HTML output string
   for (var row = 0; row < data.getNumberOfRows(); row++) {
     var rowObj = [];
@@ -138,11 +135,11 @@ function convertToXML(data) {
 }
 
 function convertToSQL(data) {
-  var html = [""];
   var columnLabels = [];
   for (var col = 0; col < data.getNumberOfColumns(); col++) {
-    columnLabels.push(data.getFormattedValue(0, col));
+    columnLabels.push(data.getColumnLabel(col));
   }
+  var html = [""];
   for (var row = 0; row < data.getNumberOfRows(); row++) {
     var rowObj = [];
     for (var col = 0; col < data.getNumberOfColumns(); col++) {
