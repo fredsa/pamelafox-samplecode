@@ -97,25 +97,25 @@ function handleQueryResponse(response) {
 }
 
 function convertToJSON(data) {
-  var html = "["; // start the HTML output string
-  var arrayObj = [];
-  var columns = [];
-  for (var col = 0; col < data.getNumberOfColumns(); col++) {
-    columns.push(data.getFormattedValue(0, col));
-  }
-  
-  for (var row = 1; row < data.getNumberOfRows(); row++) {
+  var numRows = data.getNumberOfRows(),
+  numCols = data.getNumberOfColumns();
+  var html = ["["]; // start the HTML output string
+  for (var row = 0; row < numRows; row++) {
     var rowObj = [];
     for (var col = 0; col < data.getNumberOfColumns(); col++) {
-      var columnLabel = columns[col];
-      var formattedValue = data.getFormattedValue(row, col).replace('"', '\"');
-      //formattedValue = escapeHtml(formattedValue);
-      rowObj.push('"' + columnLabel + '"' + ":" + '"' + formattedValue + '"');
+      var columnLabel = data.getColumnLabel(col);
+
+      var formattedValue = data.getFormattedValue(row, col);
+      formattedValue = escapeHtml(formattedValue);
+      var comma = (col + 1 != numCols) ? ", " : " ";
+
+
+      rowObj.push(columnLabel + " : '" + formattedValue + "'" + comma);
     }
-   arrayObj.push("{" + rowObj.join(",") + "}");
+    var comma = (row + 1 != numRows) ? "," : "]";
+    html.push("{" + rowObj.join("") + "}" + comma +" ");
   }
-  html += arrayObj.join(",<br/>") + "]<br/>";
-  return html;
+  return html.join("");
 }
 
 function convertToSQL(data) {
