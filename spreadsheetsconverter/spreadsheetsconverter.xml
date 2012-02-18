@@ -97,7 +97,7 @@ function handleQueryResponse(response) {
 }
 
 function convertToJSON(data) {
-  var numRows = data.getNumberOfRows(),
+  var numRows = data.getNumberOfRows();
   var numCols = data.getNumberOfColumns();
   var html = ["["]; // start the HTML output string
   for (var row = 0; row < numRows; row++) {
@@ -117,7 +117,7 @@ function convertToJSON(data) {
 }
 
 function convertToXML(data) {
-  var numRows = data.getNumberOfRows(),
+  var numRows = data.getNumberOfRows();
   var numCols = data.getNumberOfColumns();
 
   var html = ["&lt;rows&gt;"]; // start the HTML output string
