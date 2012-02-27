@@ -106,7 +106,7 @@ function convertToJSON(data) {
       var columnLabel = data.getColumnLabel(col);
 
       var formattedValue = data.getFormattedValue(row, col);
-      formattedValue = escapeHtml(formattedValue).replace('"', '\"');
+      formattedValue = escapeHtml(formattedValue).replace(/"/gi, '\\"');
       var comma = (col + 1 != numCols) ? ", " : " ";
       rowObj.push("\"" + columnLabel + "\"" + " : \"" + formattedValue + "\"" + comma);
     }
